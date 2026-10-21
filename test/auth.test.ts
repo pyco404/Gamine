@@ -44,7 +44,7 @@ describe("nonces", () => {
   it("expire", async () => {
     const w = wallet();
     const issuedAt = new Date("2026-01-01T00:00:00Z");
-    const { nonce, message } = await issueNonce(db, w.publicKey, "agenticpad.test", issuedAt);
+    const { nonce, message } = await issueNonce(db, w.publicKey, "gamine.test", issuedAt);
     const late = new Date(issuedAt.getTime() + NONCE_TTL_MS + 1);
     await expect(verifySignIn(db, { publicKey: w.publicKey, nonce, signature: w.sign(message) }, late)).rejects.toThrow(
       /expired/,
@@ -53,15 +53,15 @@ describe("nonces", () => {
 
   it("bind the domain into what is signed", async () => {
     const w = wallet();
-    const { message } = await issueNonce(db, w.publicKey, "agenticpad.test");
-    expect(message.split("\n")[0]).toBe("agenticpad.test wants you to sign in with your Solana account:");
+    const { message } = await issueNonce(db, w.publicKey, "gamine.test");
+    expect(message.split("\n")[0]).toBe("gamine.test wants you to sign in with your Solana account:");
     const other = signInMessage({ domain: "evil.test", publicKey: w.publicKey, nonce: "n", issuedAt: "t" });
     expect(other).not.toBe(message);
   });
 
   it("reject malformed signatures without throwing anything but an AuthError", async () => {
     const w = wallet();
-    const { nonce } = await issueNonce(db, w.publicKey, "agenticpad.test");
+    const { nonce } = await issueNonce(db, w.publicKey, "gamine.test");
     await expect(verifySignIn(db, { publicKey: w.publicKey, nonce, signature: "0OIl" })).rejects.toBeInstanceOf(AuthError);
     await expect(verifySignIn(db, { publicKey: w.publicKey, nonce, signature: bs58.encode(new Uint8Array(10)) })).rejects.toThrow(
       /does not verify/,
@@ -73,7 +73,7 @@ describe("sessions", () => {
   it("resolve to the wallet until they expire or are revoked", async () => {
     const w = wallet();
     const start = new Date();
-    const { nonce, message } = await issueNonce(db, w.publicKey, "agenticpad.test", start);
+    const { nonce, message } = await issueNonce(db, w.publicKey, "gamine.test", start);
     const { token } = await verifySignIn(db, { publicKey: w.publicKey, nonce, signature: w.sign(message) }, start);
 
     expect(await ownerForToken(db, token, start)).toBe(w.publicKey);
@@ -88,7 +88,7 @@ describe("sessions", () => {
 
   it("are stored only as hashes", async () => {
     const w = wallet();
-    const { nonce, message } = await issueNonce(db, w.publicKey, "agenticpad.test");
+    const { nonce, message } = await issueNonce(db, w.publicKey, "gamine.test");
     const { token } = await verifySignIn(db, { publicKey: w.publicKey, nonce, signature: w.sign(message) });
     const rows = (await db.execute("select token_hash from sessions")) as unknown as { rows: { token_hash: string }[] };
     expect(rows.rows.some((r) => r.token_hash === token)).toBe(false);
