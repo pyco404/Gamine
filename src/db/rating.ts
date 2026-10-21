@@ -1,7 +1,7 @@
 import { and, eq, gt, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { policyAgent, type Policy } from "../agents/policy.js";
 import { seatAveragedNet } from "../exact.js";
-import { AGENTICPAD_RULES } from "../round.js";
+import { GAMINE_RULES } from "../round.js";
 import type { Agent } from "../types.js";
 import type { Db } from "./client.js";
 import { agents, matches } from "./schema.js";
@@ -92,7 +92,7 @@ export function trueRatingAgainst(agent: Agent, profile: RosterProfile): number 
   if (profile.agentCount === 0) return 0;
   let total = 0;
   for (const { table, weight } of profile.entries) {
-    total += weight * seatAveragedNet(agent, policyAgent(table), AGENTICPAD_RULES);
+    total += weight * seatAveragedNet(agent, policyAgent(table), GAMINE_RULES);
   }
   return total / profile.agentCount;
 }
@@ -140,7 +140,7 @@ export async function scoringProfile(db: Db, now = new Date()): Promise<RosterPr
 
 /**
  * What a table is worth against a roster today, in chips per match, computed
- * at AGENTICPAD_RULES - the one scale every match is played at. Against the
+ * at GAMINE_RULES - the one scale every match is played at. Against the
  * scoring roster this is the score's own unit: rewards pay on net chips won
  * against other players' agents, and this is that, expected per match.
  */
@@ -159,7 +159,7 @@ export function previewPolicy(table: Policy, profile: RosterProfile) {
     rosterFingerprint: profile.fingerprint,
     /** Per distinct opponent, so a brief can be aimed at what is actually out there. */
     breakdown: profile.entries.map((e) => {
-      const net = seatAveragedNet(agent, policyAgent(e.table), AGENTICPAD_RULES);
+      const net = seatAveragedNet(agent, policyAgent(e.table), GAMINE_RULES);
       return { weight: e.weight, expectedNet: net };
     }),
   };
