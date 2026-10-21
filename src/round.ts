@@ -24,7 +24,7 @@ export const CLASSIC_STAKES: Readonly<Stakes> = Object.freeze({ ante: ANTE, base
  * The classic configuration (simultaneous play, complementary draw, ante 10)
  * is still reachable by passing it explicitly.
  */
-export const AGENTICPAD_RULES = Object.freeze({
+export const GAMINE_RULES = Object.freeze({
   turnOrder: "alternating",
   deal: "independent",
   stakes: Object.freeze({ ante: 4, baseBet: 10, raisedBet: 20 }),
