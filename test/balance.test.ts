@@ -3,7 +3,7 @@ import {
   CLASSIC_RULES,
   expectedNet,
   makeStrategy,
-  AGENTICPAD_RULES,
+  GAMINE_RULES,
   PRESET_NAMES,
   PRESET_PARAMS,
   playMatch,
@@ -16,14 +16,14 @@ import {
 } from "../src/index.js";
 
 // These numbers took a long search to find and are only balanced for
-// AGENTICPAD_RULES. This file pins them and re-derives the balance criteria, so a
+// GAMINE_RULES. This file pins them and re-derives the balance criteria, so a
 // parameter change fails here unless the criteria still hold with it.
 //
 // If you change a preset on purpose: run `npm run balance`, then update the
 // snapshot below. If a criterion then fails, the change is not shippable.
 
-const RULES = { turnOrder: AGENTICPAD_RULES.turnOrder, deal: AGENTICPAD_RULES.deal } as const;
-const stakesAt = (ante: number): Stakes => ({ ...AGENTICPAD_RULES.stakes, ante });
+const RULES = { turnOrder: GAMINE_RULES.turnOrder, deal: GAMINE_RULES.deal } as const;
+const stakesAt = (ante: number): Stakes => ({ ...GAMINE_RULES.stakes, ante });
 const at = (a: Agent, b: Agent, ante: number) => seatAveragedNet(a, b, { ...RULES, stakes: stakesAt(ante) });
 
 /** The shipped parameters. Changing a preset means changing this snapshot too. */
@@ -65,16 +65,16 @@ describe("shipped presets", () => {
 
   it("a match with no options is the shipped game", () => {
     const log = playMatch(PRESETS.Anchor, PRESETS.Bully, { seed: 1 });
-    expect(log.turnOrder).toBe(AGENTICPAD_RULES.turnOrder);
-    expect(log.deal).toBe(AGENTICPAD_RULES.deal);
-    expect(log.stakes).toEqual(AGENTICPAD_RULES.stakes);
+    expect(log.turnOrder).toBe(GAMINE_RULES.turnOrder);
+    expect(log.deal).toBe(GAMINE_RULES.deal);
+    expect(log.stakes).toEqual(GAMINE_RULES.stakes);
     // The classic configuration is still reachable for the dead-end variants.
     const classic = playMatch(PRESETS.Anchor, PRESETS.Bully, { seed: 1, ...CLASSIC_RULES });
     expect([classic.turnOrder, classic.deal, classic.stakes.ante]).toEqual(["simultaneous", "complementary", 10]);
   });
 
   it("are balanced for the rules they claim", () => {
-    expect(AGENTICPAD_RULES).toEqual({ turnOrder: "alternating", deal: "independent", stakes: { ante: 4, baseBet: 10, raisedBet: 20 } });
+    expect(GAMINE_RULES).toEqual({ turnOrder: "alternating", deal: "independent", stakes: { ante: 4, baseBet: 10, raisedBet: 20 } });
   });
 
   it.each(ANTES)("the loop holds at ante %s", (ante) => {
@@ -99,7 +99,7 @@ describe("shipped presets", () => {
     for (const ante of ANTES) {
       for (const n of PRESET_NAMES) expect(at(() => "raise", PRESETS[n], ante)).toBeLessThanOrEqual(1e-9);
     }
-    for (const n of PRESET_NAMES) expect(at(() => "raise", PRESETS[n], AGENTICPAD_RULES.stakes.ante)).toBeLessThan(0);
+    for (const n of PRESET_NAMES) expect(at(() => "raise", PRESETS[n], GAMINE_RULES.stakes.ante)).toBeLessThan(0);
     // It only reaches a tie at the top of the range, against Bully at ante 5.
     expect(at(() => "raise", PRESETS.Bully, 5)).toBeCloseTo(0, 9);
   });
@@ -115,7 +115,7 @@ describe("shipped presets", () => {
 
   it("position is worth nothing over a match, and little per round", () => {
     for (const n of PRESET_NAMES) {
-      const opts = { ...RULES, stakes: AGENTICPAD_RULES.stakes } as const;
+      const opts = { ...RULES, stakes: GAMINE_RULES.stakes } as const;
       // The round-1 leader coin cancels position exactly.
       expect(expectedNet(PRESETS[n], PRESETS[n], opts)).toBeCloseTo(0, 12);
       // With a fixed first leader it stays small.
