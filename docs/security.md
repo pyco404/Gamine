@@ -2,7 +2,7 @@
 
 **Replaced 2026-10-02 by [holder-agents.md](holder-agents.md).** With no deposits, vaults or on-chain program, most of what this page protects is gone: the vaults, the settler key, the program's caps and the exit. It is kept for the reasoning and the record of what was measured and closed. What still needs securing under holder agents - the reward wallets' keys and the key that signs payouts - is in [economy.md](economy.md#roadmap).
 
-AgenticPad is a devnet demo with fake currency. This document says what it protects, how, and where it stops. Nothing here has been audited.
+Gamine is a devnet demo with fake currency. This document says what it protects, how, and where it stops. Nothing here has been audited.
 
 ## What is at stake
 
@@ -23,7 +23,7 @@ Game tokens in per-agent vaults on Solana devnet, and the accuracy of the off-ch
 `src/auth/wallet.ts`, `src/http/server.ts`.
 
 - **Challenge.** `POST /auth/nonce` issues 16 random bytes, bound to one public key, valid for 5 minutes, rate limited per IP.
-- **Message.** The wallet signs plain text naming the site ("*domain* wants you to sign in with your Solana account"), so a signature made for AgenticPad cannot be replayed on another site. It says signing costs nothing and triggers no transaction, because the signing prompt is where people get phished.
+- **Message.** The wallet signs plain text naming the site ("*domain* wants you to sign in with your Solana account"), so a signature made for Gamine cannot be replayed on another site. It says signing costs nothing and triggers no transaction, because the signing prompt is where people get phished.
 - **Verification.** The server rebuilds the exact message it issued and checks the ed25519 signature. It never trusts message text sent back by the client.
 - **Replay.** A nonce is burnt with a conditional update, so two concurrent verifications of one signature cannot both open a session. Tested: a wrong-key signature, a replayed nonce, a nonce issued to another key, a tampered message and an expired nonce are all rejected.
 - **Sessions.** 32 random bytes, returned once and stored only as a SHA-256 hash, valid 7 days, revoked on sign-out. Sent as `Authorization: Bearer`.
@@ -31,7 +31,7 @@ Game tokens in per-agent vaults on Solana devnet, and the accuracy of the off-ch
 
 ## Money: ledger and chain
 
-`src/db/ledger.ts`, `src/db/runner.ts`, `src/chain/`, `chain/programs/agenticpad_settlement/`.
+`src/db/ledger.ts`, `src/db/runner.ts`, `src/chain/`, `chain/programs/gamine_settlement/`.
 
 - **The ledger is authoritative.** Balances are sums of immutable ledger rows. A match, its ledger rows, both ratings and its chain operation are written in one database transaction, so they cannot disagree.
 - **The server validates before anything moves.** A match is played at its band's scale, and the band's worst match - two rounds at the raised bet, so 20, 40 or 60 - is what each side risks. Nothing is clamped: both agents must be able to pay that worst case outright before the match is played at all, and an agent that cannot is refused. It is retired only when no band is affordable to it, below band A's 20.
@@ -46,7 +46,7 @@ Game tokens in per-agent vaults on Solana devnet, and the accuracy of the off-ch
 
 ## Withdrawals
 
-`src/db/withdrawals.ts`, `src/agent-id.ts`, `chain/programs/agenticpad_settlement/` (`open_owned_vault`, `withdraw`).
+`src/db/withdrawals.ts`, `src/agent-id.ts`, `chain/programs/gamine_settlement/` (`open_owned_vault`, `withdraw`).
 
 - **An agent id belongs to its owner.** A new agent's id is the first 16 bytes of `sha256("oxude-agent-v1" || owner's key || random salt)`, as a UUID. Opening its vault recomputes that hash and records the owner in a PDA seeded by the id, in the same instruction. So the only owner that can ever be recorded for an agent is the one its id derives from: a stolen settler key cannot name itself, and there is no window before a record lands in which it could (limitation 11). A house agent's id hashes 32 zero bytes in the owner's place, so it has no owner and nothing can be withdrawn from it. Agents rented before this had random ids and owner records written by the settler; those records stand, created once and unchangeable.
 - **Two signatures, on the fast path.** A withdrawal needs the owner's signature, checked by the program against that record, so a non-owner can never withdraw. It also needs the settler's co-signature, which is the server saying nothing is in flight. Tokens can only go to the owner's own token account, and the server pays the fee.
@@ -136,7 +136,7 @@ These are real, and would each need fixing before anything of value were at stak
 
    **The residual risk, plainly: a stolen settler key is bounded by the outflow cap and the loss budget; a compromised admin key or a dishonest operator is not bounded by anything.**
 2. **The admin key can upgrade the program**, and so could replace every rule above. It should move to a multisig, or the program should be made immutable.
-3. **Closed, on devnet, and proven there.** This said the vaults were custodial in practice, because a server that refused or disappeared stranded the money. `request_exit` and `claim_exit` are built and deployed, need no signature but the owner's, and are driven by a page that has no dependency on this server at all ([`web/public/exit/`](../web/public/exit/)). On 2026-09-27 a real wallet took money out that way end to end on devnet: it requested an exit, waited out the window, claimed from `/exit`, and the money arrived in the wallet, with the admin page's reconciliation clean afterwards. It no longer depends on our hosting either: the same page is published from the repository to GitHub Pages ([GitHub](https://github.com/.)), a different provider from the Railway service behind agenticpad.site, by a workflow that publishes the folder exactly as committed. That is the copy that doesn't depend on us - on our servers, our database or our hosting - and the page carries its whole library inline, so a copy saved to disk works opened directly. What it still depends on is GitHub, a Solana RPC endpoint and the owner's wallet.
+3. **Closed, on devnet, and proven there.** This said the vaults were custodial in practice, because a server that refused or disappeared stranded the money. `request_exit` and `claim_exit` are built and deployed, need no signature but the owner's, and are driven by a page that has no dependency on this server at all ([`web/public/exit/`](../web/public/exit/)). On 2026-09-27 a real wallet took money out that way end to end on devnet: it requested an exit, waited out the window, claimed from `/exit`, and the money arrived in the wallet, with the admin page's reconciliation clean afterwards. It no longer depends on our hosting either: the same page is published from the repository to GitHub Pages ([GitHub](https://github.com/.)), a different provider from the Railway service behind trygamine.xyz, by a workflow that publishes the folder exactly as committed. That is the copy that doesn't depend on us - on our servers, our database or our hosting - and the page carries its whole library inline, so a copy saved to disk works opened directly. What it still depends on is GitHub, a Solana RPC endpoint and the owner's wallet.
 4. **The settler key is a hot key on the server.** Locally it lives in a file (`.keys/settler.json`); on the deployed site it is a Railway service variable (`CHAIN_SETTLER_SECRET`, and `CHAIN_SETTLER_SECRET_V2` for the deposit program), readable by anyone with access to that Railway project. There is no HSM and no signing service. The seed program cannot rotate its settler without an upgrade; the deposit program can, with `set_settler` from the admin.
 
    **How it gets there is a known exposure, accepted for now (the operator's decision, 2026-09-29), to be revisited before mainnet.** The mainnet settler is to live only on the api service and never be written to a laptop. The procedure ([rehearsal.md](rehearsal.md#the-settler-key-never-on-a-laptop-a-mainnet-blocker)) generates it in memory and pipes it straight into `railway variables --set-from-stdin`, so it never reaches a file, the screen, the clipboard or shell history. It does pass through the operator machine's memory for the length of that one command: malware on that machine at that moment could take it. The alternative that closes this is for the server to make its own key - the api generating a settler on first start, keeping it on a Railway volume and printing only the public key for the admin to install with `set_settler` - at the cost of a code change and of a key that then lives on a volume.
