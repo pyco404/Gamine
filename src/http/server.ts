@@ -383,7 +383,7 @@ export function createApp(options: AppOptions): Server {
     }
     const holderMint = typeof ctx.body["holderMint"] === "string" ? ctx.body["holderMint"] : "";
     const selectedChain = holderMint ? await holder.catalog?.chain(holderMint) : holder.chain;
-    if (!selectedChain) throw new HttpError(400, "this token is not a confirmed AgenticPad launch");
+    if (!selectedChain) throw new HttpError(400, "this token is not a confirmed Gamine launch");
     {
       let holding;
       try {
@@ -743,7 +743,7 @@ export function createApp(options: AppOptions): Server {
    * sell collected agents). Its wallet must also hold the token worth $20 now
    * (docs/holder-agents.md, decision 3), read fresh on chain at the verified
    * price. `minScore` drops lower scores, and `exclude` the reward wallets
-   * themselves, which hold $AGP and so have agents but must not pay themselves.
+   * themselves, which hold $GAMINE and so have agents but must not pay themselves.
    * `cap` is the most one wallet's agent may take (default 10%); what it holds
    * back is handed on to the others by score, so the payout pays out in full
    * whenever there are enough winners. Shares are
