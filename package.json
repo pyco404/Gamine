@@ -1,8 +1,8 @@
 {
-  "name": "agenticpad",
+  "name": "gamine",
   "version": "0.0.1",
   "private": true,
-  "description": "AgenticPad match engine — agent-versus-agent betting game.",
+  "description": "Gamine match engine — agent-versus-agent betting game.",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
