@@ -49,18 +49,28 @@ export async function connect(url = process.env["DATABASE_URL"]): Promise<{ db: 
  */
 export async function migrate(db: Db, dir = "drizzle"): Promise<void> {
   await db.execute(
-    sql.raw("CREATE TABLE IF NOT EXISTS agenticpad_migrations (name text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now())"),
+    sql.raw("CREATE TABLE IF NOT EXISTS gamine_migrations (name text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now())"),
   );
   // Retain the applied migration history from existing deployments. Replaying
   // their schema changes under a fresh ledger would fail or corrupt data.
+  for (const legacy of ["agenticpad_migrations", "oxude_migrations", "agentclash_migrations"]) {
+    await db.execute(sql.raw(`DO $$ BEGIN
+      IF to_regclass('public.${legacy}') IS NOT NULL THEN
+        INSERT INTO gamine_migrations (name, applied_at)
+        SELECT name, applied_at FROM ${legacy} ON CONFLICT (name) DO NOTHING;
+      END IF;
+    END $$;`));
+  }
+  // Keep the saved world checkpoint when upgrading an existing installation.
   await db.execute(sql.raw(`DO $$ BEGIN
-    IF to_regclass('public.oxude_migrations') IS NOT NULL THEN
-      INSERT INTO agenticpad_migrations (name, applied_at)
-      SELECT name, applied_at FROM oxude_migrations ON CONFLICT (name) DO NOTHING;
+    IF to_regclass('public.world_activities') IS NOT NULL THEN
+      UPDATE world_activities SET id = 'gamine-world'
+      WHERE id = 'agenticpad-world'
+        AND NOT EXISTS (SELECT 1 FROM world_activities WHERE id = 'gamine-world');
     END IF;
   END $$;`));
   const applied = new Set(
-    ((await db.execute(sql.raw("SELECT name FROM agenticpad_migrations"))) as unknown as { rows: { name: string }[] }).rows.map(
+    ((await db.execute(sql.raw("SELECT name FROM gamine_migrations"))) as unknown as { rows: { name: string }[] }).rows.map(
       (r) => r.name,
     ),
   );
@@ -73,7 +83,7 @@ export async function migrate(db: Db, dir = "drizzle"): Promise<void> {
         const trimmed = statement.trim();
         if (trimmed) await tx.execute(sql.raw(trimmed));
       }
-      await tx.execute(sql`INSERT INTO agenticpad_migrations (name) VALUES (${file})`);
+      await tx.execute(sql`INSERT INTO gamine_migrations (name) VALUES (${file})`);
     });
   }
 }
