@@ -3,7 +3,7 @@
  * chose, and a bio a model wrote. No slurs or hate, nothing sexual, no real
  * people, nobody passing themselves off as the platform.
  *
- * Two layers. A local rule catches impersonation of AgenticPad itself, with no call
+ * Two layers. A local rule catches impersonation of Gamine itself, with no call
  * and no cost. Everything else goes to a small model check (src/character/
  * model.ts), which understands a slur spelled sideways or a name that belongs
  * to a real person in a way no word list can. When the model cannot be
@@ -20,10 +20,10 @@ export type Verdict = {
 };
 
 /** Words that would make an agent look like it speaks for the platform. */
-const RESERVED = ["agenticpad", "agenticpad", "admin", "administrator", "official", "moderator", "support", "staff", "system"];
+const RESERVED = ["gamine", "admin", "administrator", "official", "moderator", "support", "staff", "system"];
 
 /**
- * Folds the usual look-alike characters, so "0xude" and "Adm1n" read as what
+ * Folds the usual look-alike characters, so "G@m1ne" and "Adm1n" read as what
  * they are. "1", "!" and "|" stand for "i" as often as "l", so both readings
  * are returned.
  */
@@ -45,7 +45,7 @@ export function reservedWord(text: string): string | null {
   const readings = fold(text);
   // "Administrator" also contains "admin": report the longest word that was there.
   const hit = RESERVED.filter((w) => readings.some((r) => r.includes(w))).sort((a, b) => b.length - a.length)[0];
-  return hit ? `names can't include "${hit}": it reads as speaking for AgenticPad` : null;
+  return hit ? `names can't include "${hit}": it reads as speaking for Gamine` : null;
 }
 
 /** Plain limits on a name before anything is asked of a model. */
