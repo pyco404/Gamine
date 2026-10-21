@@ -21,7 +21,7 @@ angles against the original ground image; all were unchanged. World data was als
 The isolated perimeter bake measured 4.7 ms mean / 9 ms p95 on this machine. It only runs when
 the ground needs rebaking; these timings do not establish a hardware FPS guarantee.
 
-Review images and audit: `/tmp/oxude-perimeter-review/`. Geometry tests check a flat unchanged
+Review images and audit: `/tmp/gamine-perimeter-review/`. Geometry tests check a flat unchanged
 top, bounded erosion, variable depth, occasional rock, rounded lower corners and joined seams.
 
 Perimeter files: `web/lib/world/terrain-edge.ts`, `web/app/village/game/terrain-edge.ts`, the
