@@ -33,17 +33,17 @@ const link = "hover:text-text";
 /**
  * The footer: a small chip pinned to the bottom-right of the screen on every
  * page and every screen, like the village's hint at the bottom-left. Its
- * $AGP link goes to the live token; the full note shows on hover.
+ * $GAMINE link goes to the live token; the full note shows on hover.
  */
 export function SiteFooter() {
   return (
     <footer
       className="rounded-panel flex h-8 items-center border border-hud-line bg-hud px-2.5 text-[12px] text-muted"
-      title={`AgenticPad runs on Solana mainnet. $AGP is live: ${AGP_MINT}`}
+      title={`Gamine runs on Solana mainnet. $GAMINE is live: ${AGP_MINT}`}
     >
       <p className="flex flex-wrap items-center justify-end gap-x-3">
         <span>Solana</span>
-        <a href={AGP_LINKS.pump} className={link} target="_blank" rel="noreferrer">$AGP</a>
+        <a href={AGP_LINKS.pump} className={link} target="_blank" rel="noreferrer">$GAMINE</a>
         <a href={siteLinks.x} className={link} target="_blank" rel="noreferrer">X</a>
         <a href={siteLinks.repository} className={link} target="_blank" rel="noreferrer">Source</a>
         <a href={siteLinks.repository} className={link} target="_blank" rel="noreferrer">Security</a>
