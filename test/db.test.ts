@@ -26,7 +26,7 @@ import {
   policyFromAgent,
   PRESETS,
   PRESET_VERSION,
-  AGENTICPAD_RULES,
+  GAMINE_RULES,
   seatAveragedNet,
   type View,
 } from "../src/index.js";
@@ -72,7 +72,7 @@ const blankView: Omit<View, "myEdge" | "oppActionThisRound" | "oppRaisedLastRoun
   oppRoundsWon: 0,
   roundNumber: 1,
   oppRaiseCount: 0,
-  stakes: AGENTICPAD_RULES.stakes,
+  stakes: GAMINE_RULES.stakes,
   myNet: 0,
   myActionThisRound: null,
 };
@@ -323,7 +323,7 @@ describe("true rating", () => {
     await refreshTrueRatings(fresh);
 
     const [row] = await fresh.select().from(agents).where(eq(agents.id, mine.id));
-    const half = (a: "Anchor" | "Bully") => seatAveragedNet(policyAgent(snapshotPreset("Mirage")), PRESETS[a], AGENTICPAD_RULES);
+    const half = (a: "Anchor" | "Bully") => seatAveragedNet(policyAgent(snapshotPreset("Mirage")), PRESETS[a], GAMINE_RULES);
     // Roster is 4 Anchors, 4 Bullys and Mirage itself; an agent is rated against everyone but itself.
     const profile = await rosterProfile(fresh);
     const expected = (4 * half("Anchor") + 4 * half("Bully")) / 8;
@@ -365,7 +365,7 @@ describe("true rating", () => {
     await refreshTrueRatings(fresh);
 
     const mirage = policyAgent(snapshotPreset("Mirage"));
-    const vs = (a: "Anchor" | "Bully") => seatAveragedNet(mirage, PRESETS[a], AGENTICPAD_RULES);
+    const vs = (a: "Anchor" | "Bully") => seatAveragedNet(mirage, PRESETS[a], GAMINE_RULES);
     const [row] = await fresh.select().from(agents).where(eq(agents.id, me.id));
     expect(row!.trueRating).toBeCloseTo((vs("Anchor") + vs("Bully")) / 2, 9);
 
@@ -391,7 +391,7 @@ describe("true rating", () => {
     expect(players.scoring).toBe(true);
     expect(players.roster).toBe(1);
     const mirage = policyAgent(snapshotPreset("Mirage"));
-    expect(players.trueRating).toBeCloseTo(seatAveragedNet(mirage, PRESETS.Bully, AGENTICPAD_RULES), 9);
+    expect(players.trueRating).toBeCloseTo(seatAveragedNet(mirage, PRESETS.Bully, GAMINE_RULES), 9);
     await closeFresh();
   });
 
