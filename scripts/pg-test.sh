@@ -49,6 +49,6 @@ echo "Starting a throwaway Postgres on port $PORT ($("$PGBIN/postgres" --version
 "$PGBIN/pg_ctl" -D "$DIR/data" -l "$DIR/log" \
   -o "-p $PORT -c listen_addresses=127.0.0.1 -c unix_socket_directories=''" start >/dev/null
 "$PGBIN/psql" -h 127.0.0.1 -p "$PORT" -U postgres -d postgres \
-  -c "create role agenticpad login password 'agenticpad' superuser" >/dev/null
+  -c "create role gamine login password 'gamine' superuser" >/dev/null
 
-PG_URL="postgres://agenticpad:agenticpad@127.0.0.1:$PORT/postgres" npx vitest run "$TARGET"
+PG_URL="postgres://gamine:gamine@127.0.0.1:$PORT/postgres" npx vitest run "$TARGET"
