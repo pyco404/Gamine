@@ -133,7 +133,7 @@ export async function ScoreStanding() {
           <strong className="text-text">{day?.params.minDailyMatches ?? 3} ranked matches</strong> in the day, or{" "}
           <strong className="text-text">{season?.params.minSeasonMatches ?? 15}</strong> in the season. Each qualifying
           agent&apos;s share is its score over everyone&apos;s, shown here with no agent above 10%. At payout, only
-          agents still in play whose wallets hold $20 of $AGP are paid; the shares are worked out again among them, and
+          agents still in play whose wallets hold $20 of $GAMINE are paid; the shares are worked out again among them, and
           what a payout&apos;s cap holds back goes to the others.
         </p>
         <p>
