@@ -8,13 +8,13 @@
 
 | # | Decision |
 |---|---|
-| 1 | **The chip rate is held until $AGP has a real price.** The peg stands (900 chips ≈ $5, [economy.md](economy.md#the-chip-rate)); the number waits for the market. Before launch the program gets the decided rate rule — raise freely, lower by at most half per step — so a wrong launch rate is a few transactions to correct, not weeks of ±50% every six days. |
+| 1 | **The chip rate is held until $GAMINE has a real price.** The peg stands (900 chips ≈ $5, [economy.md](economy.md#the-chip-rate)); the number waits for the market. Before launch the program gets the decided rate rule — raise freely, lower by at most half per step — so a wrong launch rate is a few transactions to correct, not weeks of ±50% every six days. |
 | 2 | **A fresh program ID from a freshly generated keypair.** The devnet program's keypair has been on a laptop for weeks. |
 | 3 | **The upgrade authority lives on a hardware wallet, separate from the config admin**, and the program gets **`set_admin`**, so a lost admin key — the key that sets the chip rate every week — is recoverable rather than permanent. |
 | 4 | **Hourly net settlement**, as already decided in [economy.md](economy.md#decided), instead of one on-chain settlement per match. |
-| 5 | **House agents need no balance.** They never stake, so they need no vault money to be offered as opponents. This removes the treasury key from mainnet and about $270 of $AGP that would have sat locked in house vaults. |
+| 5 | **House agents need no balance.** They never stake, so they need no vault money to be offered as opponents. This removes the treasury key from mainnet and about $270 of $GAMINE that would have sat locked in house vaults. |
 | 6 | **No audit before mainnet, for now. This is the operator's decision**, recorded as such: [security.md](security.md) limitation 9 still stands, and so does the residual risk it describes. |
-| 7 | **agenticpad.site becomes mainnet.** Devnet moves to a subdomain and stays for testing. |
+| 7 | **trygamine.xyz becomes mainnet.** Devnet moves to a subdomain and stays for testing. |
 | 8 | **Helius, paid tier,** as the mainnet RPC. The 28-hour settlement outage of 2026-09-23 was the free endpoint. |
 | 9 | **Economics confirmed:** $5 minimum deposit (900 chips), $2 rent, a per-match limit of 60 chips (band C's worst match), and a default loss budget of a third of the deposit per day. |
 
@@ -50,10 +50,10 @@ The daily and weekly reward wallets and the platform wallet ([economy.md](econom
    10. ~~No seed-program roster on an empty database~~ — built (2026-09-29, `96c2096`). Found in the rehearsal: a fresh database was given 24 house agents on the seed program. With the deposit program alone it now gets the deposit house roster.
 2. **Build verifiably** (`anchor build --verifiable`), so anyone can check the deployed bytecode against the source.
 3. **Generate the keys** as above. Fund the ops wallet; fund the deploy key and the settler from it.
-4. **A separate mainnet environment:** its own database (the current one is devnet agents and balances), api and web; Helius paid; the mainnet cluster, RPC and $AGP mint; deposit funding only; the faucet off. Devnet moves to its subdomain.
-5. **Mint $AGP** on pump.fun, named **AgenticPad** with ticker **AGP**, and confirm its token program (Token-2022 expected) and that its mint and freeze authorities are revoked — the program refuses a mint that can still mint.
+4. **A separate mainnet environment:** its own database (the current one is devnet agents and balances), api and web; Helius paid; the mainnet cluster, RPC and $GAMINE mint; deposit funding only; the faucet off. Devnet moves to its subdomain.
+5. **Mint $GAMINE** on pump.fun, named **Gamine** with ticker **AGP**, and confirm its token program (Token-2022 expected) and that its mint and freeze authorities are revoked — the program refuses a mint that can still mint.
 6. **Configure the creator-fee split** on pump.fun, three ways, before fees accumulate ([economy.md](economy.md#creator-fees-and-prizes)). One-shot.
-7. **Deploy the program** with the deploy key, and **initialise it in the next transaction**, before anything else: the deploy key is still the upgrade authority, so it signs `initialize` with the admin (step 1.8). Initialise sets the settler, the chip rate from $AGP's real price, rent of $2 and a per-match limit of 60 chips at that rate.
+7. **Deploy the program** with the deploy key, and **initialise it in the next transaction**, before anything else: the deploy key is still the upgrade authority, so it signs `initialize` with the admin (step 1.8). Initialise sets the settler, the chip rate from $GAMINE's real price, rent of $2 and a per-match limit of 60 chips at that rate.
 8. **Then** move the upgrade authority to its hardware wallet, verify the deployed build against the published hash (step 2), empty the deploy key, and turn the exit window on (30 minutes).
 9. **House agents**, which with decision 5 need rows and nothing else.
 10. **Prove every path with small real money** and two test wallets: rent, deposit, a player-versus-player match and its settlement, the loss budget, a withdrawal, and a full exit through the mainnet exit page.
@@ -81,7 +81,7 @@ House vaults are gone from this list with decision 5.
 
 | Per | SOL |
 |---|---|
-| Rental | ~0.0055, or ~0.007 when the owner has no $AGP token account yet |
+| Rental | ~0.0055, or ~0.007 when the owner has no $GAMINE token account yet |
 | Settlement | The transaction fee, ~0.000005, at most 24 per agent per day and only for agents that played. Net settlement creates no record per settlement; its one per-agent account (~0.0011) and the outflow window's are paid the first time an agent settles |
 | Withdrawal | ~0.0012, or ~0.0026 with a new token account |
 | Deposit | ~0.000005 |
@@ -90,7 +90,7 @@ House vaults are gone from this list with decision 5.
 ## What cannot be undone
 
 - **The program ID**, once owners have deposited: every vault, owner record and loss budget derives from it.
-- **`initialize`**: the $AGP mint is fixed for the program's life. The admin is not: the two-step handover moves it, and only to a key that signs to accept.
+- **`initialize`**: the $GAMINE mint is fixed for the program's life. The admin is not: the two-step handover moves it, and only to a key that signs to accept.
 - **The first chip rate** is free at initialise; after that the rate rule governs how fast it can be corrected.
 - **The creator-fee split** and its three addresses.
 - **Burns**: every rental fee.
@@ -99,7 +99,7 @@ House vaults are gone from this list with decision 5.
 
 ## Still open
 
-- **The chip rate's number**, until $AGP has a real price (decision 1). Where the weekly average comes from is [economy.md](economy.md#open-questions) question 2; pump.fun's bonding curve has no pool to average over until the token graduates.
+- **The chip rate's number**, until $GAMINE has a real price (decision 1). Where the weekly average comes from is [economy.md](economy.md#open-questions) question 2; pump.fun's bonding curve has no pool to average over until the token graduates.
 - **The exit window, now shorter than the outflow window.** Thirty minutes was sized to clear a ten-minute outflow window. It is now an hour, so a payment refused by the cap can wait past an exit's window, and the claim would take money owed to that hour's winners ([security.md](security.md) limitation 12). Lengthening it to about ninety minutes (13,500 slots) restores the margin, at the cost of a longer wait on the path owners use only when this server is not there; `set_exit_window` can lengthen it at any time.
 - **What `max_settlement` is for, under netting.** Decision 9's 60-chip per-match limit binds `settle`, one match at a time. Net settlement does not use it: an hour's net is many matches, and the hourly outflow cap bounds it instead. On mainnet, where every match nets, the per-match limit bounds nothing. It could be dropped, or become an absolute per-hour ceiling beside the proportional cap (the pre-mainnet item in security.md).
 - **The legal review** ([economy.md](economy.md#open-questions) question 5), which the audit decision does not touch.
