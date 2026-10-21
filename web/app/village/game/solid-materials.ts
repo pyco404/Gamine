@@ -17,14 +17,14 @@ const SOURCES = {
   cottage: "/village/reference/cottage-gold.png",
   hall: "/village/reference/hall-of-fame.png",
   stall: "/village/reference/market-blue.png",
-  board: "/village/agenticpad/leaderboard.png",
+  board: "/village/gamine/leaderboard.png",
   red: "/village/reference/cottage-red.png",
   green: "/village/reference/cottage-green.png",
   smithy: "/village/reference/smithy.png",
   marketRed: "/village/reference/market-red.png",
-  hiring: '/village/agenticpad/hiring-board.png',
-  strategy: '/village/agenticpad/strategy-board.png',
-  score: '/village/agenticpad/scoreboard.png',
+  hiring: '/village/gamine/hiring-board.png',
+  strategy: '/village/gamine/strategy-board.png',
+  score: '/village/gamine/scoreboard.png',
 } as const;
 type Source = keyof typeof SOURCES;
 
