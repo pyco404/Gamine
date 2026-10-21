@@ -2,7 +2,7 @@
 // node scripts/preview-field.mjs /tmp/field.png [width] [height]
 import { chromium } from "playwright";
 
-const [output = "/tmp/agenticpad-field.png", width = "1440", height = "1050"] = process.argv.slice(2);
+const [output = "/tmp/gamine-field.png", width = "1440", height = "1050"] = process.argv.slice(2);
 const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox", "--enable-unsafe-swiftshader"] });
 try {
   const page = await browser.newPage({ viewport: { width: Number(width), height: Number(height) } });
