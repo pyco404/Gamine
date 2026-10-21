@@ -1,6 +1,6 @@
 // Records the demo walk on the live site as a video.
 //
-//   node scripts/record-demo.mjs [base-url]      default https://agenticpad.site
+//   node scripts/record-demo.mjs [base-url]      default https://trygamine.xyz
 //   node scripts/record-demo.mjs --captions-only  re-burn captions onto the last recording
 //
 // Land on home (latest bluff, live feed) → connect a test wallet → rent Mirage
@@ -12,7 +12,7 @@
 // The wallet is a test stand-in injected into the page (a fresh ed25519 key
 // that signs like Phantom), not the real extension.
 //
-// Output, in demo/: agenticpad-demo.mp4 (clean), agenticpad-demo-captions.mp4 (captions
+// Output, in demo/: gamine-demo.mp4 (clean), gamine-demo-captions.mp4 (captions
 // burned in, for X), captions.ass, and beats.json (when each step happened, in
 // seconds from the start of the video). Captions are timed to those beats, not
 // generated: each runs from its step until the next one.
@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CAPTIONS_ONLY = process.argv.includes("--captions-only");
-const BASE = process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "https://agenticpad.site";
+const BASE = process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "https://trygamine.xyz";
 const API = BASE.includes("localhost") ? "http://localhost:8787" : BASE.replace("://", "://api.");
 const OUT = join(ROOT, "demo");
 const SIZE = { width: 1280, height: 720 };
@@ -122,14 +122,14 @@ function burnCaptions(beats) {
   writeFileSync(join(OUT, "captions.ass"), ass + "\n");
   execFileSync(
     "ffmpeg",
-    ["-y", "-loglevel", "error", "-i", "agenticpad-demo.mp4", "-vf", "ass=captions.ass", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30", "-movflags", "+faststart", "agenticpad-demo-captions.mp4"],
+    ["-y", "-loglevel", "error", "-i", "gamine-demo.mp4", "-vf", "ass=captions.ass", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30", "-movflags", "+faststart", "gamine-demo-captions.mp4"],
     { cwd: OUT },
   );
-  log("wrote", join(OUT, "agenticpad-demo-captions.mp4"), `(${lines.length} captions)`);
+  log("wrote", join(OUT, "gamine-demo-captions.mp4"), `(${lines.length} captions)`);
 }
 
 if (CAPTIONS_ONLY) {
-  if (!existsSync(join(OUT, "beats.json")) || !existsSync(join(OUT, "agenticpad-demo.mp4"))) {
+  if (!existsSync(join(OUT, "beats.json")) || !existsSync(join(OUT, "gamine-demo.mp4"))) {
     throw new Error("no recording to caption: run without --captions-only first");
   }
   burnCaptions(JSON.parse(readFileSync(join(OUT, "beats.json"), "utf8")));
@@ -323,7 +323,7 @@ try {
   await browser.close();
   const raw = await video.path();
   // A failed run never overwrites a good recording.
-  const name = ok ? "agenticpad-demo" : "agenticpad-demo.failed";
+  const name = ok ? "gamine-demo" : "gamine-demo.failed";
   const webm = join(OUT, `${name}.webm`);
   renameSync(raw, webm);
   execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", webm, "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30", "-movflags", "+faststart", join(OUT, `${name}.mp4`)]);
@@ -331,7 +331,7 @@ try {
   log("wrote", join(OUT, `${name}.mp4`));
   if (ok) {
     // Playwright starts the video as the page is created, so beats line up with it; report any drift.
-    const duration = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", join(OUT, "agenticpad-demo.mp4")]).toString());
+    const duration = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", join(OUT, "gamine-demo.mp4")]).toString());
     log(`video ${duration.toFixed(1)}s, last beat ${beats.at(-1).t.toFixed(1)}s`);
     writeFileSync(join(OUT, "beats.json"), JSON.stringify(beats, null, 2) + "\n");
     burnCaptions(beats);
