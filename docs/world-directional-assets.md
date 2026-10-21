@@ -147,7 +147,7 @@ No unintended physical billboard remains in the migrated render path. Front plan
 - Root and web typechecks and production build passed. Desktop/mobile shell tests passed camera persistence, touch controls, route overlays and wallet fixture continuity.
 - Unit coverage for fixed match-table vertices, cardinal orientation, boundary dead band, correct face assets, no front-art reuse on rear/sides, opaque-frame proportions, picking, town layout and simulation routes.
 
-Run `node scripts/check-world-objects.mjs` against a local web server to regenerate the detailed runtime inventory and screenshots in `/tmp/oxude-world-objects`.
+Run `node scripts/check-world-objects.mjs` against a local web server to regenerate the detailed runtime inventory and screenshots in `/tmp/gamine-world-objects`.
 
 ## Files changed
 
