@@ -137,9 +137,9 @@ function cottage(b: Brush, view: Projection, o: WorldObject, material = building
   }
 }
 
-/** AgenticPad's official logo (agenticpad-tb.png, unaltered) in the middle of the sand, inside a ring. */
+/** Gamine's official logo (gamine-tb.png, unaltered) in the middle of the sand, inside a ring. */
 /**
- * AgenticPad's logo as a faded floor marking: its brackets a soft green, its square a muted
+ * Gamine's logo as a faded floor marking: its brackets a soft green, its square a muted
  * olive-brown, its eyes a brighter green. Recoloured once per loaded image.
  */
 const markings = new WeakMap<object, HTMLCanvasElement>();
