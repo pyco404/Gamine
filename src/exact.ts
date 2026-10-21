@@ -6,7 +6,7 @@ import {
   freezeStakes,
   initialState,
   isMatchOver,
-  AGENTICPAD_RULES,
+  GAMINE_RULES,
   resolveActions,
   type MatchState,
   type Deal,
@@ -16,11 +16,11 @@ import {
 import type { Agent, Seat } from "./types.js";
 
 export type ExactOptions = {
-  /** Defaults to AGENTICPAD_RULES.stakes. */
+  /** Defaults to GAMINE_RULES.stakes. */
   stakes?: Readonly<Stakes>;
-  /** Defaults to AGENTICPAD_RULES.turnOrder. */
+  /** Defaults to GAMINE_RULES.turnOrder. */
   turnOrder?: TurnOrder;
-  /** Defaults to AGENTICPAD_RULES.deal. */
+  /** Defaults to GAMINE_RULES.deal. */
   deal?: Deal;
   /**
    * Alternating play only: fix who leads round 1 instead of the fair coin
@@ -38,8 +38,8 @@ export type ExactOptions = {
  * `makeStrategy` agent is.
  */
 export function expectedNet(agentA: Agent, agentB: Agent, options: ExactOptions = {}): number {
-  const stakes = freezeStakes(options.stakes ?? AGENTICPAD_RULES.stakes);
-  const deal = options.deal ?? AGENTICPAD_RULES.deal;
+  const stakes = freezeStakes(options.stakes ?? GAMINE_RULES.stakes);
+  const deal = options.deal ?? GAMINE_RULES.deal;
   const outcomes = dealOutcomes(deal);
   // Agents are pure functions of their view, and a view depends only on the
   // state and this round's draw, so each distinct state is evaluated once.
@@ -72,7 +72,7 @@ export function expectedNet(agentA: Agent, agentB: Agent, options: ExactOptions 
     memo.set(key, total);
     return total;
   };
-  if ((options.turnOrder ?? AGENTICPAD_RULES.turnOrder) === "simultaneous") return value(initialState(null));
+  if ((options.turnOrder ?? GAMINE_RULES.turnOrder) === "simultaneous") return value(initialState(null));
   if (options.firstLeader) return value(initialState(options.firstLeader));
   return (value(initialState("A")) + value(initialState("B"))) / 2;
 }
@@ -104,8 +104,8 @@ export function seatAveragedNet(agent: Agent, opponent: Agent, options: ExactOpt
  * what survival questions need - an agent busts on the tail, not the average.
  */
 export function netDistribution(agentA: Agent, agentB: Agent, options: ExactOptions = {}): Map<number, number> {
-  const stakes = freezeStakes(options.stakes ?? AGENTICPAD_RULES.stakes);
-  const deal = options.deal ?? AGENTICPAD_RULES.deal;
+  const stakes = freezeStakes(options.stakes ?? GAMINE_RULES.stakes);
+  const deal = options.deal ?? GAMINE_RULES.deal;
   const outcomes = dealOutcomes(deal);
   const memo = new Map<string, Map<number, number>>();
 
@@ -139,7 +139,7 @@ export function netDistribution(agentA: Agent, agentB: Agent, options: ExactOpti
     return total;
   };
 
-  if ((options.turnOrder ?? AGENTICPAD_RULES.turnOrder) === "simultaneous") return value(initialState(null));
+  if ((options.turnOrder ?? GAMINE_RULES.turnOrder) === "simultaneous") return value(initialState(null));
   if (options.firstLeader) return value(initialState(options.firstLeader));
   // Alternating: the simulator tosses a fair coin for who leads round one.
   const both = new Map<number, number>();
