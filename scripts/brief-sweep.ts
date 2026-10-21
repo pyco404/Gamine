@@ -2,7 +2,7 @@ import "./env.js";
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  AGENTICPAD_RULES,
+  GAMINE_RULES,
   policyAgent,
   PRESET_NAMES,
   PRESETS,
@@ -96,7 +96,7 @@ for (const brief of BRIEFS) {
   if (!policy) continue;
 
   const agent = policyAgent(policy);
-  const cells = PRESET_NAMES.map((n) => seatAveragedNet(agent, PRESETS[n], AGENTICPAD_RULES));
+  const cells = PRESET_NAMES.map((n) => seatAveragedNet(agent, PRESETS[n], GAMINE_RULES));
   rows.push({ name: brief.name, policy, cells, field: cells.reduce((a, b) => a + b, 0) / cells.length, cost, fallback });
 }
 
