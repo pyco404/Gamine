@@ -264,7 +264,7 @@ function AllLaunches({ sort, onSort, search }: { sort: LaunchSort; onSort: (s: L
 }
 
 /**
- * Every launch on AgenticPad. A search, then the spotlights - newest, most
+ * Every launch on Gamine. A search, then the spotlights - newest, most
  * traded, largest, nearest to graduating, most agents, most holders - side by
  * side in a wrapping row on a desktop and one under another on a phone or
  * tablet, then the whole list in pages, in any of those orders.
