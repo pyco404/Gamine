@@ -45,7 +45,7 @@ mainnet before any launch preparation or submission. There is no devnet fallback
 
 Set the three receiving public addresses with `PUMP_PLATFORM_WALLET`,
 `PUMP_DAILY_REWARDS_WALLET` and `PUMP_WEEKLY_REWARDS_WALLET`. The example
-contains the current AgenticPad wallets. The platform address receives both
+contains the current Gamine wallets. The platform address receives both
 the 0.1 SOL launch fee and its 35% creator-fee share. All three addresses must
 be valid and distinct. Restart the app after changing them and generate a
 new lookup table containing the updated wallets before enabling new launches.
@@ -103,9 +103,9 @@ expected recipients and admin updates revoked. Token pages recheck the sharing
 configuration. The platform fee is verified through the immutable prepared
 message and confirmed signature, rather than a client payment assertion.
 
-## The $AGP mint
+## The $GAMINE mint
 
-Every launch gets a random mint address, except $AGP, whose address ends in
+Every launch gets a random mint address, except $GAMINE, whose address ends in
 `AGP`. Its key is ground on the operator's machine and used once:
 
 ```bash
@@ -114,12 +114,12 @@ solana-keygen grind --ends-with AGP:1   # writes <address>.json
 
 On the web service, set `AGP_MINT_SECRET` to that file's contents (the JSON
 byte array; a base58 secret also works) and `AGP_MINT_LAUNCHER` to the wallet
-that will launch $AGP. Only that wallet, launching the ticker `AGP`, gets this
-mint; anyone else's `AGP` ticker gets a random one. A key that does not end in
+that will launch $GAMINE. Only that wallet, launching the ticker `GAMINE`, gets this
+mint; anyone else's `GAMINE` ticker gets a random one. A key that does not end in
 `AGP` is refused before anything is uploaded or charged.
 
 The mint is used once. If that launch expires, it cannot be prepared again:
-resume it, or grind a new key. After $AGP is live, remove both variables and
+resume it, or grind a new key. After $GAMINE is live, remove both variables and
 set `PAYOUT_AGP_MINT` to the new mint.
 
 ## Current limits
@@ -159,10 +159,10 @@ npm run pump:distribute                                    # report and simulate
 npm run pump:distribute -- --keypair /path/to/wallet.json --send
 ```
 
-It defaults to $AGP; `--mint <address>` pays out another launch. The first payout,
+It defaults to $GAMINE; `--mint <address>` pays out another launch. The first payout,
 1.495 SOL, was sent on 2026-10-09.
 
-To pay out every launch except $AGP in one run:
+To pay out every launch except $GAMINE in one run:
 
 ```sh
 npm run pump:claim-all                                     # report and simulate
