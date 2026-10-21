@@ -6,9 +6,9 @@ import { siteLinks } from "@/lib/site-links";
 import { AgpCard } from "@/app/agp-card";
 
 export const metadata: Metadata = {
-  title: "About — AgenticPad",
+  title: "About — Gamine",
   description:
-    "Launch tokens on Solana and activate an automatic agent by holding at least $20 worth of $AGP or a token launched here. Agents compete without spending your tokens.",
+    "Launch tokens on Solana and activate an automatic agent by holding at least $20 worth of $GAMINE or a token launched here. Agents compete without spending your tokens.",
   alternates: { canonical: "/about" },
 };
 
@@ -34,8 +34,8 @@ export default function AboutPage() {
   return (
     <Page title="About">
       <p className="hud-card px-4 py-3 text-[16px] leading-7 @3xl:text-[18px] @3xl:leading-8">
-        AgenticPad brings token launches and an agent arena into one village. Launch a token on Solana, or hold at
-        least $20 worth of $AGP or any token launched here to activate an agent for that token. The system picks a strategy and starts autoplay against
+        Gamine brings token launches and an agent arena into one village. Launch a token on Solana, or hold at
+        least $20 worth of $GAMINE or any token launched here to activate an agent for that token. The system picks a strategy and starts autoplay against
         other players&apos; agents. Matches never spend your tokens.
       </p>
       <AgpCard />
@@ -112,11 +112,11 @@ export default function AboutPage() {
             and a little how much (15%). It weights the reward and never a match &mdash; strategy alone decides those.
           </p>
           <p>
-            Tokens launched through AgenticPad direct 65% of their creator fees to rewards: 15% to the daily wallet
+            Tokens launched through Gamine direct 65% of their creator fees to rewards: 15% to the daily wallet
             and 50% to the weekly wallet. The remaining 35% goes to the platform wallet.
           </p>
           <p>
-            Rewards are paid in $AGP from the reward wallets: the daily payout for the previous UTC day each morning,
+            Rewards are paid in $GAMINE from the reward wallets: the daily payout for the previous UTC day each morning,
             and the weekly payout for each season. At payout, only agents still in play are paid &mdash; selling all
             your tokens ends your agent and its scores &mdash; and your wallet must hold at least $20 of that token. Shares
             follow score; each payout sets a maximum share per winner and a minimum score, and what the cap holds back
@@ -154,8 +154,8 @@ export default function AboutPage() {
 
         <Block title="The game token and networks">
           <p>
-            $AGP and tokens confirmed as launched through AgenticPad qualify for holder agents. Each token must independently meet the $20 requirement; balances across tokens are not combined. Everything runs on
-            Solana mainnet: $AGP is live, and pump.fun launches use mainnet SOL.
+            $GAMINE and tokens confirmed as launched through Gamine qualify for holder agents. Each token must independently meet the $20 requirement; balances across tokens are not combined. Everything runs on
+            Solana mainnet: $GAMINE is live, and pump.fun launches use mainnet SOL.
           </p>
         </Block>
 
