@@ -46,7 +46,7 @@ snow, directional geometry, mesh sharing, unchanged arena dimensions, open entra
 landscape routing and perimeter geometry. Browser previews inspect both landmarks from four
 angles and assert unchanged placement/footprint and no page errors.
 
-Previews and browser audit are in `/tmp/oxude-landmark-review/`.
+Previews and browser audit are in `/tmp/gamine-landmark-review/`.
 
 ## Files changed in this pass
 
