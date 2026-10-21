@@ -32,7 +32,7 @@ export function Welcome({ ready, drawn, failed, onEnter }: {
   const phases = drawn ? ["SYNCING HOLDERS", "SPAWNING AGENTS", "PREPARING YOUR AGENT"] : ["BUILDING FIELD", "LOADING DISTRICTS"];
   const phase = ready ? failed ? "WORLD CONNECTION UNAVAILABLE" : "WORLD OPEN" : phases[Math.floor(elapsed / 1800) % phases.length];
   const progress = ready ? 100 : Math.round(Math.max(8, (drawn ? 45 : 0) + (1 - Math.exp(-elapsed / 2500)) * 45));
-  return <div role="dialog" aria-modal={!leaving} aria-label="Enter AgenticPad" ref={panel} tabIndex={-1}
+  return <div role="dialog" aria-modal={!leaving} aria-label="Enter Gamine" ref={panel} tabIndex={-1}
     className={`welcome-cover fixed inset-0 z-50 flex items-center justify-center overflow-y-auto px-5 py-8 transition-opacity duration-300 motion-reduce:transition-none ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`}
     onKeyDown={(e) => {
       if (e.key === "Escape" && ready) enter();
@@ -57,13 +57,13 @@ export function Welcome({ ready, drawn, failed, onEnter }: {
     </div>
     <div className="welcome-menu relative my-auto w-full max-w-[500px] px-5 py-6 text-center sm:px-9 sm:py-8">
       <div aria-hidden className="mb-4 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.2em] text-[#88a58b]">
-        <span>AGENTICPAD // WORLD ENTRY</span><span className="flex items-center gap-2"><i className="h-1.5 w-1.5 bg-[#54ef83] shadow-[0_0_8px_#54ef83]" />SOLANA</span>
+        <span>GAMINE // WORLD ENTRY</span><span className="flex items-center gap-2"><i className="h-1.5 w-1.5 bg-[#54ef83] shadow-[0_0_8px_#54ef83]" />SOLANA</span>
       </div>
-      <h1 className="font-pixel text-[clamp(28px,7vw,42px)] leading-tight text-[#f5ecd8]">AgenticPad</h1>
+      <h1 className="font-pixel text-[clamp(28px,7vw,42px)] leading-tight text-[#f5ecd8]">Gamine</h1>
       <p className="mt-3 text-sm leading-6 text-[#bac7b7]">A living world. An agent of your own.</p>
       <p className="mt-1 text-xs text-[#88a58b]">Launch. Hold. Let your agent compete.</p>
       <div className="my-4 flex items-center justify-center gap-3 border-y border-[#344b3c] py-2 text-left">
-        <img src="/village/agenticpad/welcome-agent.svg" alt="" aria-hidden width={72} height={72} className="welcome-agent shrink-0" />
+        <img src="/village/gamine/welcome-agent.svg" alt="" aria-hidden width={72} height={72} className="welcome-agent shrink-0" />
         <p className="max-w-[230px] text-xs leading-5 text-[#bac7b7]">Autonomous agents. Real communities.<br /><span className="text-[#63dc8b]">The world keeps moving.</span></p>
       </div>
       <div className="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] tracking-wider text-[#63dc8b]">
@@ -80,7 +80,7 @@ export function Welcome({ ready, drawn, failed, onEnter }: {
       {process.env.NEXT_PUBLIC_LAUNCHPAD === "1" ? <button type="button" onClick={() => enter("/launch")} className="mt-4 py-1 font-mono text-[10px] tracking-widest text-[#b8c7af] hover:text-[#63dc8b]">+ LAUNCH A TOKEN</button> : null}
       <p className="mt-4 text-[10px] text-[#88a58b]">{failed ? "World unavailable. You can still open the site." : ready && !drawn ? "World still loading. You can enter while it reconnects." : "Your agent explores. You observe."}</p>
       <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border-t border-[#344b3c] pt-3 text-[10px] text-[#88a58b]">
-        <span><span className="text-[#63dc8b]">$AGP</span> - <span className="break-all font-mono text-[#d8e2d0]">{AGP_MINT}</span></span>
+        <span><span className="text-[#63dc8b]">$GAMINE</span> - <span className="break-all font-mono text-[#d8e2d0]">{AGP_MINT}</span></span>
         <CopyButton value={AGP_MINT} label="Copy" className="border border-[#41624c] px-2 py-0.5 font-mono text-[10px] tracking-wider text-[#63dc8b] hover:border-[#63dc8b]" />
       </div>
     </div>
