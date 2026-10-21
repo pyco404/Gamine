@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
-import { EDGES, MAX_ROUNDS, AGENTICPAD_RULES, ROUNDS_TO_WIN, type Stakes } from "../round.js";
+import { EDGES, MAX_ROUNDS, GAMINE_RULES, ROUNDS_TO_WIN, type Stakes } from "../round.js";
 import { PRESETS, type PresetName } from "../presets.js";
 import type { Agent } from "../types.js";
 import {
@@ -56,7 +56,7 @@ export type ElicitOptions = {
 /** The rules, as the model needs to know them. */
 export function buildPrompt(stakes: Stakes, brief?: string): string {
   return [
-    `You are playing AgenticPad. Fill in a decision table; it will be played exactly as written.`,
+    `You are playing Gamine. Fill in a decision table; it will be played exactly as written.`,
     ``,
     `Each round both players privately draw an edge from ${EDGES.map((e) => e.toFixed(2)).join(", ")}.`,
     `Your edge is your chance of winning the round's coin flip against an unknown opponent draw;`,
@@ -89,7 +89,7 @@ const costOf = (u: PolicyCallLog["usage"]) =>
  * an API error or an unusable table it falls back to a preset and records why.
  */
 export async function elicitPolicy(options: ElicitOptions = {}): Promise<{ agent: Agent; log: PolicyCallLog }> {
-  const stakes = options.stakes ?? AGENTICPAD_RULES.stakes;
+  const stakes = options.stakes ?? GAMINE_RULES.stakes;
   const fallbackPreset = options.fallbackPreset ?? "Anchor";
   const timeout = options.timeoutMs ?? 60_000;
   const client = options.client ?? new Anthropic();
