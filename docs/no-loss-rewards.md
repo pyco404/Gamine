@@ -6,18 +6,18 @@
 
 ## In one paragraph
 
-An owner rents an agent for a week ($2 of $AGP, burned) and funds it with at least $20 of $AGP. The agent then plays other players' agents at Bluff & Fold, and nothing it holds is ever at risk: a lost match costs nothing. Winners share the reward wallets, funded by the token's creator fees, by a score that multiplies the net chips they won against other players' agents by the weight of a deposit they have kept in play. The owner can withdraw whenever the agent is not busy, which takes it out of the game and out of the rewards not yet paid.
+An owner rents an agent for a week ($2 of $GAMINE, burned) and funds it with at least $20 of $GAMINE. The agent then plays other players' agents at Bluff & Fold, and nothing it holds is ever at risk: a lost match costs nothing. Winners share the reward wallets, funded by the token's creator fees, by a score that multiplies the net chips they won against other players' agents by the weight of a deposit they have kept in play. The owner can withdraw whenever the agent is not busy, which takes it out of the game and out of the rewards not yet paid.
 
 ## Decided
 
 | # | Decision |
 |---|---|
 | 1 | **Nobody loses anything.** A lost match costs the owner nothing. The deposit is never staked. |
-| 2 | **Rent: $2 of $AGP, burned, for one week** - the season, Monday to Monday UTC, as built. |
-| 3 | **Minimum funding: $20 of $AGP**, up from $5. It is never spent; it is the owner's, and it is what the reward weight reads. |
+| 2 | **Rent: $2 of $GAMINE, burned, for one week** - the season, Monday to Monday UTC, as built. |
+| 3 | **Minimum funding: $20 of $GAMINE**, up from $5. It is never spent; it is the owner's, and it is what the reward weight reads. |
 | 4 | **One agent in play per wallet at a time**, as today. Retired agents do not count. |
 | 5 | **One game: Bluff & Fold.** Mining was designed and dropped the same day ([Mining, dropped](#mining-dropped)). The other games on the games page stay in design. |
-| 6 | **Rewards come only from the reward wallets**, funded by pump.fun creator fees, and are paid in $AGP. The split stays as decided: 10% daily wallet, 50% weekly wallet, 40% platform, each payout releasing half its wallet ([economy.md](economy.md#creator-fees-and-prizes)). |
+| 6 | **Rewards come only from the reward wallets**, funded by pump.fun creator fees, and are paid in $GAMINE. The split stays as decided: 10% daily wallet, 50% weekly wallet, 40% platform, each payout releasing half its wallet ([economy.md](economy.md#creator-fees-and-prizes)). |
 | 7 | **No lock.** The owner can withdraw whenever the agent is not busy, which means between matches: a match lasts seconds. |
 | 8 | **Withdrawing everything, or below the $20 minimum, takes the agent out** of the game and out of every reward not yet paid. It can come back by funding again. |
 | 9 | **To be in the rewards, the agent must be active** - playing by hand or on autoplay - and still in when the reward is paid. |
@@ -89,7 +89,7 @@ Two payouts, from the two reward wallets, on the same score:
 
 ## Mining, dropped
 
-Mining - agents digging hills on the field for hours, for a find or nothing, scoring points as a win does - was designed on 2026-09-30 and dropped the same day: one game is enough for now. It would have let agents earn without an opponent in thin early weeks; against that, a dig partly decided by luck and paying $AGP to renters was the hardest part of this design to defend ([Legal](#legal)), and the most to build. If it returns, the design was: the playbook decides which hill and when to dig deeper against a collapse, every dig is seeded and published like a match, and a find is worth points.
+Mining - agents digging hills on the field for hours, for a find or nothing, scoring points as a win does - was designed on 2026-09-30 and dropped the same day: one game is enough for now. It would have let agents earn without an opponent in thin early weeks; against that, a dig partly decided by luck and paying $GAMINE to renters was the hardest part of this design to defend ([Legal](#legal)), and the most to build. If it returns, the design was: the playbook decides which hill and when to dig deeper against a collapse, every dig is seeded and published like a match, and a find is worth points.
 
 ## What this replaces
 
@@ -111,7 +111,7 @@ This is a large change to the mainnet plan, and easier to make before the progra
 
 ## Legal
 
-Real rewards for a paid rental, where chance plays a part, are what most places treat as gambling: payment, chance and a prize of value together. Two parts need the lawyer in particular, before either pays real $AGP:
+Real rewards for a paid rental, where chance plays a part, are what most places treat as gambling: payment, chance and a prize of value together. Two parts need the lawyer in particular, before either pays real $GAMINE:
 
 - **Bluff & Fold's prizes.** Each round's edges are drawn at random; the decision table is what argues for skill, and whether skill or chance mostly decides a match is the question.
 - **A deposit that raises a share of token rewards**, which may read as an investment return.
