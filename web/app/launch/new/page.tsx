@@ -5,8 +5,8 @@ import { LAUNCHPAD } from "@/lib/launchpad";
 import { LaunchFlow } from "../flow";
 
 export const metadata: Metadata = {
-  title: "Launch a token — AgenticPad",
-  description: "Launch a token on pump.fun through AgenticPad, step by step.",
+  title: "Launch a token — Gamine",
+  description: "Launch a token on pump.fun through Gamine, step by step.",
   alternates: { canonical: "/launch/new" },
 };
 
