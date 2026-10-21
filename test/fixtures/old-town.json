@@ -4,7 +4,7 @@
       "dx": 0,
       "dy": 0,
       "scale": 2,
-      "art": "/village/agenticpad/arena.png",
+      "art": "/village/gamine/arena.png",
       "door": {
         "dx": 0,
         "dy": 35
@@ -14,56 +14,56 @@
       "dx": -660,
       "dy": 325,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-hiring-hall.png",
+      "art": "/village/gamine/modern-hiring-hall.png",
       "door": null
     },
     "castle": {
       "dx": -800,
       "dy": -295,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-strategy-lab.png",
+      "art": "/village/gamine/modern-strategy-lab.png",
       "door": null
     },
     "forge": {
       "dx": 660,
       "dy": 55,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-game-hall.png",
+      "art": "/village/gamine/modern-game-hall.png",
       "door": null
     },
     "library": {
       "dx": 130,
       "dy": -675,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-hall-of-fame.png",
+      "art": "/village/gamine/modern-hall-of-fame.png",
       "door": null
     },
     "chapel": {
       "dx": 560,
       "dy": -525,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-treasury.png",
+      "art": "/village/gamine/modern-treasury.png",
       "door": null
     },
     "watchtower": {
       "dx": -540,
       "dy": -935,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-lookout.png",
+      "art": "/village/gamine/modern-lookout.png",
       "door": null
     },
     "alchemist": {
       "dx": 270,
       "dy": 605,
       "scale": 1.2,
-      "art": "/village/agenticpad/modern-rulebook-house.png",
+      "art": "/village/gamine/modern-rulebook-house.png",
       "door": null
     },
     "board": {
       "dx": 440,
       "dy": 255,
       "scale": 1.6,
-      "art": "/village/agenticpad/leaderboard.png",
+      "art": "/village/gamine/leaderboard.png",
       "door": null
     }
   },
