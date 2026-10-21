@@ -93,7 +93,7 @@ const STRUCTURES = [
     cap: { eave: 0.32, peak: 0.32, roof: [60, 120], wall: [60, 120] }, back: {} },
   { name: "market-red", src: "village/reference/market-red.png", form: "body", right: [90, 128], clear: [[50, 10, 76, 20]],
     cap: { eave: 0.3, peak: 0.3, roof: [70, 120], wall: [70, 120] }, back: {} },
-  { name: "bazaar", src: "village/agenticpad/bazaar.png", form: "body", right: [70, 98],
+  { name: "bazaar", src: "village/gamine/bazaar.png", form: "body", right: [70, 98],
     back: { fill: [{ rect: [41, 41, 57, 55], from: [40, 46] }] } }, // the price board's display -> its frame's wood
   // The smithy: open-fronted forge; its back is closed timber, its left end a timbered gable.
   { name: "smithy", src: "village/reference/smithy.png", form: "body", right: [80, 128], left: [0, 52],
@@ -104,45 +104,45 @@ const STRUCTURES = [
       { from: [64, 84, 84, 100], to: [6, 66] }, // shield sign -> its timber
     ] } },
   // The Launch Pad: a rocket on a round pad, its gantry beside it. From the side the gantry stands behind the rocket.
-  { name: "launch-pad", src: "village/agenticpad/launch-pad.png", frame: 64, form: "cross", back: {},
+  { name: "launch-pad", src: "village/gamine/launch-pad.png", frame: 64, form: "cross", back: {},
     right: { from: "front", clear: [[1, 0, 22, 66], [17, 26, 28, 33]], patches: [{ from: [2, 0, 18, 66], to: [28, 0] }, { from: [24, 0, 52, 70], to: [24, 0] }] } },
   // Boards: the display is on the front; the back is the board's own frame material.
-  { name: "leaderboard", src: "village/agenticpad/leaderboard.png", frame: 84, form: "board", thickness: 6, right: [4, 8],
+  { name: "leaderboard", src: "village/gamine/leaderboard.png", frame: 84, form: "board", thickness: 6, right: [4, 8],
     back: { fill: [{ rect: [8, 15, 77, 57], from: [6, 30] }] } },
-  { name: "scoreboard", src: "village/agenticpad/scoreboard.png", frame: 66, form: "board", thickness: 4, right: [2, 6],
+  { name: "scoreboard", src: "village/gamine/scoreboard.png", frame: 66, form: "board", thickness: 4, right: [2, 6],
     back: { fill: [{ rect: [6, 5, 61, 45], from: [4, 24] }] } },
-  { name: "hiring-board", src: "village/agenticpad/hiring-board.png", form: "board", thickness: 4, right: [1, 5],
+  { name: "hiring-board", src: "village/gamine/hiring-board.png", form: "board", thickness: 4, right: [1, 5],
     back: { fill: [{ rect: [4, 12, 52, 36], from: [3, 22] }, { rect: [14, 1, 42, 9], from: [15, 5] }] } },
-  { name: "strategy-board", src: "village/agenticpad/strategy-board.png", form: "board", thickness: 3, right: [3, 6],
+  { name: "strategy-board", src: "village/gamine/strategy-board.png", form: "board", thickness: 3, right: [3, 6],
     back: { fill: [{ rect: [4, 4, 38, 35], from: [4, 20] }] } },
   // Banners and flags: cloth, the same picture mirrored from behind; the pole at its edge.
-  { name: "banner", src: "village/agenticpad/banner.png", form: "board", thickness: 2, right: [8, 12], back: {} },
-  { name: "banner-fame", src: "village/agenticpad/banner-fame.png", form: "board", thickness: 2, right: [8, 12], back: {} },
-  { name: "banner-gold", src: "village/agenticpad/banner-gold.png", form: "board", thickness: 2, right: [8, 12], back: {} },
-  { name: "flag", src: "village/agenticpad/flag.png", frame: 28, form: "board", thickness: 2, right: [0, 4], back: {} },
+  { name: "banner", src: "village/gamine/banner.png", form: "board", thickness: 2, right: [8, 12], back: {} },
+  { name: "banner-fame", src: "village/gamine/banner-fame.png", form: "board", thickness: 2, right: [8, 12], back: {} },
+  { name: "banner-gold", src: "village/gamine/banner-gold.png", form: "board", thickness: 2, right: [8, 12], back: {} },
+  { name: "flag", src: "village/gamine/flag.png", frame: 28, form: "board", thickness: 2, right: [0, 4], back: {} },
   { name: "fence", src: "fixtures/Fence.png", form: "board", thickness: 4, right: [0, 6], back: {} },
   // Tents: the doorway only at the front; from behind and the sides, the canvas. Crossed, the four
   // triangles meet at one peak.
-  { name: "tent", src: "village/agenticpad/tent.png", form: "cross", right: "back",
+  { name: "tent", src: "village/gamine/tent.png", form: "cross", right: "back",
     back: { fill: [{ rect: [12, 12, 27, 40], from: [36, 30], dark: 0.22 }] } },
   // Small props.
-  { name: "chest", src: "village/agenticpad/chest.png", form: "body", right: [21, 27],
+  { name: "chest", src: "village/gamine/chest.png", form: "body", right: [21, 27],
     cap: { eave: 0.5, peak: 0.5, roof: [12, 4], wall: [12, 4] },
     back: { fill: [{ rect: [9, 12, 16, 18], from: [11, 18] }] } }, // the lock -> the lid's wood
-  { name: "war-table", src: "village/agenticpad/war-table.png", form: "body", right: [38, 46],
+  { name: "war-table", src: "village/gamine/war-table.png", form: "body", right: [38, 46],
     cap: { eave: 0.6, peak: 0.6, roof: [20, 10], wall: [4, 16] }, back: {} },
-  { name: "bench", src: "village/agenticpad/bench.png", form: "body", right: [0, 6],
+  { name: "bench", src: "village/gamine/bench.png", form: "body", right: [0, 6],
     cap: { eave: 0.45, peak: 0.45, roof: [15, 7], wall: [15, 7] }, back: {} },
-  { name: "dummy", src: "village/agenticpad/dummy.png", form: "cross", right: "back",
+  { name: "dummy", src: "village/gamine/dummy.png", form: "cross", right: "back",
     back: { fill: [{ rect: [6, 13, 14, 21], from: [6, 18] }] } }, // the target -> its burlap
-  { name: "statue", src: "village/agenticpad/statue.png", form: "cross", right: "back",
+  { name: "statue", src: "village/gamine/statue.png", form: "cross", right: "back",
     back: { fill: [{ rect: [6, 47, 20, 51], from: [8, 52] }] } }, // the plaque -> its plinth
-  { name: "trophy", src: "village/agenticpad/trophy.png", form: "cross", right: "back", back: {} },
+  { name: "trophy", src: "village/gamine/trophy.png", form: "cross", right: "back", back: {} },
   { name: "fountain", src: "village/warm/fixtures/Fountain.png", as: "fixtures/Fountain.png", form: "cross", right: "front", back: {} },
   { name: "pumpkin", src: "village/warm/fixtures/Pumpkin.png", as: "fixtures/Pumpkin.png", form: "cross", right: "front", back: {} },
   { name: "gold", src: "fixtures/Gold.png", form: "cross", right: "front", back: {} },
-  { name: "coins", src: "village/agenticpad/coins.png", form: "cross", right: "front", back: {} },
-  { name: "log", src: "village/agenticpad/log.png", form: "body", right: [0, 5], back: {} },
+  { name: "coins", src: "village/gamine/coins.png", form: "cross", right: "front", back: {} },
+  { name: "log", src: "village/gamine/log.png", form: "body", right: [0, 5], back: {} },
   // New Town's growth buildings are their source pictures trimmed and shrunk
   // (village-reference-assets.cjs), so their views are the source's own views shrunk the same way.
   { name: "modern-office", src: "village/reference/modern-office.png", scaled: "smithy" },
