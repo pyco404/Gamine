@@ -19,7 +19,7 @@ function stub(parsed: unknown, stop_reason = "end_turn") {
 
 describe("moderation", () => {
   it("stops a name that speaks for the platform, however it is spelled", () => {
-    for (const name of ["AgenticPad Official", "Ag3nticp@d", "Adm1n", "the Moderator", "SUPPORT desk", "Staff Pick"]) {
+    for (const name of ["Gamine Official", "G@m1ne", "Adm1n", "the Moderator", "SUPPORT desk", "Staff Pick"]) {
       expect(reservedWord(name), name).not.toBeNull();
     }
     for (const name of ["Vessarin", "Ashvault", "Quiet Anvil", "Lanternfish"]) expect(reservedWord(name), name).toBeNull();
@@ -45,7 +45,7 @@ describe("moderation", () => {
       asked++;
       return { ok: true, reason: null };
     };
-    await moderate("AgenticPad Staff", "name", check);
+    await moderate("Gamine Staff", "name", check);
     await moderate("x", "name", check);
     expect(asked).toBe(0);
   });
