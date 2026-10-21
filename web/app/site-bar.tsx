@@ -61,8 +61,8 @@ const LOGO_CLASS = "h-6 w-6 rounded-sm bg-[#0c1018] object-contain [image-render
 function Mark() {
   return (
     // The logo opens the village itself, with no page over it.
-    <Link href="/" aria-label="AgenticPad home" className="flex shrink-0 items-center gap-2">
-      <img src="/agenticpad-tb.png" alt="" width={372} height={370} className={LOGO_CLASS} />
+    <Link href="/" aria-label="Gamine home" className="flex shrink-0 items-center gap-2">
+      <img src="/gamine-tb.png" alt="" width={372} height={370} className={LOGO_CLASS} />
     </Link>
   );
 }
@@ -187,15 +187,15 @@ export function useSoundSetting(villageUp: boolean): [on: boolean, toggle: () =>
   useEffect(() => {
     let off = false;
     try {
-      off = readStoredValue(localStorage, "agenticpad.sound") === "0";
+      off = readStoredValue(localStorage, "gamine.sound") === "0";
     } catch {
       // No storage: nothing was turned off, so it is on.
     }
     if (!off) setOn(true);
     // Entering the world from the welcome screen switches sound on.
     const turnedOn = () => setOn(true);
-    window.addEventListener("agenticpad:sound-on", turnedOn);
-    return () => window.removeEventListener("agenticpad:sound-on", turnedOn);
+    window.addEventListener("gamine:sound-on", turnedOn);
+    return () => window.removeEventListener("gamine:sound-on", turnedOn);
   }, []);
   useEffect(() => {
     if (!on || !villageUp || sound.playing) return;
@@ -219,7 +219,7 @@ export function useSoundSetting(villageUp: boolean): [on: boolean, toggle: () =>
       const now = !was;
       sound.setEnabled(now);
       try {
-        localStorage.setItem("agenticpad.sound", now ? "1" : "0");
+        localStorage.setItem("gamine.sound", now ? "1" : "0");
       } catch {
         // Not remembered, but still switched.
       }
@@ -234,7 +234,7 @@ export function useNight(): [boolean, () => void] {
   const [night, setNight] = useState(false);
   useEffect(() => {
     try {
-      setNight(readStoredValue(localStorage, "agenticpad.night") === "1");
+      setNight(readStoredValue(localStorage, "gamine.night") === "1");
     } catch {
       // No storage (a private window): it is day.
     }
@@ -242,7 +242,7 @@ export function useNight(): [boolean, () => void] {
   const toggle = () =>
     setNight((n) => {
       try {
-        localStorage.setItem("agenticpad.night", n ? "0" : "1");
+        localStorage.setItem("gamine.night", n ? "0" : "1");
       } catch {
         // Not remembered, but still switched.
       }
@@ -395,7 +395,7 @@ function MenuPanel({ active, onClose }: { active: string | null; onClose: () => 
       className="rounded-panel fixed inset-x-2 top-2 z-40 flex max-h-[calc(100dvh-1rem)] flex-col overflow-y-auto border border-hud-line bg-hud px-4 pb-4 pt-3 shadow-[0_10px_32px_rgb(0_0_0/0.6)] sm:inset-x-auto sm:right-3 sm:top-16 sm:w-80"
     >
       <div className="flex items-center justify-between pb-2">
-        <img src="/agenticpad-tb.png" alt="AgenticPad" width={372} height={370} className={LOGO_CLASS} />
+        <img src="/gamine-tb.png" alt="Gamine" width={372} height={370} className={LOGO_CLASS} />
         <div className="flex items-center gap-3">
           <span
             aria-hidden
