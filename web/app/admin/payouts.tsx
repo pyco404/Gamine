@@ -18,8 +18,8 @@ const units = (value: string, decimals: number) => {
   return `${(n / scale).toLocaleString("en-US")}${fraction ? `.${fraction}` : ""}`;
 };
 const sol = (value: string) => units(value, 9);
-/** A plan's amount in its own unit: SOL for a swap plan, $AGP for a held one. */
-const amount = (plan: PayoutPlan, value: string) => plan.funding === "held" ? `${units(value, plan.decimals ?? 0)} $AGP` : `${sol(value)} SOL`;
+/** A plan's amount in its own unit: SOL for a swap plan, $GAMINE for a held one. */
+const amount = (plan: PayoutPlan, value: string) => plan.funding === "held" ? `${units(value, plan.decimals ?? 0)} $GAMINE` : `${sol(value)} SOL`;
 const short = (wallet: string) => `${wallet.slice(0, 4)}…${wallet.slice(-4)}`;
 const today = () => new Date().toISOString().slice(0, 10);
 /** Above the payout's fee reserve, with room for a few transactions. */
@@ -167,18 +167,18 @@ export function PayoutPanel({ token }: { token: string }) {
     <h3 className="mt-6 text-[14px] font-medium text-text"><span className="mr-2 font-mono text-accent">1</span>New payout plan</h3>
     <div className="mt-2 grid gap-3 sm:grid-cols-2">
       <label className="sm:col-span-2">Funding<select className={control} value={funding} onChange={(e) => { edited(); setFunding(e.target.value as "held" | "swap"); }}>
-        <option value="held">$AGP already in the reward wallet</option>
-        <option value="swap" disabled={!overview?.swapsConnected}>Swap SOL into $AGP during the payout{overview?.swapsConnected ? "" : " (needs JUPITER_API_KEY)"}</option>
+        <option value="held">$GAMINE already in the reward wallet</option>
+        <option value="swap" disabled={!overview?.swapsConnected}>Swap SOL into $GAMINE during the payout{overview?.swapsConnected ? "" : " (needs JUPITER_API_KEY)"}</option>
       </select></label>
       <label>Reward wallet<select className={control} value={input.kind} onChange={(e) => change("kind", e.target.value as PayoutInput["kind"])}><option value="daily">Daily</option><option value="weekly">Weekly</option></select>
-        <span className={kindBalance && kindBalance.sol < LOW_SOL ? "text-loss" : "text-muted"}>{kindBalance ? `Holds ${kindBalance.agp?.toLocaleString("en-US", { maximumFractionDigits: 0 }) ?? "?"} $AGP · ${kindBalance.sol.toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL${kindBalance.sol < LOW_SOL ? ` — add SOL: payouts keep ${LOW_SOL} for fees` : ""}` : "Balance loading…"}</span></label>
+        <span className={kindBalance && kindBalance.sol < LOW_SOL ? "text-loss" : "text-muted"}>{kindBalance ? `Holds ${kindBalance.agp?.toLocaleString("en-US", { maximumFractionDigits: 0 }) ?? "?"} $GAMINE · ${kindBalance.sol.toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL${kindBalance.sol < LOW_SOL ? ` — add SOL: payouts keep ${LOW_SOL} for fees` : ""}` : "Balance loading…"}</span></label>
       <label>{input.kind === "daily" ? "First day (UTC)" : "Week starting (Monday, UTC)"}<input type="date" className={control} value={input.period} onChange={(e) => change("period", e.target.value)} />
         <span className="text-muted">{input.kind === "daily" ? (overview?.nextDaily ? `Next unpaid day: ${overview.nextDaily}.` : "A day can be paid once it is over in UTC.") : "The Monday that started the completed week."}</span></label>
       {input.kind === "daily" ? <label>Last day (UTC, optional)<input type="date" className={control} value={periodEnd} onChange={(e) => { edited(); setPeriodEnd(e.target.value); }} />
         <span className="text-muted">Only to pay several days at once (each agent&apos;s scores are added up). Leave empty for one day.</span>
         {periodEnd ? <button type="button" className={`${link} ml-1`} onClick={() => { edited(); setPeriodEnd(""); }}>Clear</button> : null}</label> : null}
       {funding === "held"
-        ? <label>$AGP to pay out<input className={control} inputMode="decimal" value={budgetAgp} onChange={(e) => { edited(); setBudgetAgp(e.target.value); }} placeholder="1000000" />
+        ? <label>$GAMINE to pay out<input className={control} inputMode="decimal" value={budgetAgp} onChange={(e) => { edited(); setBudgetAgp(e.target.value); }} placeholder="1000000" />
           <span className="text-muted">At most what the wallet holds.</span>
           {kindBalance?.agp ? <button type="button" className={`${link} ml-1`} onClick={() => { edited(); setBudgetAgp(String(Math.floor(kindBalance.agp!))); }}>Use all {Math.floor(kindBalance.agp).toLocaleString("en-US")}</button> : null}</label>
         : <label>SOL budget (excluding network fees)<input className={control} inputMode="decimal" value={input.budgetSol} onChange={(e) => change("budgetSol", e.target.value)} placeholder="10" /></label>}
@@ -193,7 +193,7 @@ export function PayoutPanel({ token }: { token: string }) {
     </div>
     {backwards ? <p className="mt-3 text-loss">The last day is before the first day. <button type="button" className={link} onClick={() => { edited(); const first = input.period; setInput((old) => ({ ...old, period: periodEnd })); setPeriodEnd(first); }}>Swap them</button></p> : null}
     {notOver && !backwards ? <p className="mt-3 text-gold">That day is not over yet in UTC, so its scores are not frozen: preview will refuse it.</p> : null}
-    {overBalance ? <p className="mt-3 text-gold">That is more $AGP than the {input.kind} wallet holds.</p> : null}
+    {overBalance ? <p className="mt-3 text-gold">That is more $GAMINE than the {input.kind} wallet holds.</p> : null}
     <button disabled={busy || backwards} onClick={() => void preview()} className={`mt-4 ${primary}`}>{busy && !plan ? "Reading every winner's wallet… (up to a minute)" : "Preview payout plan"}</button>
     {formError ? <p className="mt-3 rounded border border-loss/60 px-3 py-2 text-loss" role="alert">{formError}</p> : null}
 
@@ -207,7 +207,7 @@ export function PayoutPanel({ token }: { token: string }) {
       {plan.dropped?.length ? <details className="mt-2"><summary className={`cursor-pointer ${link}`}>Show the {plan.dropped.length} winning agents not paid ({(["agent ended", "holds under $20", "below minimum score", "reward wallet"] as const).map(reason => [reason, plan.dropped!.filter(d => d.reason === reason).length] as const).filter(([, n]) => n).map(([reason, n]) => `${n} ${reason}`).join(", ")})</summary>
         <ul className="mt-1 text-muted">{plan.dropped.map(d => <li key={d.agentId} className="font-mono">{short(d.wallet)} · score {Math.round(d.score)} · {d.reason}</li>)}</ul></details> : null}
       {BigInt(plan.platformLamports) > 0n ? <p className="mt-2 text-gold">This older plan includes a platform cut. Preview a new plan before approval.</p> : null}
-      <div className="mt-3 overflow-x-auto"><table className="w-full text-left"><thead><tr className="text-muted"><th className="py-1">Winner</th><th>Wallet</th><th>{plan.funding === "held" ? "$AGP" : "SOL allocation"}</th></tr></thead><tbody>{plan.winners.map((winner) => <tr key={winner.agentId} className="border-t border-line"><td className="py-2">{winner.name}</td><td className="font-mono">{short(winner.wallet)} <CopyButton value={winner.wallet} label="Copy" /></td><td>{amount(plan, winner.lamports)}</td></tr>)}</tbody></table></div>
+      <div className="mt-3 overflow-x-auto"><table className="w-full text-left"><thead><tr className="text-muted"><th className="py-1">Winner</th><th>Wallet</th><th>{plan.funding === "held" ? "$GAMINE" : "SOL allocation"}</th></tr></thead><tbody>{plan.winners.map((winner) => <tr key={winner.agentId} className="border-t border-line"><td className="py-2">{winner.name}</td><td className="font-mono">{short(winner.wallet)} <CopyButton value={winner.wallet} label="Copy" /></td><td>{amount(plan, winner.lamports)}</td></tr>)}</tbody></table></div>
 
       {plan.status === "draft" ? <div className="mt-4">
         {clash ? <p className="mb-2 text-gold">{planPeriod(clash)} is already approved, so these days cannot be approved again. <button type="button" className={link} onClick={() => open(clash.id)}>Open the approved plan</button>{runOf(clash.id) ? null : " (you can cancel it there if it has not started)"}.</p> : null}
