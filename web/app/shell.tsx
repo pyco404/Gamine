@@ -9,6 +9,7 @@ import { api } from "@/lib/api";
 import { useWallet } from "@/app/wallet-context";
 import { prefersReducedMotion } from "@/lib/motion";
 import { sound } from "@/lib/sound";
+import { readStoredValue, removeStoredValue } from "@/lib/browser-storage";
 import { SiteBar, useNight } from "@/app/site-bar";
 import { CloseIcon } from "@/app/icons";
 import { Welcome } from "@/app/welcome";
@@ -415,10 +416,10 @@ function PersistentWorld({
   const observing = path === "/agent";
   // The camera help can be put away to a small button in the bottom strip; remembered per browser.
   const [help, setHelp] = useState(true);
-  useEffect(() => { try { if (localStorage.getItem("agenticpad.cameraHelp") === "closed") setHelp(false); } catch { /* storage unavailable */ } }, []);
+  useEffect(() => { try { if (readStoredValue(localStorage, "gamine.cameraHelp") === "closed") setHelp(false); } catch { /* storage unavailable */ } }, []);
   const showHelp = (open: boolean) => {
     setHelp(open);
-    try { if (open) localStorage.removeItem("agenticpad.cameraHelp"); else localStorage.setItem("agenticpad.cameraHelp", "closed"); } catch { /* storage unavailable */ }
+    try { if (open) removeStoredValue(localStorage, "gamine.cameraHelp"); else localStorage.setItem("gamine.cameraHelp", "closed"); } catch { /* storage unavailable */ }
   };
   const observation = useRef<{ owner: string | null; id: string | null }>({ owner: null, id: null });
 
@@ -576,9 +577,9 @@ function PersistentWorld({
           </button>
         ) : null}
         {status === "ready" && !stranded && !observing ? (
-          // The world itself: $AGP's contract address, ready to copy.
+          // The world itself: $GAMINE's contract address, ready to copy.
           <p className="rounded-panel pointer-events-auto hidden items-center gap-2 border border-hud-line bg-hud py-1 pl-2.5 pr-1 text-[12px] text-muted md:flex">
-            <span><span className="text-accent">$AGP</span> - <span className="font-mono text-text">{AGP_MINT}</span></span>
+            <span><span className="text-accent">$GAMINE</span> - <span className="font-mono text-text">{AGP_MINT}</span></span>
             <CopyButton value={AGP_MINT} label="Copy" className="rounded border border-hud-line px-2 py-0.5 text-[11px] text-accent hover:border-accent" />
           </p>
         ) : (
