@@ -296,7 +296,7 @@ function describeStop(reason: AutoplayStop, balance: number): { message: string;
       };
       return {
         message: `Held: your wallet holds ${balance}, below the ${MIN_FUNDING_CHIPS} an agent needs to play.`,
-        action: `Nothing to switch on: hold ${MIN_FUNDING_CHIPS} chips' worth of $AGP again and it plays again, within ten minutes.`,
+        action: `Nothing to switch on: hold ${MIN_FUNDING_CHIPS} chips' worth of $GAMINE again and it plays again, within ten minutes.`,
       };
     case "retired":
       return {
