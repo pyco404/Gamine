@@ -1,26 +1,26 @@
 # Reward payout batches
 
 Decided 2026-10-05: accumulate creator fees as SOL in the daily and weekly
-reward wallets. At payout, swap SOL into $AGP and distribute $AGP to
+reward wallets. At payout, swap SOL into $GAMINE and distribute $GAMINE to
 winners in small batches, instead of buying the whole pool at once.
 
-Decided 2026-10-12: the operator buys $AGP into the reward wallet by hand, and
-the payout distributes what the wallet holds (**held $AGP**, the default). No
+Decided 2026-10-12: the operator buys $GAMINE into the reward wallet by hand, and
+the payout distributes what the wallet holds (**held $GAMINE**, the default). No
 Jupiter API key is needed. The SOL-swap mode below remains available, and needs
 `JUPITER_API_KEY` only when used.
 
-## Held $AGP (default)
+## Held $GAMINE (default)
 
 1. In the daily or weekly reward wallet itself (not another wallet), swap SOL for
-   $AGP, in several small buys if that limits price impact. Keep the swap
+   $GAMINE, in several small buys if that limits price impact. Keep the swap
    signatures: the dashboard does not record the purchase.
-2. In `/admin`, choose **$AGP already in the reward wallet**, the period, the $AGP
+2. In `/admin`, choose **$GAMINE already in the reward wallet**, the period, the $GAMINE
    amount to pay, a minimum score (0 for none), the maximum share per winner
    (default 10%) and the payout percentage. What the cap holds back from a top
    scorer goes to the other winners by score, so the whole amount is paid when
    winners × cap reaches 100% (ten winners at 10%, five at 20%). Shares
    come from the frozen scores with the same 10% per-winner cap; the plan shows
-   each winner's $AGP and lists who was not paid, and why.
+   each winner's $GAMINE and lists who was not paid, and why.
 3. **Approve this plan**, then **Start payout**. In Phantom (or Solflare), select the
    reward wallet; the admin sign-in stays on the operator's wallet. Press **Approve
    transfer 1 of N in Phantom** and approve it there; when it shows **Waiting … to
@@ -30,9 +30,9 @@ Jupiter API key is needed. The SOL-swap mode below remains available, and needs
    An approved plan that has not started can be withdrawn with **Cancel approval**,
    which frees its days for a new plan; once started, it can only be paused. The
    panel opens any approved plan still to pay in a **Ready to pay** box at the top,
-   shows the reward wallet's $AGP and SOL (red below 0.06 SOL), and starts the form
+   shows the reward wallet's $GAMINE and SOL (red below 0.06 SOL), and starts the form
    at the next unpaid day.
-   Before starting, the wallet must hold the allocated $AGP and the SOL fee
+   Before starting, the wallet must hold the allocated $GAMINE and the SOL fee
    reserve (`PAYOUT_FEE_RESERVE_SOL`), which pays network fees and any winner's
    new token account.
 
@@ -52,7 +52,7 @@ the preview fails rather than guessing; try again.
 scores on the days in the run where it qualified, and the holding check, minimum
 score, shares and 10% cap apply to that total. A day is paid once: approval refuses
 any daily plan, single or catch-up, that overlaps one already approved. Used first
-for the days from $AGP's launch (2026-10-09) to the first regular payout; after
+for the days from $GAMINE's launch (2026-10-09) to the first regular payout; after
 that, one plan per frozen day, and weekly plans from the weekly wallet.
 
 **What the wallet may add.** Phantom adds its own instructions to a transaction before
@@ -60,7 +60,7 @@ signing it (a priority fee, balance assertions). A signed winner transfer is acc
 with additions only if it keeps the prepared signer and blockhash (expiry is counted
 from it, so a payment is never prepared twice) and every prepared instruction,
 unchanged and in order; and only after simulating exactly what was signed shows the
-reward wallet's $AGP falling by the planned total, each winner's rising by their
+reward wallet's $GAMINE falling by the planned total, each winner's rising by their
 amount, and the SOL spent within the fee limit. A swap must come back byte for byte,
 as Jupiter executes only what it built.
 
@@ -72,7 +72,7 @@ applies per transfer.
 
 Amounts are planned in the mint's base units, read from the chain at preview and
 checked again before any transfer. Whatever is capped, rounded or not allocated
-stays in the reward wallet as $AGP for a later payout. There is no swap step and
+stays in the reward wallet as $GAMINE for a later payout. There is no swap step and
 no batch delay: winner transfers in transactions of eight, each signed, saved
 before submission, and counted only after finalized confirmation, as below.
 
@@ -120,8 +120,8 @@ Set these on Railway's **web** service, or `web/.env.local` locally:
 
 - `PUMP_RPC_URL`: verified Solana mainnet RPC.
 - `PUMP_DAILY_REWARDS_WALLET`, `PUMP_WEEKLY_REWARDS_WALLET`: actual signing-wallet addresses.
-- `PAYOUT_AGP_MINT`: real mainnet $AGP mint; preview again after changing it.
-- `JUPITER_API_KEY`: server-only key from Jupiter's developer portal. Needed only to swap SOL during a payout; held-$AGP payouts run without it.
+- `PAYOUT_AGP_MINT`: real mainnet $GAMINE mint; preview again after changing it.
+- `JUPITER_API_KEY`: server-only key from Jupiter's developer portal. Needed only to swap SOL during a payout; held-$GAMINE payouts run without it.
 - `PUMP_LAUNCH_DB_PATH`: SQLite file on one persistent volume, retaining launches and payout journals.
 - `PAYOUT_EXECUTION_ENABLED=true`: enable preparation and confirmation processing.
 - `PAYOUT_FEE_RESERVE_SOL=0.05`: minimum SOL beyond the payout budget for costs.
@@ -145,10 +145,10 @@ prepare or sign another payment without the operator using the dashboard.
 The executor processes one batch at a time:
 
 1. Confirm the approved source wallet, SOL budget and network-fee reserve.
-2. Get a fresh SOL-to-$AGP quote only when the batch is ready. Enforce the
+2. Get a fresh SOL-to-$GAMINE quote only when the batch is ready. Enforce the
    approved spending, slippage and price-impact limits, or pause for review.
 3. Submit through a managed/protected transaction path, not a public fallback.
-4. Wait for finalized confirmation and measure actual $AGP received from the transaction's token-balance changes.
+4. Wait for finalized confirmation and measure actual $GAMINE received from the transaction's token-balance changes.
 5. Distribute that batch to the snapshotted winners, with integer token amounts.
 6. Confirm every transfer, persist its signature and wait at least the approved
    delay plus a randomized 0–15 seconds before the next swap.
@@ -172,4 +172,4 @@ Jupiter's [Order & Execute](https://developers.jup.ag/docs/swap/order-and-execut
 supports managed landing and swap confirmation. Its
 [Swap API overview](https://developers.jup.ag/docs/swap)
 describes the available routing and MEV protection. Those services and a liquid
-mainnet $AGP market must be verified before enabling payments.
+mainnet $GAMINE market must be verified before enabling payments.
