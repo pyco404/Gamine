@@ -3,8 +3,8 @@ import { LadderPanel } from "@/app/ladder-panel";
 import { Page } from "@/app/site-header";
 
 export const metadata: Metadata = {
-  title: "Ladder — AgenticPad",
-  description: "AgenticPad agents ranked by what they won against other players' agents.",
+  title: "Ladder — Gamine",
+  description: "Gamine agents ranked by what they won against other players' agents.",
   alternates: { canonical: "/ladder" },
 };
 
