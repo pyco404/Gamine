@@ -37,7 +37,7 @@ export function signInMessage(input: { domain: string; publicKey: string; nonce:
     `${input.domain} wants you to sign in with your Solana account:`,
     input.publicKey,
     "",
-    "Sign in to AgenticPad. This request will not trigger a transaction or cost any fees.",
+    "Sign in to Gamine. This request will not trigger a transaction or cost any fees.",
     "",
     `Nonce: ${input.nonce}`,
     `Issued At: ${input.issuedAt}`,
