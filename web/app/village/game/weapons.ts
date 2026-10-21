@@ -6,7 +6,7 @@ import type * as Phaser from "phaser";
  * with - it never reaches a match, whose result the decision tables alone
  * decide.
  *
- * The art is drawn for AgenticPad (public/fixtures/weapons), one pixel per
+ * The art is drawn for Gamine (public/fixtures/weapons), one pixel per
  * world pixel like the bodies, pointing up. `grip` is the row the hand holds,
  * and `h` the picture's height, so the hand holds it where a hand would.
  */
