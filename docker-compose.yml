@@ -3,13 +3,13 @@ services:
     image: postgres:17-alpine
     environment:
       # Existing local databases keep their credentials and physical volume.
-      POSTGRES_USER: ${POSTGRES_USER:-oxude}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-oxude}
-      POSTGRES_DB: ${POSTGRES_DB:-oxude}
+      POSTGRES_USER: ${POSTGRES_USER:-gamine}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gamine}
+      POSTGRES_DB: ${POSTGRES_DB:-gamine}
     ports:
       - "5432:5432"
     volumes:
-      - agenticpad-pgdata:/var/lib/postgresql/data
+      - gamine-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -17,5 +17,5 @@ services:
       retries: 10
 
 volumes:
-  agenticpad-pgdata:
-    name: ${POSTGRES_VOLUME_NAME:-oxude-pgdata}
+  gamine-pgdata:
+    name: ${POSTGRES_VOLUME_NAME:-gamine-pgdata}
