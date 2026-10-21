@@ -43,7 +43,7 @@ export function AgentStatus({ account, accountError, view, village }: {
   const holder = detail?.holder;
   const mint = detail?.agent.qualifyingTokenMint ?? agent?.qualifyingTokenMint ?? agent?.holderMint ?? holder?.holding.mint;
   const community = account?.tokenHoldings?.find((t) => t.mint === mint);
-  const symbol = community?.symbol ?? (agent?.holderMint ? `${agent.holderMint.slice(0, 4)}…${agent.holderMint.slice(-4)}` : "$AGP");
+  const symbol = community?.symbol ?? (agent?.holderMint ? `${agent.holderMint.slice(0, 4)}…${agent.holderMint.slice(-4)}` : "$GAMINE");
   const waiting = !session ? "Sign in with your wallet to locate your agent." : accountError ? "Could not read your agents. Retrying…" : !account ? "Locating your agents…" : !owned.length ? "No agent yet. Buy and hold at least $20 of a qualifying token to activate one." : !agent ? "Waiting for your agent to appear in the field…" : null;
   const missing = current?.failed ? "Unavailable" : !current ? "Loading…" : "Unavailable";
   return <aside aria-label="Your agent status" className="pointer-events-auto absolute left-3 top-16 z-10 w-[240px] max-w-[calc(100vw-1.5rem)] rounded-panel border border-hud-line bg-hud p-3 text-xs text-text shadow-[0_4px_16px_rgb(0_0_0/0.35)] md:left-4 md:top-[4.5rem]">
