@@ -42,15 +42,15 @@ const PRIVY_READY_TIMEOUT_MS = 20_000;
 export type PrivyStatus = "off" | "loading" | "ready" | "failed";
 
 /**
- * Privy's state, kept where it can be seen: on window.__agenticpadPrivy and in the
+ * Privy's state, kept where it can be seen: on window.__gaminePrivy and in the
  * console, and in the UI as a loading or failed line. A silent failure here is
  * indistinguishable from the feature not existing.
  */
 let reportPrivy: (status: PrivyStatus, reason?: string) => void = () => {};
 function publish(status: PrivyStatus, reason: string | null, startedAt: number) {
   const state = { status, reason, afterMs: Math.round(performance.now() - startedAt) };
-  (window as unknown as { __agenticpadPrivy?: typeof state }).__agenticpadPrivy = state;
-  (status === "failed" ? console.warn : console.info)(`[agenticpad] Privy ${status}${reason ? `: ${reason}` : ""} after ${state.afterMs}ms`);
+  (window as unknown as { __gaminePrivy?: typeof state }).__gaminePrivy = state;
+  (status === "failed" ? console.warn : console.info)(`[gamine] Privy ${status}${reason ? `: ${reason}` : ""} after ${state.afterMs}ms`);
 }
 
 class Contained extends Component<{ children: ReactNode; onError: (reason: string) => void }, { failed: boolean }> {
