@@ -9,7 +9,7 @@ const STEP = Math.PI * 2 / 96;
 /** A single material palette: identity colours carry the landmark; stone supports it. */
 /**
  * The village's own materials: the Hall of Fame's and Game Hall's red-brown roofs, the Treasury's
- * grey-beige stone, the timber of the cottages' framing, a natural trodden-sand floor. AgenticPad
+ * grey-beige stone, the timber of the cottages' framing, a natural trodden-sand floor. Gamine
  * green is a trim and seating accent, gold a thin brass highlight.
  */
 export const ARENA_PALETTE = {
