@@ -76,10 +76,10 @@ and back. The camera only changes uniforms: rotating never rebuilds geometry.
 
 Validation: `node scripts/check-world-solids.mjs` renders all 25 families from four directions,
 compares overlapping batches against isolated renders, exercises multiple cache pages and
-screen-filling models at DPR 1.25, 2 and 3, and saves a gallery to `/tmp/oxude-solid-review/families.png`.
+screen-filling models at DPR 1.25, 2 and 3, and saves a gallery to `/tmp/gamine-solid-review/families.png`.
 `node scripts/check-asset-consistency.mjs` audits the live world, verifies all seven tree families,
 orbits all four sides and a high angle, checks stationary template reuse and saves review images
-in `/tmp/oxude-asset-consistency/`. `test/asset-consistency.test.ts` checks replacement coverage,
+in `/tmp/gamine-asset-consistency/`. `test/asset-consistency.test.ts` checks replacement coverage,
 closed leaf meshes, deterministic variants and preservation of good models.
 `test/world-solids.test.ts` checks geometry, materials, scaling, mirroring and mesh reuse.
 
