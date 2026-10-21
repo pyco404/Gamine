@@ -5,15 +5,15 @@ import { fileURLToPath } from "node:url";
 import { RECOLOURED, TERRAIN } from "../web/app/village/game/palette.js";
 
 /**
- * Draws the village's AgenticPad art: the arena, the leaderboard, the Game
+ * Draws the village's Gamine art: the arena, the leaderboard, the Game
  * Hall's screens, the Strategy Lab's boards, the Launch Pad, banners and
  * flags bearing the crest, and the small things of the agent grounds.
- * Everything lands in web/public/village/agenticpad; nothing here runs at
+ * Everything lands in web/public/village/gamine; nothing here runs at
  * request time.
  *
  *   npx tsx scripts/village-art.ts
  *
- * The crest is web/public/agenticpad-tb.png, scaled down and never redrawn.
+ * The crest is web/public/gamine-tb.png, scaled down and never redrawn.
  * The rest is drawn here in the Tiny Swords pack's palette (the teal stone,
  * the wood, the thatch) and the crest's own greens, outlined like the pack,
  * at one art pixel to two world pixels - the scene draws these at scale 2.
@@ -30,7 +30,7 @@ import { RECOLOURED, TERRAIN } from "../web/app/village/game/palette.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(root, "web/public");
-const out = join(pub, "village/agenticpad");
+const out = join(pub, "village/gamine");
 
 // --- PNG ---------------------------------------------------------------------
 
@@ -319,7 +319,7 @@ const P = {
 const WEAR = ["#5dcd50", "#189b68", "#e8b84b", "#d4745a", "#8f7bd8", "#4a6fa5", "#efdb97", "#9ae352", "#c95b8c", "#f5ecd8"].map((c) => hex(c));
 const SKIN = ["#f1c9a5", "#d9a47c", "#a8714f", "#7a4e38"].map((c) => hex(c));
 
-const CREST = readPng(join(pub, "agenticpad-tb.png"));
+const CREST = readPng(join(pub, "gamine-tb.png"));
 const crest = (w: number) => scaled(CREST, w);
 
 // --- Pieces ------------------------------------------------------------------
@@ -1463,7 +1463,7 @@ if (!process.argv.includes("--terrain-only")) {
   save("bazaar", bazaar());
   save("pier", pier());
   save("launch-pad-card", launchPadFrame(true));
-  console.log(`Wrote the village's AgenticPad art to ${out}`);
+  console.log(`Wrote the village's Gamine art to ${out}`);
 }
 
 // --- The pack, recoloured ----------------------------------------------------
