@@ -63,7 +63,7 @@ const sse = (withMatch) =>
   `retry: 600000\n\nevent: hello\ndata: ${JSON.stringify({ counters: { matchesToday: withMatch ? 1 : 0, totalStaked: 0, holders: 2 }, playMs: 10_000 })}\n\n` +
   (withMatch ? `id: 1\nevent: match\ndata: ${JSON.stringify({ match, ageMs: 0 })}\n\n` : "");
 
-const STORE = "agenticpad.arena.v1";
+const STORE = "gamine.arena.v1";
 const kept = { best: [{ match, score: 1, at: Date.now() - 3_600_000 }], meetings: {}, season: "fixture" };
 
 const states = [
