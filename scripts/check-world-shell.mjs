@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 
 const base = process.env.BASE_URL ?? 'http://localhost:3001';
-const selector = 'canvas[aria-label^="Explore the AgenticPad"]';
+const selector = 'canvas[aria-label^="Explore the Gamine"]';
 const owner = '11111111111111111111111111111111';
 const session = { token: 'world-shell-fixture', ownerId: owner, wallet: 'Phantom', expiresAt: '2099-01-01T00:00:00Z' };
 const resident = { id: 'world-shell-agent', name: 'World Resident', presetName: 'Anchor', mark: null, house: false, retiredAt: null };
@@ -19,8 +19,8 @@ async function setup(options, path = '/') {
   let maps = 0;
   page.on('request', (r) => { if (new URL(r.url()).pathname === '/village/map.json') maps++; });
   await page.addInitScript((value) => {
-    localStorage.setItem('agenticpad.session', JSON.stringify(value));
-    localStorage.setItem('agenticpad.sound', '0');
+    localStorage.setItem('gamine.session', JSON.stringify(value));
+    localStorage.setItem('gamine.sound', '0');
   }, session);
   await page.route('**/*', async (route) => {
     const u = new URL(route.request().url());
@@ -70,12 +70,12 @@ async function identity(page) {
       source: t.source === document.querySelector('[aria-hidden].invisible canvas'),
       sourceHidden: getComputedStyle(t.source.parentElement).visibility === 'hidden',
       worlds: document.querySelectorAll(s).length,
-      session: JSON.parse(localStorage.getItem('agenticpad.session')).token,
+      session: JSON.parse(localStorage.getItem('gamine.session')).token,
     };
   }, selector), { canvas: true, handle: true, source: true, sourceHidden: true, worlds: 1, session: session.token });
 }
 async function nav(page, path) {
-  const link = path === '/' ? page.getByRole('link', { name: 'AgenticPad home' }) : page.locator(`nav[aria-label="Sections"] a[href="${path}"]`);
+  const link = path === '/' ? page.getByRole('link', { name: 'Gamine home' }) : page.locator(`nav[aria-label="Sections"] a[href="${path}"]`);
   await link.click();
   await page.waitForURL((url) => url.pathname === path);
   await page.waitForTimeout(400);
@@ -151,12 +151,12 @@ try {
   });
   assert.equal(maps(), 1, 'Navigation created another world engine');
   assert.ok(continuity.frames > 20 && continuity.moved > 0, 'Simulation did not continue');
-  await page.screenshot({ path: '/tmp/oxude-global-world-agent.png' });
+  await page.screenshot({ path: '/tmp/gamine-global-world-agent.png' });
 
   const direct = await setup({ viewport: { width: 1440, height: 950 } }, '/launch');
   assert.ok(await direct.page.getByRole('heading', { name: 'Launch Pad', exact: true }).isVisible(), 'Direct Launch overlay missing');
   await identity(direct.page);
-  await direct.page.screenshot({ path: '/tmp/oxude-global-world-launch.png' });
+  await direct.page.screenshot({ path: '/tmp/gamine-global-world-launch.png' });
 
   const mobile = await setup({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }, '/about');
   assert.ok(await mobile.page.getByRole('button', { name: 'Close the page and see the village' }).isVisible());
@@ -178,7 +178,7 @@ try {
   await mobile.page.getByRole('navigation', { name: 'Pages', exact: true }).getByRole('link', { name: 'Games', exact: true }).click();
   await mobile.page.waitForURL('**/games'); await identity(mobile.page);
   assert.equal(mobile.maps(), 1);
-  await mobile.page.screenshot({ path: '/tmp/oxude-global-world-mobile.png' });
+  await mobile.page.screenshot({ path: '/tmp/gamine-global-world-mobile.png' });
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ passed: true, routes: ['World (/)', 'Launch', 'Explore', 'Agent', 'Games', 'Live', 'Ladder', 'Rewards', 'About'], mapLoads: maps(), continuity, errors }));
 } finally {
