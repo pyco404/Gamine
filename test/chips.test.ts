@@ -5,7 +5,7 @@ import { createAgent } from "../src/db/runner.js";
 import { baseUnits, chipRate, chips, DEVNET_CHIP_RATE, SEED_CHIP_RATE } from "../src/chips.js";
 import { WORST_MATCH } from "../src/db/schema.js";
 import { holdFor, someWallet } from "./helpers.js";
-import { AGENTICPAD_RULES } from "../src/round.js";
+import { GAMINE_RULES } from "../src/round.js";
 
 // Chips against base units: the conversion, and that a holding is read wide
 // enough to hold the second of them.
@@ -16,7 +16,7 @@ describe("chips and base units", () => {
     // A stake begins as chips, so it survives the round trip untouched. This
     // is what keeps a settlement zero-sum in base units as well as in chips.
     expect(chips(baseUnits(WORST_MATCH, rate), rate)).toBe(WORST_MATCH);
-    expect(baseUnits(AGENTICPAD_RULES.stakes.ante, rate)).toBe(AGENTICPAD_RULES.stakes.ante * 1_000_000);
+    expect(baseUnits(GAMINE_RULES.stakes.ante, rate)).toBe(GAMINE_RULES.stakes.ante * 1_000_000);
     expect(baseUnits(900, rate)).toBe(900_000_000);
   });
 
