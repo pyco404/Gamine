@@ -1,6 +1,6 @@
 import {
   CLASSIC_STAKES,
-  AGENTICPAD_RULES,
+  GAMINE_RULES,
   makeStrategy,
   PRESET_NAMES,
   PRESETS,
@@ -110,8 +110,8 @@ export function stakesFromEnv(): Stakes {
     return v;
   };
   return {
-    ante: num("ANTE", AGENTICPAD_RULES.stakes.ante),
-    baseBet: num("BASE_BET", AGENTICPAD_RULES.stakes.baseBet),
-    raisedBet: num("RAISED_BET", AGENTICPAD_RULES.stakes.raisedBet),
+    ante: num("ANTE", GAMINE_RULES.stakes.ante),
+    baseBet: num("BASE_BET", GAMINE_RULES.stakes.baseBet),
+    raisedBet: num("RAISED_BET", GAMINE_RULES.stakes.raisedBet),
   };
 }
