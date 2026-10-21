@@ -14,7 +14,7 @@ import { CARPET, SQUARE } from "./town";
  * (scripts/village-import.ts) never loses it.
  *
  * The banners, flags, boards, statues, chests, tents and the rest are drawn
- * for AgenticPad (scripts/village-art.ts) in the Tiny Swords pack's palette
+ * for Gamine (scripts/village-art.ts) in the Tiny Swords pack's palette
  * and the crest's. The cottages, the fountain, the gold sacks and the ship
  * are the pack's own or drawn for it before (public/fixtures/LICENSE.txt).
  *
