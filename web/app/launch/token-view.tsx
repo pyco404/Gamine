@@ -125,7 +125,7 @@ export function TokenView({ mint }: { mint: string }) {
         <FeeSplitBar split={token.feeSplit} launcherShare={token.launcherShare} />
         <p className="mt-2 text-muted">
           {token.launcherShare === 0 ? "All of " : `${100 - token.launcherShare}% of `}
-          {t}&apos;s creator fees go to AgenticPad&apos;s wallets. The split was set at launch and cannot be changed.
+          {t}&apos;s creator fees go to Gamine&apos;s wallets. The split was set at launch and cannot be changed.
         </p>
       </Board>
 
