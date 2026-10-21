@@ -11,7 +11,7 @@ import { isStaleBuild, reloadOnce } from "@/lib/stale-build";
 export default function PageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const [reloading, setReloading] = useState(isStaleBuild(error));
   useEffect(() => { if (isStaleBuild(error) && !reloadOnce()) setReloading(false); }, [error]);
-  if (reloading) return <p className="p-6 text-[13px] text-muted">AgenticPad was just updated. Loading the new version…</p>;
+  if (reloading) return <p className="p-6 text-[13px] text-muted">Gamine was just updated. Loading the new version…</p>;
   return (
     <section className="m-4 max-w-md rounded-panel border border-line bg-panel p-5 text-[13px]">
       <h2 className="text-accent uppercase tracking-wider">Something went wrong</h2>
