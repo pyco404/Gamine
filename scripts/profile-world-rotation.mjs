@@ -6,10 +6,10 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
-const base=process.env.BASE_URL??'http://localhost:3002',tag=process.env.PROFILE_TAG??'profile',out='/tmp/agenticpad-rotation-profile';
+const base=process.env.BASE_URL??'http://localhost:3002',tag=process.env.PROFILE_TAG??'profile',out='/tmp/gamine-rotation-profile';
 const counts=(process.env.AGENT_COUNTS??'100,1000').split(',').map(Number),cycles=+(process.env.ROTATION_CYCLES??3);
 mkdirSync(out,{recursive:true});
-const temp=mkdtempSync(join(tmpdir(),'agenticpad-profile-')),helper=join(temp,'helper.js');
+const temp=mkdtempSync(join(tmpdir(),'gamine-profile-')),helper=join(temp,'helper.js');
 await build({stdin:{contents:`export {placeResidents} from ${JSON.stringify(fileURLToPath(new URL('../web/app/village/residents.ts',import.meta.url)))};`,resolveDir:process.cwd()},bundle:true,platform:'browser',format:'iife',globalName:'PerfTest',outfile:helper});
 const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox','--enable-unsafe-swiftshader']});
 const results=[];
@@ -18,7 +18,7 @@ try {
   const page=await browser.newPage({viewport:{width:1440,height:950}}),errors=[];let textureLoads=0;
   page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.resourceType()==='image')textureLoads++;});
   let fields=Array.from({length:count},(_,i)=>({id:`profile-${i}`,name:`Walker ${i}`,presetName:'Anchor',mark:null,house:false,retiredAt:null,worldActivity:null}));
-  await page.addInitScript(()=>{localStorage.setItem('agenticpad.sound','0');localStorage.setItem('agenticpad.cameraHelp','closed');});
+  await page.addInitScript(()=>{localStorage.setItem('gamine.sound','0');localStorage.setItem('gamine.cameraHelp','closed');});
   await page.route('**/*',route=>{
    const u=new URL(route.request().url()),headers={'access-control-allow-origin':'*'};
    if(u.pathname==='/field'&&route.request().resourceType()!=='document')return route.fulfill({json:{agents:fields,at:new Date().toISOString()},headers});
@@ -27,12 +27,12 @@ try {
    return route.continue();
   });
   await page.goto(`${base}/?debugWorldPerf=1`,{waitUntil:'domcontentloaded',timeout:90000});
-  const canvas=page.locator('canvas[aria-label^="Explore the AgenticPad"]');await canvas.waitFor({timeout:60000});
+  const canvas=page.locator('canvas[aria-label^="Explore the Gamine"]');await canvas.waitFor({timeout:60000});
   const enter=page.getByRole('button',{name:/enter world/i});if(await enter.count())await enter.click();
   await page.waitForFunction(n=>window.__worldRenderPerf?.totals.activeAgents>=n,count,{timeout:60000});
   await page.addScriptTag({path:helper});
   fields=await page.evaluate(fields=>{
-   const el=document.querySelector('canvas[aria-label^="Explore the AgenticPad"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current)f=f.return;
+   const el=document.querySelector('canvas[aria-label^="Explore the Gamine"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current)f=f.return;
    const h=f.memoizedProps.village.current;window.__perfHandle=h;window.__perfCanvas=el;
    const roads=h.snapshot().world.map.paths.filter(p=>p.points.length>=3),now=Date.now(),received=performance.now();
    const moving=fields.map((a,i)=>{
