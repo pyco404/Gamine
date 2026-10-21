@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
-const base = process.env.BASE_URL ?? 'http://localhost:3000', out = '/tmp/oxude-asset-consistency';
+const base = process.env.BASE_URL ?? 'http://localhost:3000', out = '/tmp/gamine-asset-consistency';
 mkdirSync(out, { recursive: true });
 const helper = await build({ stdin: { contents: `
  export {physicalKind, directionalAssetAudit} from './web/lib/world/object-appearance.ts';
@@ -17,7 +17,7 @@ const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome'
 try {
  const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } }), errors = [];
  page.on('pageerror', e => errors.push(e.message));
- await page.addInitScript(() => { localStorage.setItem('agenticpad.sound', '0'); localStorage.setItem('agenticpad.cameraHelp', 'closed'); });
+ await page.addInitScript(() => { localStorage.setItem('gamine.sound', '0'); localStorage.setItem('gamine.cameraHelp', 'closed'); });
  await page.route('**/*', r => {
   const u = new URL(r.request().url()), headers = { 'access-control-allow-origin': '*' };
   if (u.pathname === '/field' && r.request().resourceType() !== 'document') return r.fulfill({ json: { agents: Array.from({ length: 100 }, (_, i) => ({ id: `consistency-${i}`, name: `Walker ${i}`, presetName: 'Anchor', house: false, mark: null, retiredAt: null, worldActivity: null })), at: new Date().toISOString() }, headers });
@@ -27,11 +27,11 @@ try {
  });
  console.log('Loading the live village');
  await page.goto(`${base}/?debugWorldPerf=1&debugAgents=1`, { waitUntil: 'domcontentloaded', timeout: 90000 });
- const canvas = page.locator('canvas[aria-label^="Explore the AgenticPad"]'); await canvas.waitFor({ timeout: 60000 });
+ const canvas = page.locator('canvas[aria-label^="Explore the Gamine"]'); await canvas.waitFor({ timeout: 60000 });
  const enter = page.getByRole('button', { name: /enter world/i }); if (await enter.count()) await enter.click();
  await page.waitForFunction(() => window.__worldRenderPerf?.totals.activeAgents >= 100, undefined, { timeout: 60000 });
  await page.evaluate(() => {
-  const el = document.querySelector('canvas[aria-label^="Explore the AgenticPad"]');
+  const el = document.querySelector('canvas[aria-label^="Explore the Gamine"]');
   let f = el[Object.keys(el).find(k => k.startsWith('__reactFiber'))]; while (f && !f.memoizedProps?.village?.current) f = f.return;
   window.__consistencyHandle = f.memoizedProps.village.current;
  });
