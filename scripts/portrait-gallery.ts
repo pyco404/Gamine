@@ -107,7 +107,7 @@ const briefFaces = BRIEFS.map((b, i) => ({ b, p: face(`brief:${IDS[i]}`, b.table
 sections += `<section><h2>Brief-written tables</h2><p class="note">A face comes from what the table does, not a preset name. Each of these is a table a brief could produce.</p><div class="grid">${briefFaces.map(({ b, p }) => tile(p, `${b.label} — ${b.note}`)).join("")}</div></section>`;
 strip += briefFaces.map(({ b, p }) => `<li><span class="face">${p.svgSmall}</span><span>${b.label}</span><span class="num">+0</span></li>`).join("");
 
-const html = `<title>AgenticPad Portrait Review</title>
+const html = `<title>Gamine Portrait Review</title>
 <style>
   :root { --ink:#09090a; --panel:#111113; --panel2:#16161a; --line:#26262c; --text:#e9e7e4; --muted:#8a8a93; --red:#ff2d2d; color-scheme: dark; }
   body { background: var(--ink); color: var(--text); font: 13px/1.5 ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace; padding-inline: 16px; padding-block: 24px 48px; }
@@ -132,7 +132,7 @@ const html = `<title>AgenticPad Portrait Review</title>
 </style>
 <main>
   <header>
-    <h1>AGENTICPAD PORTRAITS</h1>
+    <h1>GAMINE PORTRAITS</h1>
     <p>Generator v2, for review. The agent's id chooses the character &mdash; one of 19 types of masked player, android or creature &mdash; its colour scheme, plate, head shape and accessories. Its decision table chooses the expression it wears: steady for a calm player, fierce for an aggressor, sly for a bluffer, wary for one that backs down. The same agent always gets the same face.</p>
     <p>What to look for: any two neighbours look nothing alike, the mood reads in every character type, and every face still reads at 24&ndash;32 px, which use the simplified drawing.</p>
   </header>
