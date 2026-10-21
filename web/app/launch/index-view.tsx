@@ -39,8 +39,8 @@ export function LaunchIndex() {
             <p className="mt-2">
               <span className="text-accent">
                 {config.launcherShare === 0
-                  ? "All of its creator fees go to AgenticPad. The launcher keeps none."
-                  : `${100 - config.launcherShare}% of its creator fees go to AgenticPad; the launcher keeps ${config.launcherShare}%.`}
+                  ? "All of its creator fees go to Gamine. The launcher keeps none."
+                  : `${100 - config.launcherShare}% of its creator fees go to Gamine; the launcher keeps ${config.launcherShare}%.`}
               </span>{" "}
               The split is locked at launch.
             </p>
