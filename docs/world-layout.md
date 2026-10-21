@@ -145,7 +145,7 @@ arrival, missing ownership, sign-out, retirement and API failure have explicit
 states. API eligibility and autoplay decide actual play; walking is presentation.
 
 `welcome.tsx` frames the live world behind a green pixel menu, with existing art
-as a first-paint/WebGL-failure fallback, AgenticPad's own visor/fern character, restrained ambient
+as a first-paint/WebGL-failure fallback, Gamine's own visor/fern character, restrained ambient
 lights and scanlines. Rotating loading phases yield to a deliberate Enter World
 button. Watch Live, Find My Agent and the feature-gated Launch action dismiss the
 menu and navigate normally. A ten-second fallback allows entry during connection
@@ -190,7 +190,7 @@ wet connectivity, no walkable seam, crossing safety and routes to the world edge
 
 The Arena colour/detail pass changes code-drawn textures in `game/arena.ts` and
 the Arena sign in `game/building.ts`; it recolours no shared image asset. The
-original AgenticPad emblem is reused. The welcome page adds one local SVG from
+original Gamine emblem is reused. The welcome page adds one local SVG from
 the existing character generator, rather than a new externally sourced character.
 
 Further files in the final arena/water pass: `game/arena-geometry.ts`,
