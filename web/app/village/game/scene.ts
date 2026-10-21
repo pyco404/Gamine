@@ -25,7 +25,6 @@ import { ARENA_TORCHES } from "../../../lib/world/arena-geometry";
 import type { WorldTarget } from "./projected-picking";
 import { nightOf, num, VOID, warm } from "./palette";
 import { chunkKey, chunksIn, chunkTrees, CHUNK, type ForestRules, type Tree } from "./forest";
-import { loadWeapons, weaponOf } from "./weapons";
 import { drawMap, loadMap, type VillageMap } from "./map";
 import { canopy, NEW_TOWN, openPlots, overlaps, PIECE_ART, plotClearing, type Box, type Plot } from "./growth";
 import { Roads, type Point } from "./roads";
@@ -39,7 +38,6 @@ import { layOutNames, namesInView, type NameLabel } from "./labels";
 import { agentPopulation, allocateHomes, clearRoute, neighbourhoodSpots } from "./population";
 import { playhead } from "@/lib/playhead";
 import { sound } from "@/lib/sound";
-import { bodyColours, GRID_LARGE, pixelate, portraitUrl, turned } from "@/lib/pixel-portrait";
 import { createWorldModel, plotObjects, treeObject, worldObject, type ArtFrame, type ArtRef, type TopGround, type WorldModel, type WorldObject, type WorldSnapshot, pictureObject } from "../../../lib/world/model";
 
 /** A match being played in the arena: its two sides, the table between them, the running score over it, and the timer that drives both. */
@@ -245,7 +243,6 @@ export class VillageScene extends Phaser.Scene {
       }
     }
     loadArena(this);
-    loadWeapons(this);
     loadShips(this);
   }
 
@@ -971,7 +968,6 @@ export class VillageScene extends Phaser.Scene {
           hero.x >= view.x - 130 && hero.x <= view.right + 130 && hero.y >= view.y - 150 && hero.y <= view.bottom + 150;
         hero.setRenderVisible(visible);
         if (visible) hero.animateIdle(time);
-        if (visible) this.giveFace(id, this.residents.get(id)?.standIn);
       }
       this.frameDuels();
       this.layOutNames();
@@ -1119,8 +1115,6 @@ export class VillageScene extends Phaser.Scene {
           inWater: (p) => this.ground.inWater(p) && !this.onDock(p),
         });
         this.heroes.set(r.id, hero);
-        this.faceRequests.delete(r.id);
-        hero.setWeapon(weaponOf(r.standIn ?? r.id));
         hero.setLabelScale(this.heroLabelScale());
         if (this.mine.has(r.id)) hero.setMine(true);
         if (r.id === this.selected) hero.setSelected(true);
@@ -1324,48 +1318,6 @@ export class VillageScene extends Phaser.Scene {
       }
     }
     return out;
-  }
-
-  /**
-   * The agent's character: the same pixel drawing its pages show, without the
-   * plate behind it, made into a texture once and kept for the agent's next
-   * visit; its body is dressed in the head's own colours. An agent with no
-   * portrait stays the knight it was drawn as.
-   */
-  /** Each character's body colours, kept with its textures. */
-  private bodies = new Map<string, { main: number; dark: number }>();
-  private faceRequests = new Set<string>();
-  private facesLoading = 0;
-
-  private giveFace(id: string, face = id): void {
-    if (this.faceRequests.has(id) || this.facesLoading >= 4) return;
-    this.faceRequests.add(id);
-    const views = { front: `head-${face}`, side: `head-${face}-side`, back: `head-${face}-back` };
-    const known = this.bodies.get(face);
-    if (known && this.textures.exists(views.back)) {
-      this.heroes.get(id)?.setFace(views, known);
-      return;
-    }
-    this.facesLoading++;
-    pixelate(portraitUrl(face, false), GRID_LARGE, true).then((data) => {
-      if (!this.sys.isActive()) return;
-      if (!data) {
-        this.heroes.get(id)?.useSprite();
-        return;
-      }
-      if (!this.textures.exists(views.back)) {
-        const { side, back } = turned(data);
-        for (const [key, pixels] of [[views.front, data], [views.side, side], [views.back, back]] as const) {
-          const tex = this.textures.exists(key) ? null : this.textures.createCanvas(key, pixels.width, pixels.height);
-          if (!tex) continue;
-          tex.context.putImageData(pixels, 0, 0);
-          tex.refresh();
-        }
-      }
-      const colours = bodyColours(data);
-      this.bodies.set(face, colours);
-      this.heroes.get(id)?.setFace(views, colours);
-    }).finally(() => { this.facesLoading--; });
   }
 
   // --- Matches at the table -----------------------------------------------
