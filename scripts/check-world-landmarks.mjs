@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {build} from 'esbuild';
 import {chromium} from 'playwright';
-const base=process.env.BASE_URL??'http://localhost:3000',out='/tmp/oxude-landmark-review';mkdirSync(out,{recursive:true});
+const base=process.env.BASE_URL??'http://localhost:3000',out='/tmp/gamine-landmark-review';mkdirSync(out,{recursive:true});
 const helper=await build({stdin:{contents:`
  export {renderProjectedWorld} from './web/app/village/game/projected-art.ts';
  export {project} from './web/lib/world/projection.ts';
@@ -13,13 +13,13 @@ const helper=await build({stdin:{contents:`
 const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox','--enable-unsafe-swiftshader']});
 try{
  const page=await browser.newPage({viewport:{width:1600,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.addInitScript(()=>{localStorage.setItem('agenticpad.sound','0');localStorage.setItem('agenticpad.cameraHelp','closed');});
+ await page.addInitScript(()=>{localStorage.setItem('gamine.sound','0');localStorage.setItem('gamine.cameraHelp','closed');});
  await page.route('**/*',r=>{const u=new URL(r.request().url()),headers={'access-control-allow-origin':'*'};
   if(u.pathname==='/field'&&r.request().resourceType()!=='document')return r.fulfill({json:{agents:[],at:new Date().toISOString()},headers});
   if(u.pathname==='/live'&&r.request().headers().accept?.includes('text/event-stream'))return r.fulfill({body:'retry: 600000\n\nevent: hello\ndata: {"counters":{"matchesToday":0,"holders":0},"playMs":10000}\n\n',contentType:'text/event-stream',headers});return r.continue();});
- await page.goto(`${base}/?debugWorldPerf=1`,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('canvas[aria-label^="Explore the AgenticPad"]').waitFor({timeout:60000});
+ await page.goto(`${base}/?debugWorldPerf=1`,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('canvas[aria-label^="Explore the Gamine"]').waitFor({timeout:60000});
  const enter=page.getByRole('button',{name:/enter world/i});if(await enter.count())await enter.click();
- await page.evaluate(()=>{const el=document.querySelector('canvas[aria-label^="Explore the AgenticPad"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current)f=f.return;window.__landmarkHandle=f.memoizedProps.village.current;});
+ await page.evaluate(()=>{const el=document.querySelector('canvas[aria-label^="Explore the Gamine"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current)f=f.return;window.__landmarkHandle=f.memoizedProps.village.current;});
  await page.waitForFunction(()=>window.__landmarkHandle.snapshot().ground&&!window.__landmarkHandle.snapshot().forestPending,undefined,{timeout:60000});
  await page.addScriptTag({content:helper.outputFiles[0].text});await page.waitForFunction(()=>Landmarks.solidRevision()>0);
  const audit=await page.evaluate(()=>{
