@@ -1,4 +1,4 @@
-# AgenticPad asset consistency review
+# Gamine asset consistency review
 
 Implemented 12 October 2026; committed, not yet deployed.
 
@@ -71,7 +71,7 @@ and one atlas read per changed pose, independent of tree count. The measurements
 render-time regression, but machine load varied and software rendering is slow; these samples
 do not establish a hardware FPS guarantee or a general percentage speedup.
 
-Raw results: `/tmp/agenticpad-rotation-profile/consistency-before.json` and
+Raw results: `/tmp/gamine-rotation-profile/consistency-before.json` and
 `consistency-after.json`, with CPU profiles and screenshots alongside them.
 
 ## Validation and review artifacts
@@ -89,9 +89,9 @@ Raw results: `/tmp/agenticpad-rotation-profile/consistency-before.json` and
 The combined check command was terminated before its final summary; the complete Vitest suite
 was rerun separately and passed. Browser audits reported no page errors.
 
-Local previews: `/tmp/oxude-asset-consistency/world-front.png`, `world-left.png`, `world-back.png`,
+Local previews: `/tmp/gamine-asset-consistency/world-front.png`, `world-left.png`, `world-back.png`,
 `world-right.png`, `world-high.png`, and `tree-family.png`. Audit: the adjacent `audit.json`.
-Model gallery: `/tmp/oxude-solid-review/families.png`.
+Model gallery: `/tmp/gamine-solid-review/families.png`.
 
 ## Files changed
 
