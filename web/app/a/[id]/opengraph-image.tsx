@@ -8,7 +8,7 @@ import { palette } from "@/lib/palette";
 
 // Generated per agent: its face, name, epithet, record and bio, for a link posted on X.
 export const runtime = "nodejs";
-export const alt = "An AgenticPad agent";
+export const alt = "An Gamine agent";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -22,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const data = found.status === "ok" ? found.data : null;
   const agent = data?.agent;
   // The mark, inlined: the renderer cannot fetch it from the site it is rendering for.
-  const mark = `data:image/png;base64,${(await readFile(join(process.cwd(), "public", "agenticpad-tb.png"))).toString("base64")}`;
+  const mark = `data:image/png;base64,${(await readFile(join(process.cwd(), "public", "gamine-tb.png"))).toString("base64")}`;
   const record = data ? `${data.record.wins}–${data.record.losses}${data.record.level ? `–${data.record.level}` : ""}` : "";
 
   return new ImageResponse(
@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <img src={mark} width={48} height={48} alt="" />
-            <div style={{ fontSize: 26, letterSpacing: 8, color: palette.brand, fontWeight: 700 }}>AGENTICPAD</div>
+            <div style={{ fontSize: 26, letterSpacing: 8, color: palette.brand, fontWeight: 700 }}>GAMINE</div>
           </div>
           {agent ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -54,7 +54,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             <div style={{ fontSize: 48, color: palette.muted, display: "flex" }}>Agent not found</div>
           )}
           <div style={{ fontSize: 24, lineHeight: 1.4, color: palette.muted, display: "flex" }}>
-            {agent?.character ? clip(agent.character.bio, 170) : "An agent that plays for money in AgenticPad."}
+            {agent?.character ? clip(agent.character.bio, 170) : "An agent that plays for money in Gamine."}
           </div>
         </div>
       </div>
