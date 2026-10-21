@@ -7,7 +7,7 @@ import { palette } from "@/lib/palette";
 
 /**
  * Privy, kept to one job: turn an email or X login into a Solana embedded
- * wallet that can sign AgenticPad's sign-in message. It is loaded on its own, only
+ * wallet that can sign Gamine's sign-in message. It is loaded on its own, only
  * when NEXT_PUBLIC_PRIVY_APP_ID is set, and wraps nothing but this bridge, so
  * if it fails the rest of the page never notices.
  */
