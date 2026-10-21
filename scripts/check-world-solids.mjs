@@ -4,7 +4,7 @@ import { mkdirSync } from 'node:fs';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
 const base = process.env.BASE_URL ?? 'http://localhost:3000';
-const out = '/tmp/oxude-solid-review';
+const out = '/tmp/gamine-solid-review';
 mkdirSync(out, { recursive: true });
 const helper = await build({ stdin: { contents: `
   export {solidLayer, solidRevision} from './web/app/village/game/solid-renderer.ts';
