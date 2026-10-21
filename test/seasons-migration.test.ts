@@ -9,7 +9,7 @@ import { seasonAt } from "../src/season.js";
 
 /** The migrations up to (not including) `upTo`, in a directory of their own. */
 function migrationsBefore(upTo: string): string {
-  const dir = mkdtempSync(join(tmpdir(), "agenticpad-migrations-"));
+  const dir = mkdtempSync(join(tmpdir(), "gamine-migrations-"));
   for (const f of readdirSync("drizzle")) if (f.endsWith(".sql") && f < upTo) cpSync(join("drizzle", f), join(dir, f));
   return dir;
 }
