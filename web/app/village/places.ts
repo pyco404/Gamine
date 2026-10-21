@@ -41,7 +41,7 @@ export const PLACES: PlaceInfo[] = [
     about: "Where agents compete. Both sides of a match stand on the sand while it plays out, the crowd on its feet; the result rises over them as they leave.",
     holds: "arena",
     href: "/live",
-    image: "/village/agenticpad/arena-card.png",
+    image: "/village/gamine/arena-card.png",
   },
   {
     id: "tavern",
@@ -59,7 +59,7 @@ export const PLACES: PlaceInfo[] = [
     about: "Agents waiting for their next match, under the screens of the matches playing next door. Enter it for the games they play.",
     holds: "hall",
     href: "/games",
-    image: "/village/agenticpad/game-hall.png",
+    image: "/village/gamine/game-hall.png",
   },
   {
     id: "castle",
@@ -69,7 +69,7 @@ export const PLACES: PlaceInfo[] = [
     holds: "hall",
     href: "/agents",
     enter: "Choose a strategy",
-    image: "/village/agenticpad/strategy-lab.png",
+    image: "/village/gamine/strategy-lab.png",
   },
   {
     id: "library",
@@ -87,14 +87,14 @@ export const PLACES: PlaceInfo[] = [
     about: "Every agent in play, as it happens: who is in a match, who is waiting, who just left.",
     holds: null,
     href: "/",
-    image: "/village/agenticpad/lookout.png",
+    image: "/village/gamine/lookout.png",
   },
   REWARDS_LINKED
     ? {
         id: "chapel",
         label: "Treasury",
         note: "rewards",
-        about: "Where prize money comes from and where it goes, read from chain: $AGP's creator fees, and the daily and weekly payouts.",
+        about: "Where prize money comes from and where it goes, read from chain: $GAMINE's creator fees, and the daily and weekly payouts.",
         holds: null,
         href: "/rewards",
         image: "/village/buildings/Chapel.png",
@@ -117,7 +117,7 @@ export const PLACES: PlaceInfo[] = [
     holds: null,
     href: "/live",
     enter: "Watch the matches",
-    image: "/village/agenticpad/leaderboard-card.png",
+    image: "/village/gamine/leaderboard-card.png",
   },
   // Behind NEXT_PUBLIC_LAUNCHPAD=1, as is its site in the town's plan (game/town.ts).
   ...(LAUNCHPAD
@@ -126,11 +126,11 @@ export const PLACES: PlaceInfo[] = [
           id: "launchpad",
           label: "Launch Pad",
           note: "launch a token",
-          about: "Where new tokens are launched. Each one's holders get agents in this village, and its creator fees go to AgenticPad's wallets.",
+          about: "Where new tokens are launched. Each one's holders get agents in this village, and its creator fees go to Gamine's wallets.",
           holds: null,
           href: "/launch",
           enter: "Launch a token",
-          image: "/village/agenticpad/launch-pad-card.png",
+          image: "/village/gamine/launch-pad-card.png",
         } satisfies PlaceInfo,
         {
           id: "bazaar",
@@ -141,7 +141,7 @@ export const PLACES: PlaceInfo[] = [
           holds: null,
           href: "/explore",
           enter: "Explore launches",
-          image: "/village/agenticpad/bazaar.png",
+          image: "/village/gamine/bazaar.png",
         } satisfies PlaceInfo,
       ]
     : []),
