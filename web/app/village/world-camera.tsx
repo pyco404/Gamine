@@ -477,7 +477,7 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
   return <>
     <canvas ref={groundCanvas} aria-hidden className="pointer-events-none absolute left-0 top-14" style={{ backgroundColor: VOID, width: "100%", height: "calc(100% - 56px)" }} />
     <canvas ref={waterCanvas} aria-hidden className="pointer-events-none absolute left-0 top-14" style={{ width: "100%", height: "calc(100% - 56px)", imageRendering: "pixelated" }} />
-    <canvas ref={canvas} tabIndex={0} aria-label="Explore the AgenticPad world. Drag empty ground to rotate, Shift-drag or arrow keys to pan, scroll or pinch to zoom. Tap agents or buildings to open them."
+    <canvas ref={canvas} tabIndex={0} aria-label="Explore the Gamine world. Drag empty ground to rotate, Shift-drag or arrow keys to pan, scroll or pinch to zoom. Tap agents or buildings to open them."
       className="absolute left-0 top-14 cursor-grab touch-none active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-accent"
       style={{ width: "100%", height: "calc(100% - 56px)" }} />
     <div ref={nightLayer} aria-hidden className="pointer-events-none absolute left-0 top-14" style={{ width: "100%", height: "calc(100% - 56px)", backgroundColor: nightOf("#ffffff"), mixBlendMode: "multiply", opacity: 0 }} />
