@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AGENTICPAD_RULES, maxNet, mulberry32, nextUint32, playMatch, type Stakes } from "../src/index.js";
+import { GAMINE_RULES, maxNet, mulberry32, nextUint32, playMatch, type Stakes } from "../src/index.js";
 import { assertNetWithinBound } from "../src/db/runner.js";
 import { StakeError } from "../src/db/ledger.js";
 import { WORST_MATCH } from "../src/db/schema.js";
@@ -14,12 +14,12 @@ import { agentPool } from "./helpers.js";
  */
 describe("the engine's bound", () => {
   it("is what WORST_MATCH claims it is, at the stakes every match is played at", () => {
-    expect(maxNet(AGENTICPAD_RULES.stakes)).toBe(WORST_MATCH);
+    expect(maxNet(GAMINE_RULES.stakes)).toBe(WORST_MATCH);
   });
 
   it("is not exceeded by any match over many seeds", () => {
     const master = mulberry32(98765);
-    const stakes = AGENTICPAD_RULES.stakes;
+    const stakes = GAMINE_RULES.stakes;
     const bound = maxNet(stakes);
     for (let k = 0; k < 6000; k++) {
       const pool = agentPool(nextUint32(master));
@@ -40,7 +40,7 @@ describe("the engine's bound", () => {
 });
 
 describe("the runner's enforcement", () => {
-  const stakes = AGENTICPAD_RULES.stakes; // bound 40
+  const stakes = GAMINE_RULES.stakes; // bound 40
 
   it("passes a net the engine could have produced", () => {
     expect(() => assertNetWithinBound(40, stakes, "a match")).not.toThrow();
