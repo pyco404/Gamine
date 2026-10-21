@@ -6,7 +6,7 @@ import { ACTIVITY_DESTINATIONS } from "../../web/lib/world/activity-destinations
 import { worldNavigation } from "../world/navigation.js";
 import { PLAY_MS } from "../http/live.js";
 
-const ID = "agenticpad-world";
+const ID = "gamine-world";
 const POLL_MS = 2_000;
 let navigation: { population: number; value: ReturnType<typeof worldNavigation> } | null = null;
 
