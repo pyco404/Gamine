@@ -1,4 +1,4 @@
-import { AGENTICPAD_RULES } from "./round.js";
+import { GAMINE_RULES } from "./round.js";
 import type { Agent } from "./types.js";
 
 /** A fold threshold: a fixed edge, or "pot-odds" to derive it from the stakes. */
@@ -85,7 +85,7 @@ export function makeStrategy(params: StrategyParams): Agent {
  * raises almost everything and folds when raised at. All four fold to a raise
  * below 0.45 except Bully, which needs 0.55.
  *
- * Balanced for AGENTICPAD_RULES (alternating turns, independent draw, ante 4).
+ * Balanced for GAMINE_RULES (alternating turns, independent draw, ante 4).
  * Do not edit these without re-running the balance criteria: test/balance.test.ts
  * pins them and re-checks the loop, the spread and the probes at ante 3, 4 and 5.
  */
@@ -109,7 +109,7 @@ export const PRESET_DESCRIPTIONS: Record<PresetName, string> = {
 export const PRESET_NAMES = Object.keys(PRESET_PARAMS) as PresetName[];
 
 /** Re-exported for callers that reach for the rules through the presets. */
-export { AGENTICPAD_RULES };
+export { GAMINE_RULES };
 
 /**
  * Fingerprint of the shipped numbers, recorded with every match as provenance.
