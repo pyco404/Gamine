@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { readStoredValue } from "@/lib/browser-storage";
 import type { Arrival } from "@/lib/live";
 import { arrive, emptyArena, finish, REPLAY_WINDOW_MS, tick, type ArenaShow, type ArenaState } from "./arena";
 
@@ -10,7 +11,7 @@ const LADDER_READ = 50;
 /** How often the Arena checks whether a better new match may now take over. */
 const TICK_MS = 5_000;
 /** The replay pool and this season's meetings, kept in this browser so a reload still has something to replay. */
-const STORE = "agenticpad.arena.v1";
+const STORE = "gamine.arena.v1";
 
 /**
  * The Arena's one match (arena.ts), fed from the live stream. The stream
@@ -29,7 +30,7 @@ export function useArena(arrivals: readonly Arrival[]): { show: ArenaShow | null
   // What this browser kept from before, dropping replays older than a day.
   useEffect(() => {
     try {
-      const kept = JSON.parse(localStorage.getItem(STORE) ?? "null") as Pick<ArenaState, "best" | "meetings" | "season"> | null;
+      const kept = JSON.parse(readStoredValue(localStorage, STORE) ?? "null") as Pick<ArenaState, "best" | "meetings" | "season"> | null;
       if (kept) {
         const now = Date.now();
         setState((s) => tick({ ...s, best: kept.best.filter((b) => now - b.at < REPLAY_WINDOW_MS), meetings: kept.meetings, season: kept.season }, now));
