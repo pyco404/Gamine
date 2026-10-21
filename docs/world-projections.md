@@ -1,6 +1,6 @@
 # One world, one camera, many angles
 
-The Isometric world is AgenticPad's base layer on every route, not a page.
+The Isometric world is Gamine's base layer on every route, not a page.
 `WorldShell` (`web/app/shell.tsx`) keeps one `PersistentWorld` mounted for the
 whole app; Launch, Explore, Agent, Live, Ladder, Games, Rewards and About are
 overlays on it, and `/`, the site's home, is simply the route with no overlay
@@ -119,8 +119,8 @@ world is drawn, before any agent, forest chunk or boat exists:
   proportions are recovered.
 - **The Arena** stands in 3D on `COLOSSEUM`, in the village's materials
   (`ARENA_PALETTE`): red-brown roofs, shaded coursed stone, timber seating, a
-  sand floor, thin green and brass trim, with AgenticPad's logo
-  (`agenticpad-tb.png`, unaltered) in the middle of the floor. Its name sits on
+  sand floor, thin green and brass trim, with Gamine's logo
+  (`gamine-tb.png`, unaltered) in the middle of the floor. Its name sits on
   its north rim.
 - **Drawn as shapes in Top**, and so taken from the same shared definitions:
   the arena's four gate torches (`ARENA_TORCHES`, which
