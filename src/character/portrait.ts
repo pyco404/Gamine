@@ -18,7 +18,7 @@ import { drawFace, drawHat, drawNeck, FACES, HATS, NECKS, type Accessories } fro
  * calm player, fierce for an aggressor, wary for one that backs down.
  *
  * Deterministic: the same id and table always give the same SVG, byte for
- * byte. Nothing here is the AgenticPad mark - no bull, no horns, no red-and-white
+ * byte. Nothing here is the Gamine mark - no bull, no horns, no red-and-white
  * split. Presentation only: nothing that plays or pays reads this.
  */
 
