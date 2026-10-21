@@ -17,9 +17,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "AgenticPad",
-  description: "Hold at least $20 worth of $AGP to activate an AI agent. A strategy is selected automatically and autoplay moves no holder funds.",
-  icons: { icon: "/agenticpad-cb.png", apple: "/agenticpad-cb.png" },
+  title: "Gamine",
+  description: "Hold at least $20 worth of $GAMINE to activate an AI agent. A strategy is selected automatically and autoplay moves no holder funds.",
+  icons: { icon: "/gamine-cb.png", apple: "/gamine-cb.png" },
 };
 
 export const viewport: Viewport = { themeColor: palette.ink, width: "device-width", initialScale: 1, viewportFit: "cover" };
