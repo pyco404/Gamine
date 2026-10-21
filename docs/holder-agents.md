@@ -1,10 +1,10 @@
 # Holder agents
 
-**Status: per-token holder activation implemented 2026-10-06; see [automatic agents](automatic-agents.md) for current behavior and deployment settings.** This replaces both the staked model in [economy.md](economy.md) and the no-loss model in [no-loss-rewards.md](no-loss-rewards.md). Until it is built, economy.md still describes what runs on devnet. Nothing here pays real $AGP before the legal review ([Legal](#legal)).
+**Status: per-token holder activation implemented 2026-10-06; see [automatic agents](automatic-agents.md) for current behavior and deployment settings.** This replaces both the staked model in [economy.md](economy.md) and the no-loss model in [no-loss-rewards.md](no-loss-rewards.md). Until it is built, economy.md still describes what runs on devnet. Nothing here pays real $GAMINE before the legal review ([Legal](#legal)).
 
 ## In one paragraph
 
-Hold $AGP in your own wallet above a dollar-pegged minimum and you have an agent. Nothing is rented, nothing is deposited, nothing is held for you, and there is nothing to withdraw. The agent plays Bluff & Fold against other holders' agents, with an automatically selected preset or a strategy its owner chooses, and the strategy alone decides every match. What an owner's holding buys is a weight on the reward, not an edge at the table: each period's score is the net chips the agent won, times a capped weight derived from its **power** - mostly how long the wallet has held, and a little for how much it holds. Playing enough is a gate: an agent below the qualifying minimum of matches does not score at all.
+Hold $GAMINE in your own wallet above a dollar-pegged minimum and you have an agent. Nothing is rented, nothing is deposited, nothing is held for you, and there is nothing to withdraw. The agent plays Bluff & Fold against other holders' agents, with an automatically selected preset or a strategy its owner chooses, and the strategy alone decides every match. What an owner's holding buys is a weight on the reward, not an edge at the table: each period's score is the net chips the agent won, times a capped weight derived from its **power** - mostly how long the wallet has held, and a little for how much it holds. Playing enough is a gate: an agent below the qualifying minimum of matches does not score at all.
 
 ## Decided
 
@@ -42,7 +42,7 @@ Each part runs from 0 to 1, so power does too.
 
 - **The clock starts when a wallet first qualifies**, and the minimum as it stands at that moment, in tokens, is recorded as its **conviction amount** - the minimum, not the whole holding, so a large holder who trims to anything above it keeps their clock.
 - **It runs while the wallet holds at least the conviction amount.** Selling below it sets the clock back to zero. Topping up never resets it, and never raises the conviction amount. Selling down to anything still at or above the conviction amount costs nothing.
-- **The dollar line does not touch it.** If $AGP falls and the minimum is retuned to more tokens, a wallet that has not sold keeps its clock. The minimum is what a new wallet must hold to qualify; once a wallet has qualified, its own recorded amount is what it must keep.
+- **The dollar line does not touch it.** If $GAMINE falls and the minimum is retuned to more tokens, a wallet that has not sold keeps its clock. The minimum is what a new wallet must hold to qualify; once a wallet has qualified, its own recorded amount is what it must keep.
 - **After a reset**, the next qualification records a new conviction amount at the minimum as it then stands.
 - **At 180 days the clock stops growing.**
 - **Mainnet play requires a fresh verified $20 holding at every eligibility check**, independent of the conviction clock. A market-price drop can pause play while the holding clock continues. Devnet retains its test-token threshold.
@@ -96,10 +96,10 @@ The qualifying minimums and the per-opponent cap are parameters, raised as the r
 
 As in [economy.md](economy.md#creator-fees-and-prizes), with the split changed 2026-10-03:
 
-- Funded by creator fees, split the same way for **every token on the platform, $AGP included: 15% to the daily reward wallet, 50% to the weekly reward wallet, 35% to the platform.** Daily to weekly is about 1:3.3, so weekly stays clearly the larger prize and the reason to stay in all week. This replaces 10/50/40 for $AGP and 60/40 for launch tokens: one rule, easier to explain and to configure. The split is configured once on pump.fun per token and cannot be changed afterwards.
+- Funded by creator fees, split the same way for **every token on the platform, $GAMINE included: 15% to the daily reward wallet, 50% to the weekly reward wallet, 35% to the platform.** Daily to weekly is about 1:3.3, so weekly stays clearly the larger prize and the reason to stay in all week. This replaces 10/50/40 for $GAMINE and 60/40 for launch tokens: one rule, easier to explain and to configure. The split is configured once on pump.fun per token and cannot be changed afterwards.
 - **Each cycle uses an admin-selected SOL budget and reward percentage** (updated 2026-10-05). The remainder stays in the same reward wallet and continues accumulating fees; for example, 80% for winners and 20% retained. The platform takes no additional cut from reward wallets. This replaces the fixed half-wallet release. Network fees and rent need a separate reserve.
-- **No agent takes more than 10% of a cycle's payout.** An agent is one wallet holding one token, and each earns on its own: a wallet with agents for $AGP, $DOX and $ZIP can take up to 10% for each, so holding more tokens earns more. Only a replacement agent for the same token shares its predecessor's 10% (decided 2026-10-07).
-- **Paid in $AGP the operator buys into the reward wallet** (decided 2026-10-12). Swapping SOL during the payout remains available but needs a Jupiter key. Execution is built: winner transfers, eight to a transaction, each approved in the reward wallet. See [reward-payouts.md](reward-payouts.md).
+- **No agent takes more than 10% of a cycle's payout.** An agent is one wallet holding one token, and each earns on its own: a wallet with agents for $GAMINE, $DOX and $ZIP can take up to 10% for each, so holding more tokens earns more. Only a replacement agent for the same token shares its predecessor's 10% (decided 2026-10-07).
+- **Paid in $GAMINE the operator buys into the reward wallet** (decided 2026-10-12). Swapping SOL during the payout remains available but needs a Jupiter key. Execution is built: winner transfers, eight to a transaction, each approved in the reward wallet. See [reward-payouts.md](reward-payouts.md).
 - **Paid only to wallets still holding $20 of the agent's token at payout** (decided 2026-10-12). Scores freeze with the day, but a winner who has since sold, or holds under $20, is not paid. Each winner's wallet is read fresh on chain at preview; shares are worked out again over those left, proportional to score and still capped at 10%, so a dropped share goes to the holders who stayed, and what the cap holds back stays in the wallet. The first three days after launch showed why: 127 wallets won a share and 110 had sold everything within days.
 - **Only an agent still in play at payout is paid** (decided 2026-10-12). Selling to zero ends a wallet's agent and a rebuy starts a new one, which earns from then on: the ended agent's scores are forfeit, so buying, playing and selling again cannot collect agents. A holder who never sells to zero keeps one agent throughout and loses nothing. Wallets cycling buy-and-sell did exactly this after launch: one sold to zero and rebought 28 times in 40 hours. The reward wallets' own agents are never paid either.
 - **The cap is set per payout, and what it holds back is passed on** (decided 2026-10-12). The most one winner may take defaults to 10% and is chosen when previewing a payout. Shares are proportional to score; a winner over the cap is held to it, and the excess goes to the others by score, so the amount set is paid out in full whenever winners × cap reaches 100%. Frozen days still show plain capped shares. With few winners a 10% cap flattens everyone toward the same amount; a higher cap keeps score counting.
@@ -107,18 +107,18 @@ As in [economy.md](economy.md#creator-fees-and-prizes), with the split changed 2
 
 ## Launchpad (direction)
 
-**Token launch integration started 2026-10-05; automatic $AGP holder activation is implemented; multi-token activation is implemented.** The wallet-signed Pump adapter and explicit preview are described in [pump-launchpad.md](pump-launchpad.md). Real launches require operator configuration before they can run. The holding model applies independently to $AGP and every confirmed AgenticPad launch token.
+**Token launch integration started 2026-10-05; automatic $GAMINE holder activation is implemented; multi-token activation is implemented.** The wallet-signed Pump adapter and explicit preview are described in [pump-launchpad.md](pump-launchpad.md). Real launches require operator configuration before they can run. The holding model applies independently to $GAMINE and every confirmed Gamine launch token.
 
 - **Any token can launch on the platform.** It gives up 100% of its creator fees, split 15/50/35 like every token ([Rewards](#rewards)).
 - **Every launch requires a 0.1 SOL platform fee** (100,000,000 lamports), to deter spam. This is separate from creator fees, network costs and any optional initial token purchase. Launchers receive 0% of creator fees and may buy tokens during creation. Recorded 2026-10-05.
 - **The launch fee goes to the platform wallet:** `8d2HSFZJiAg9UP8r5k4giGTrdsBxMkzjM6g2imcWwjGf` ([economy.md](economy.md#creator-fees-and-prizes)).
 - **The real launch transaction includes the fee transfer with token creation.** The server verifies the complete signed message and chain confirmation before accepting a platform launch. A failed creation does not collect the platform fee, and recovery resends the same transaction. The explicit preview collects no SOL.
-- **Its holders become agents in the same village** and draw from **the same shared pool** as $AGP agents.
-- **Proposed, not implemented: $AGP agents earn 1.3x per point; launch-token agents earn 1.0x.** The multiplier sits on top of the weight: score = points × weight × 1.3 for a $AGP agent, × 1.0 for any other.
-- **One agent per wallet per token.** A wallet holding $AGP, $DOX and $ZIP has three agents, each with its own conviction clock, score and 10% payout cap. Selling one token resets only that token's clock.
+- **Its holders become agents in the same village** and draw from **the same shared pool** as $GAMINE agents.
+- **Proposed, not implemented: $GAMINE agents earn 1.3x per point; launch-token agents earn 1.0x.** The multiplier sits on top of the weight: score = points × weight × 1.3 for a $GAMINE agent, × 1.0 for any other.
+- **One agent per wallet per token.** A wallet holding $GAMINE, $DOX and $ZIP has three agents, each with its own conviction clock, score and 10% payout cap. Selling one token resets only that token's clock.
 - **Conviction and position are measured per token.** A $DOX agent's conviction is its $DOX clock, and its position is its share of $DOX supply, through the same formula as [Power](#power).
 
-Each token independently requires $20 at its verified market price. Zero holdings retires its agent; a nonzero balance below $20 pauses it. Still open: how a launch that brings far more agents than $AGP shares the pool ([Open](#open), item 2).
+Each token independently requires $20 at its verified market price. Zero holdings retires its agent; a nonzero balance below $20 pauses it. Still open: how a launch that brings far more agents than $GAMINE shares the pool ([Open](#open), item 2).
 
 ## The village
 
@@ -132,7 +132,7 @@ Most of the program's surface goes with them. This is a large change to [mainnet
 
 ## Legal
 
-A reward weighted by how long and how much someone holds a token may read as a return on holding it, which is a different question from whether Bluff & Fold is a game of skill. Both go to the lawyer before any real $AGP is paid. This extends [economy.md](economy.md#open-questions)'s open question 5.
+A reward weighted by how long and how much someone holds a token may read as a return on holding it, which is a different question from whether Bluff & Fold is a game of skill. Both go to the lawyer before any real $GAMINE is paid. This extends [economy.md](economy.md#open-questions)'s open question 5.
 
 ## Known properties
 
@@ -155,4 +155,4 @@ The third is why no fix exists inside the model. A different position curve coul
 ## Open
 
 1. **Moving between one's own wallets.** A transfer to a holder's own new wallet looks identical to a sell, and costs the clock unless something links the two. Conviction runs on snapshots for now (decision 13), which reads balances, not transfers, so nothing links them yet.
-2. **A launch that outnumbers $AGP** ([Launchpad](#launchpad-direction)). If a launch brings far more agents than $AGP has, those agents take most of the shared pool on numbers alone. The 1.3x multiplier does not close a large headcount gap, and the fee split does not touch it. The options: a higher multiplier, pools split per token, or weighting each token's collective draw by the fees it contributed.
+2. **A launch that outnumbers $GAMINE** ([Launchpad](#launchpad-direction)). If a launch brings far more agents than $GAMINE has, those agents take most of the shared pool on numbers alone. The 1.3x multiplier does not close a large headcount gap, and the fee split does not touch it. The options: a higher multiplier, pools split per token, or weighting each token's collective draw by the fees it contributed.
