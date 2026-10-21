@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { playMatch, AGENTICPAD_RULES, PRESETS, PRESET_NAMES, type PresetName } from "../src/index.js";
+import { playMatch, GAMINE_RULES, PRESETS, PRESET_NAMES, type PresetName } from "../src/index.js";
 import { addCounts, countMatch, EMPTY_COUNTS, MIN_DECISIONS, traitsFrom, type TraitCounts } from "../src/character/traits.js";
 
 /** One preset's counts over many matches against the others, from both seats. */
@@ -8,7 +8,7 @@ function measure(me: PresetName, matches = 240): TraitCounts {
   for (let i = 0; i < matches; i++) {
     const opp = PRESET_NAMES[i % PRESET_NAMES.length]!;
     const asA = i % 2 === 0;
-    const log = asA ? playMatch(PRESETS[me], PRESETS[opp], { seed: 1000 + i, ...AGENTICPAD_RULES }) : playMatch(PRESETS[opp], PRESETS[me], { seed: 1000 + i, ...AGENTICPAD_RULES });
+    const log = asA ? playMatch(PRESETS[me], PRESETS[opp], { seed: 1000 + i, ...GAMINE_RULES }) : playMatch(PRESETS[opp], PRESETS[me], { seed: 1000 + i, ...GAMINE_RULES });
     c = addCounts(c, countMatch(log, asA ? "A" : "B"));
   }
   return c;
@@ -38,13 +38,13 @@ describe("traits measured from play", () => {
   });
 
   it("say not enough hands yet until the minimum", () => {
-    const one = traitsFrom(countMatch(playMatch(PRESETS.Anchor, PRESETS.Bully, { seed: 7, ...AGENTICPAD_RULES }), "A"));
+    const one = traitsFrom(countMatch(playMatch(PRESETS.Anchor, PRESETS.Bully, { seed: 7, ...GAMINE_RULES }), "A"));
     expect(one.decisions).toBeLessThan(MIN_DECISIONS);
     expect(one).toMatchObject({ bluff: null, fold: null, aggression: null, underPressure: null, note: "not enough hands yet" });
   });
 
   it("add up: counting matches one at a time or all together gives the same traits", () => {
-    const logs = [1, 2, 3, 4, 5].map((s) => playMatch(PRESETS.Mirage, PRESETS.Hammer, { seed: s, ...AGENTICPAD_RULES }));
+    const logs = [1, 2, 3, 4, 5].map((s) => playMatch(PRESETS.Mirage, PRESETS.Hammer, { seed: s, ...GAMINE_RULES }));
     const stepwise = logs.reduce((acc, l) => addCounts(acc, countMatch(l, "A")), EMPTY_COUNTS);
     const decisions = logs.reduce((n, l) => n + l.rounds.reduce((m, r) => m + r.sequence.filter((d) => d.seat === "A").length, 0), 0);
     expect(stepwise.decisions).toBe(decisions);
