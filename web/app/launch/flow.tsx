@@ -95,8 +95,8 @@ export function LaunchFlow() {
       <p className="hud-card px-4 py-3 text-[13px] leading-5">
         <span className="text-accent">
           {config.launcherShare === 0
-            ? "All of the token's creator fees go to AgenticPad's wallets. The launcher keeps none."
-            : `${100 - config.launcherShare}% of the token's creator fees go to AgenticPad's wallets; the launcher keeps ${config.launcherShare}%.`}
+            ? "All of the token's creator fees go to Gamine's wallets. The launcher keeps none."
+            : `${100 - config.launcherShare}% of the token's creator fees go to Gamine's wallets; the launcher keeps ${config.launcherShare}%.`}
         </span>{" "}
         {config.feeSplit.daily}% daily rewards, {config.feeSplit.weekly}% weekly rewards, {config.feeSplit.platform}% platform, locked at launch.
       </p>
@@ -346,7 +346,7 @@ function ReviewStep({
         <p className="mt-2">Initial buy: {solToLamports(draft.initialBuySol) / 1_000_000_000} SOL. Platform fee + initial buy: {(config.launchFeeLamports + solToLamports(draft.initialBuySol)) / 1_000_000_000} SOL, plus account rent and network fees.</p>
         {!launchpad.mock ? <p className="mt-2 text-[12px] text-muted">Creation, the locked fee split, your optional buy and the platform fee share one transaction. If the transaction fails, the platform fee and purchase are not charged; network fees may still apply.</p> : null}
         <p className="mt-2 text-[12px] text-muted">
-          Paid to AgenticPad&apos;s platform wallet:{" "}
+          Paid to Gamine&apos;s platform wallet:{" "}
           <a href={`https://solscan.io/account/${config.launchFeeRecipient}`} target="_blank" rel="noreferrer" className="text-accent underline" title={config.launchFeeRecipient}>
             {shortKey(config.launchFeeRecipient)}
           </a>
@@ -360,17 +360,17 @@ function ReviewStep({
           <li>
             <span className="text-accent">What you give up.</span>{" "}
             {launcherShare === 0
-              ? `All of ${t}'s pump.fun creator fees. They go to AgenticPad's three wallets: ${s.daily}% to the daily reward wallet, ${s.weekly}% to the weekly reward wallet, ${s.platform}% to the platform. You keep none of them.`
+              ? `All of ${t}'s pump.fun creator fees. They go to Gamine's three wallets: ${s.daily}% to the daily reward wallet, ${s.weekly}% to the weekly reward wallet, ${s.platform}% to the platform. You keep none of them.`
               : `${100 - launcherShare}% of ${t}'s pump.fun creator fees: ${s.daily}% to the daily reward wallet, ${s.weekly}% to the weekly reward wallet, ${s.platform}% to the platform. The launcher's share is ${launcherShare}%.`}
           </li>
           <li>
             <span className="text-accent">{config.agentsEnabled ? "What holders get." : "Planned holder agents."}</span> {config.agentsEnabled ? "Every" : "Once holder-agent activation is available, every"} wallet holding at least ${config.minimumUsd} of {t} gets an agent in
             the village, one per wallet, with its own conviction clock. {t}&apos;s agents play Bluff &amp; Fold against every other agent
-            there, $AGP agents and other launches&apos; agents included. Strategy alone decides each match; holding never does.
+            there, $GAMINE agents and other launches&apos; agents included. Strategy alone decides each match; holding never does.
           </li>
           <li>
-            <span className="text-accent">How results count.</span> Winners share one pool across every token, paid in $AGP. A {t} agent&apos;s
-            score is points × weight × {config.launchMultiplier.toFixed(1)}; a $AGP agent&apos;s is × {config.agpMultiplier.toFixed(1)}.
+            <span className="text-accent">How results count.</span> Winners share one pool across every token, paid in $GAMINE. A {t} agent&apos;s
+            score is points × weight × {config.launchMultiplier.toFixed(1)}; a $GAMINE agent&apos;s is × {config.agpMultiplier.toFixed(1)}.
             {config.perTokenCap !== null ? ` No one token's agents take more than ${config.perTokenCap}% of a payout.` : ""}
           </li>
           <li>
@@ -390,7 +390,7 @@ function ReviewStep({
           />
           <span>
             I agree to the mandatory {config.launchFeeLamports / 1_000_000_000} SOL launch fee, plus network costs and any initial token purchase.{" "}
-            I understand that {launcherShare === 0 ? "all" : `${100 - launcherShare}%`} of {t}&apos;s creator fees go to AgenticPad&apos;s wallets,
+            I understand that {launcherShare === 0 ? "all" : `${100 - launcherShare}%`} of {t}&apos;s creator fees go to Gamine&apos;s wallets,
             split {splitText}, {launcherShare === 0 ? "that I keep none of them, " : ""}and that the split cannot be changed after launch.
           </span>
         </label>
@@ -546,7 +546,7 @@ function Success({ mint, draft, agentsLive }: { mint: string; draft: Draft; agen
   const [copied, setCopied] = useState(false);
   const page = `/launch/${mint}`;
   const url = typeof window === "undefined" ? page : `${window.location.origin}${page}`;
-  const text = `$${draft.ticker} launched on AgenticPad.${agentsLive ? " Qualifying holders get an agent in the village, playing Bluff & Fold." : ""}`;
+  const text = `$${draft.ticker} launched on Gamine.${agentsLive ? " Qualifying holders get an agent in the village, playing Bluff & Fold." : ""}`;
   return (
     <Board sign="Live">
       <p>${draft.ticker} is on pump.fun and verified on chain. {agentsLive ? "Its agents are in the village." : "Its creator fee split is locked. Holder-agent activation is pending."}</p>
@@ -556,7 +556,7 @@ function Success({ mint, draft, agentsLive }: { mint: string; draft: Draft; agen
           ticker={draft.ticker}
           image={draft.image}
           description={draft.description.trim()}
-          footer={<p className="text-[12px] text-muted">{agentsLive ? `Hold $${draft.ticker}, get an agent. AgenticPad.` : "Launched through AgenticPad."}</p>}
+          footer={<p className="text-[12px] text-muted">{agentsLive ? `Hold $${draft.ticker}, get an agent. Gamine.` : "Launched through Gamine."}</p>}
         />
       </div>
       <div className="mt-3 grid grid-cols-1 gap-2 @md:grid-cols-2">
