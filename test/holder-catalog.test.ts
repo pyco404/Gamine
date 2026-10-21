@@ -11,11 +11,11 @@ const primaryMint = Keypair.generate().publicKey.toBase58();
 const launchedMint = Keypair.generate().publicKey.toBase58();
 const chainFor = (mint: string) => ({ mint, balanceOf: async () => 20, supply: async () => 1000000,
  quote: () => ({ minimum: 20, priceUsd: 1, decimals: 0, at: Date.now() }) });
-const options = { url: "https://agenticpad.site", primaryMint, chainFor };
+const options = { url: "https://trygamine.xyz", primaryMint, chainFor };
 describe("trusted confirmed launch catalog", () => {
  it("imports confirmed launch mints, deduplicates the primary token, and activates a launch holder", async () => {
    const fetcher = vi.fn(async (url: URL) => {
-     expect(url.origin).toBe("https://agenticpad.site");
+     expect(url.origin).toBe("https://trygamine.xyz");
      expect(url.pathname).toBe("/api/launchpad/holder-tokens");
      return Response.json({ network: "mainnet-beta", tokens: [
        { mint: primaryMint, name: "AGP", symbol: "AGP" },
