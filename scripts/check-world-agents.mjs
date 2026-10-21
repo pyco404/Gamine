@@ -11,9 +11,9 @@ import { chromium } from 'playwright';
 const base = process.env.BASE_URL ?? 'http://localhost:3000';
 const counts = process.env.AGENT_COUNTS ? process.env.AGENT_COUNTS.split(',').map(Number) : [100, 1000];
 const mixedPortraits = process.env.MIXED_PORTRAITS === '1';
-const out = process.env.AGENT_SHOTS ?? '/tmp/oxude-agent-validation';
+const out = process.env.AGENT_SHOTS ?? '/tmp/gamine-agent-validation';
 mkdirSync(out, { recursive: true });
-const temporary = mkdtempSync(join(tmpdir(), 'oxude-agent-check-'));
+const temporary = mkdtempSync(join(tmpdir(), 'gamine-agent-check-'));
 const helper = join(temporary, 'helper.js');
 const source = relative => JSON.stringify(fileURLToPath(new URL(relative, import.meta.url)));
 await build({ stdin: { contents: [
@@ -29,7 +29,7 @@ try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 950 } });
     page.on('pageerror', e => errors.push(e.message));
     let fields = Array.from({ length: count }, (_, i) => ({ id: `render-regression-${i}`, name: `Walker ${i}`, presetName: 'Anchor', mark: null, house: false, retiredAt: null, worldActivity: null }));
-    await page.addInitScript(() => { localStorage.setItem('agenticpad.sound', '0'); localStorage.setItem('agenticpad.cameraHelp', 'closed'); });
+    await page.addInitScript(() => { localStorage.setItem('gamine.sound', '0'); localStorage.setItem('gamine.cameraHelp', 'closed'); });
     await page.route('**/*', async route => {
       const u = new URL(route.request().url()), headers = { 'access-control-allow-origin': '*' };
       if (u.pathname === '/field' && route.request().resourceType() !== 'document') {
@@ -49,7 +49,7 @@ try {
       return route.continue();
     });
     await page.goto(`${base}/?debugAgents=1`, { waitUntil: 'domcontentloaded' });
-    const canvas = page.locator('canvas[aria-label^="Explore the AgenticPad"]');
+    const canvas = page.locator('canvas[aria-label^="Explore the Gamine"]');
     await canvas.waitFor({ timeout: 60000 });
     const enter = page.getByRole('button', { name: /enter world/i });
     if (await enter.count()) await enter.click();
@@ -72,7 +72,7 @@ try {
     });
     assert.deepEqual(pixels.head, [255, 0, 0, 255]); assert.deepEqual(pixels.legs, [0, 255, 255, 255]); assert.equal(pixels.depth, 14);
     fields = await page.evaluate(fields => {
-      const el = document.querySelector('canvas[aria-label^="Explore the AgenticPad"]');
+      const el = document.querySelector('canvas[aria-label^="Explore the Gamine"]');
       let f = el[Object.keys(el).find(k => k.startsWith('__reactFiber'))];
       while (f && !f.memoizedProps?.village?.current) f = f.return;
       const handle = f.memoizedProps.village.current;
@@ -162,7 +162,7 @@ try {
     for (let i = 0; i < 6; i++) await page.keyboard.press('+');
     await page.waitForTimeout(1000);
     for (const path of ['/launch', '/live', '/games', '/']) {
-      if (path === '/') await page.getByRole('link', { name: 'AgenticPad home' }).click();
+      if (path === '/') await page.getByRole('link', { name: 'Gamine home' }).click();
       else await page.locator(`nav[aria-label="Sections"] a[href="${path}"]`).click();
       await page.waitForTimeout(350);
       assert.equal(await canvas.evaluate(el => el === window.__agentTest.canvas), true, 'World canvas remounted on navigation');
