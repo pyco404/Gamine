@@ -4,7 +4,7 @@ import type { HolderView, HoldingView } from "@/lib/api";
 import { localMoment } from "@/lib/time";
 
 /**
- * Holder agents (docs/holder-agents.md): the wallet holds $AGP above the
+ * Holder agents (docs/holder-agents.md): the wallet holds $GAMINE above the
  * minimum, and that is the agent. Nothing is rented, deposited or withdrawn,
  * so these panels replace the money panels for a holder: the first says
  * whether this wallet holds enough, the second what its holding earns.
