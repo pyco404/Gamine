@@ -1,7 +1,7 @@
-# Automatic agents for $AGP and launch-token holders
+# Automatic agents for $GAMINE and launch-token holders
 
 A wallet holding at least $20 in each qualifying token gets a separate agent for
-each. Qualifying tokens are $AGP and confirmed AgenticPad launches; balances
+each. Qualifying tokens are $GAMINE and confirmed Gamine launches; balances
 across tokens are not combined. A verified zero balance retires that token’s
 agent, while a nonzero balance below $20 pauses it. Each token has its own clock. The backend picks Anchor,
 Hammer, Mirage or Bully with equal probability, once at creation, and enables
@@ -37,22 +37,22 @@ season-pegged test-token threshold.
 ## Railway api settings
 
 - `FUNDING_MODE=holder`
-- `CHAIN_RPC_URL`: full Solana mainnet RPC URL for production $AGP agents.
-- `HOLDER_MINT`: the real mainnet $AGP mint (overrides `CHAIN_STAKE_MINT`).
+- `CHAIN_RPC_URL`: full Solana mainnet RPC URL for production $GAMINE agents.
+- `HOLDER_MINT`: the real mainnet $GAMINE mint (overrides `CHAIN_STAKE_MINT`).
 - `HOLDER_DISCOVERY_RPC_URL`: mainnet Helius RPC URL with DAS access. Otherwise
   `CHAIN_RPC_URL_HELIUS` is used, or a Helius `CHAIN_RPC_URL` itself.
 - `HOLDINGS_INTERVAL_MS`: optional; default 600000.
 
 Balance and discovery RPCs must use the same network. Without discovery access,
 signed-in wallets still activate but undiscovered wallets cannot activate until
-an on-chain discovery pass or a site visit. Without a reliable indexed $AGP price,
+an on-chain discovery pass or a site visit. Without a reliable indexed $GAMINE price,
 mainnet activation stays unavailable. Never use a devnet mint as the mainnet
-$AGP mint. Deployment's existing migration runner applies
+$GAMINE mint. Deployment's existing migration runner applies
 `0034_multi_token_holders.sql`; no destructive migration is required.
 
 ## Confirmed launch catalog
 
-`HOLDER_LAUNCHPAD_URL` on the API defaults to `https://agenticpad.site`. Set it to
+`HOLDER_LAUNCHPAD_URL` on the API defaults to `https://trygamine.xyz`. Set it to
 `http://localhost:3000` for local mainnet tests. The web route
 `/api/launchpad/holder-tokens` exposes paginated mint identity from confirmed
 launch records only, including archived launches; it is not a token-market listing.
@@ -64,9 +64,9 @@ keep the launch SQLite database on a persistent volume.
 
 ## Inactive launch tokens
 
-$AGP is exempt from inactivity archiving by its configured mint address. It stays
+$GAMINE is exempt from inactivity archiving by its configured mint address. It stays
 publicly listed even during zero trading activity, and any previously archived
-$AGP market record is treated as active immediately. Market data still refreshes.
+$GAMINE market record is treated as active immediately. Market data still refreshes.
 Other launch tokens follow the four-hour rule below.
 
 The web Node server polls DEX Screener every five minutes and persists readings
@@ -107,7 +107,7 @@ a payout-total slot. Archived tokens do not contribute to token totals or volume
 Unknown/stale data shows a dash; partial token volume is not presented as a
 complete total. Reward-wallet SOL is available balance, not historical fees earned.
 Lifetime volume is not claimed from rolling 24-hour figures. Payout totals count
-only finalized $AGP winner transfers recorded by the wallet-approved executor,
+only finalized $GAMINE winner transfers recorded by the wallet-approved executor,
 including completed portions of a partial payout. Approving a plan never counts
 as paying it. The executor is configured separately; see [reward payouts](reward-payouts.md).
 
