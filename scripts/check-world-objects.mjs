@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
-const base=process.env.BASE_URL??'http://localhost:3000', out=process.env.OBJECT_SHOTS??'/tmp/oxude-world-objects';
-mkdirSync(out,{recursive:true}); const temporary=mkdtempSync(join(tmpdir(),'oxude-objects-')),helper=join(temporary,'helper.js');
+const base=process.env.BASE_URL??'http://localhost:3000', out=process.env.OBJECT_SHOTS??'/tmp/gamine-world-objects';
+mkdirSync(out,{recursive:true}); const temporary=mkdtempSync(join(tmpdir(),'gamine-objects-')),helper=join(temporary,'helper.js');
 const source=p=>JSON.stringify(fileURLToPath(new URL(p,import.meta.url)));
 await build({stdin:{contents:[
  `export { renderProjectedWorld } from ${source('../web/app/village/game/projected-art.ts')};`,
@@ -20,7 +20,7 @@ const browser=await chromium.launch({executablePath:process.env.CHROME_BIN??'/us
 try {
  const page=await browser.newPage({viewport:{width:1440,height:950}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
- await page.addInitScript(()=>{localStorage.setItem('agenticpad.sound','0');localStorage.setItem('agenticpad.cameraHelp','closed');});
+ await page.addInitScript(()=>{localStorage.setItem('gamine.sound','0');localStorage.setItem('gamine.cameraHelp','closed');});
  await page.route('**/*',route=>{
   const u=new URL(route.request().url()),headers={'access-control-allow-origin':'*'};
   if(u.pathname==='/field'&&route.request().resourceType()!=='document') return route.fulfill({json:{agents:Array.from({length:100},(_,i)=>({id:`object-test-${i}`,name:`Walker ${i}`,presetName:'Anchor',house:false,mark:null,retiredAt:null,worldActivity:null})),at:new Date().toISOString()},headers});
@@ -29,12 +29,12 @@ try {
   return route.continue();
  });
  await page.goto(`${base}/?debugAgents=1`,{waitUntil:'domcontentloaded',timeout:90000});
- const canvas=page.locator('canvas[aria-label^="Explore the AgenticPad"]');await canvas.waitFor({timeout:60000});
+ const canvas=page.locator('canvas[aria-label^="Explore the Gamine"]');await canvas.waitFor({timeout:60000});
  const enter=page.getByRole('button',{name:/enter world/i});if(await enter.count()) await enter.click();
  await page.waitForFunction(()=>window.__agentRenderDebug?.total===100,undefined,{timeout:60000});
  await page.addScriptTag({path:helper});await page.waitForTimeout(2000);
  await page.evaluate(()=>{
-  const el=document.querySelector('canvas[aria-label^="Explore the AgenticPad"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current) f=f.return;
+  const el=document.querySelector('canvas[aria-label^="Explore the Gamine"]');let f=el[Object.keys(el).find(k=>k.startsWith('__reactFiber'))];while(f&&!f.memoizedProps?.village?.current) f=f.return;
   window.__objectHandle=f.memoizedProps.village.current;window.__originalCanvas=el;
  });
  await page.screenshot({path:`${out}/town-front.png`});
