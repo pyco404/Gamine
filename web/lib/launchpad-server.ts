@@ -131,20 +131,20 @@ async function uploadMetadata(form: LaunchForm) {
 }
 
 /**
- * $AGP's mint is ground in advance to end in "AGP" and set as AGP_MINT_SECRET,
+ * $GAMINE's mint is ground in advance to end in "AGP" and set as AGP_MINT_SECRET,
  * for the wallet in AGP_MINT_LAUNCHER only. Every other launch, including
- * anyone else's "AGP" ticker, gets a fresh random mint.
+ * anyone else's "GAMINE" ticker, gets a fresh random mint.
  */
 async function mintFor(form: LaunchForm, connection: Connection): Promise<Keypair> {
   const secret = process.env.AGP_MINT_SECRET;
-  if (form.ticker !== "AGP" || !secret) return Keypair.generate();
+  if (form.ticker !== "GAMINE" || !secret) return Keypair.generate();
   let launcher: string, mint: Keypair;
   try {
     launcher = new PublicKey(process.env.AGP_MINT_LAUNCHER ?? "").toBase58();
     mint = Keypair.fromSecretKey(secret.trim().startsWith("[") ? Uint8Array.from(JSON.parse(secret) as number[]) : bs58.decode(secret.trim()));
-  } catch { throw new LaunchError("The $AGP mint is not configured correctly.", 503); }
+  } catch { throw new LaunchError("The $GAMINE mint is not configured correctly.", 503); }
   if (form.creator !== launcher) return Keypair.generate();
-  if (!mint.publicKey.toBase58().endsWith("AGP")) throw new LaunchError("The configured $AGP mint does not end in AGP.", 503);
+  if (!mint.publicKey.toBase58().endsWith("AGP")) throw new LaunchError("The configured $GAMINE mint does not end in AGP.", 503);
   // A mint is used once. An earlier attempt that expired without creating the token (its approval
   // window has finally passed and the mint account does not exist) can never land, so it releases
   // the mint; anything else still holds it, and is resumed rather than prepared again.
@@ -152,7 +152,7 @@ async function mintFor(form: LaunchForm, connection: Connection): Promise<Keypai
   if (earlier) {
     const lapsed = !earlier.confirmed && await connection.getBlockHeight("finalized") > earlier.lastValidBlockHeight
       && !await connection.getAccountInfo(mint.publicKey, "finalized");
-    if (!lapsed) throw new LaunchError("The configured $AGP mint is in a launch that may still land. Check its status or resume it.", 409);
+    if (!lapsed) throw new LaunchError("The configured $GAMINE mint is in a launch that may still land. Check its status or resume it.", 409);
     launchStore().release(earlier.id);
   }
   return mint;
@@ -196,7 +196,7 @@ export async function prepareLaunch(body: Record<string, unknown>, owner: string
     transaction: serialized, lastValidBlockHeight: latest.lastValidBlockHeight,
     signature: null, signed: null, confirmed: false, failure: null,
   });
-  // Discard the mint keypair (the $AGP one lives on in its env until removed). The wallet receives only a partially signed transaction.
+  // Discard the mint keypair (the $GAMINE one lives on in its env until removed). The wallet receives only a partially signed transaction.
   return { id, mint: mint.publicKey.toBase58(), transaction: serialized };
 }
 
@@ -285,6 +285,6 @@ export async function getPumpToken(mint: string): Promise<TokenDetail | null> {
   try {
     if (!sharing?.owner.equals(pump.PUMP_FEE_PROGRAM_ID)) throw new Error();
     verifyFeeSharing(pump.PUMP_SDK.decodeSharingConfig(sharing), new PublicKey(mint));
-  } catch { token.verification = "removed"; token.removedReason = "The locked creator fee configuration no longer matches AgenticPad."; }
+  } catch { token.verification = "removed"; token.removedReason = "The locked creator fee configuration no longer matches Gamine."; }
   return token;
 }
