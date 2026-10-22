@@ -49,7 +49,7 @@ export type SignInMethod = WalletName | "Privy";
 
 export type Session = { token: string; ownerId: string; wallet: SignInMethod; expiresAt: string };
 
-const SESSION_KEY = "agenticpad.session";
+const SESSION_KEY = "gamine.session";
 
 /**
  * The session token lives in localStorage so a refresh does not ask for a new
