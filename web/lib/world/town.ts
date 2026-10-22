@@ -28,7 +28,7 @@ export const ROAD_WIDTH = RING_WIDTH;
  *     training yard where waiting agents wander.
  *
  * Positions are world pixels, each building's bottom-centre. The art drawn for
- * AgenticPad (scripts/village-art.ts, in /village/agenticpad) is at one art
+ * Gamine (scripts/village-art.ts, in /village/gamine) is at one art
  * pixel to two world pixels, so it is drawn at scale 2.
  */
 
@@ -52,7 +52,7 @@ export type Site = {
   blocks?: Rect[];
 };
 
-const ART = "/village/agenticpad";
+const ART = "/village/gamine";
 
 /** Keep the Arena's town anchor; share the new oval floor with match placement. */
 const ARENA_FOOT = { x: 1400, y: 975 };
