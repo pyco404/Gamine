@@ -12,28 +12,28 @@ function storage(): Storage {
 }
 
 describe("Branding changes preserve existing state", () => {
-  it("moves an existing signed pending launch without altering its bytes", () => {
+  it.each(["agenticpad", "agentclash"])("moves an existing signed pending launch from %s without altering its bytes", (brand) => {
     const saved = storage();
     const pending = JSON.stringify({ id: "same-launch", signed: "same-signed-transaction" });
-    saved.setItem("agentclash.pump.pending", pending);
-    expect(readStoredValue(saved, "agenticpad.pump.pending")).toBe(pending);
-    expect(saved.getItem("agenticpad.pump.pending")).toBe(pending);
-    expect(saved.getItem("agentclash.pump.pending")).toBeNull();
+    saved.setItem(`${brand}.pump.pending`, pending);
+    expect(readStoredValue(saved, "gamine.pump.pending")).toBe(pending);
+    expect(saved.getItem("gamine.pump.pending")).toBe(pending);
+    expect(saved.getItem(`${brand}.pump.pending`)).toBeNull();
   });
   it("prefers current state and signing out also clears the old session", () => {
     const saved = storage();
-    saved.setItem("agenticpad.session", "current"); saved.setItem("oxude.session", "old");
-    expect(readStoredValue(saved, "agenticpad.session")).toBe("current");
-    removeStoredValue(saved, "agenticpad.session");
-    expect(readStoredValue(saved, "agenticpad.session")).toBeNull();
+    saved.setItem("gamine.session", "current"); saved.setItem("oxude.session", "old");
+    expect(readStoredValue(saved, "gamine.session")).toBe("current");
+    removeStoredValue(saved, "gamine.session");
+    expect(readStoredValue(saved, "gamine.session")).toBeNull();
   });
   it("keeps the old pending transaction recoverable when storage is full", () => {
     const saved = storage(); saved.setItem("agentclash.pump.pending", "signed");
     saved.setItem = () => { throw new Error("full"); };
-    expect(readStoredValue(saved, "agenticpad.pump.pending")).toBe("signed");
+    expect(readStoredValue(saved, "gamine.pump.pending")).toBe("signed");
     expect(saved.getItem("agentclash.pump.pending")).toBe("signed");
-    removeStoredValue(saved, "agenticpad.pump.pending");
-    expect(readStoredValue(saved, "agenticpad.pump.pending")).toBeNull();
+    removeStoredValue(saved, "gamine.pump.pending");
+    expect(readStoredValue(saved, "gamine.pump.pending")).toBeNull();
   });
   it("loads the mint from an older saved payout plan", () => {
     const launches = new LaunchStore(":memory:"); const payouts = new PayoutStore(launches.db);
