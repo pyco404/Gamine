@@ -28,9 +28,9 @@ export type Piece = {
   depth?: number;
 };
 
-const ART = "/village/agenticpad";
+const ART = "/village/gamine";
 
-/** A piece of the AgenticPad art, drawn at its two world pixels to the art pixel unless told otherwise. */
+/** A piece of the Gamine art, drawn at its two world pixels to the art pixel unless told otherwise. */
 const art = (name: string, x: number, y: number, scale = 2, more: Partial<Piece> = {}): Piece => ({
   key: `ac-${name}`,
   image: `${ART}/${name}.png`,
