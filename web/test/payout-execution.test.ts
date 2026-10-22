@@ -135,7 +135,7 @@ describe("wallet-approved payout execution (no real funds)", () => {
         expect(() => verifySwapOrder({ ...quote, ...patch }, s.plan, "80000000", 200)).toThrow("limits");
     } finally { s.launches.db.close(); }
   });
-  it("pays held $AGP to each winner without ever preparing a swap", async () => {
+  it("pays held $GAMINE to each winner without ever preparing a swap", async () => {
     const s = setup();
     try {
       const held = buildHeldPayoutPlan({ kind: "weekly", period: "2026-10-05", budgetAgp: "1000", rewardPercent: "50" }, 6,
