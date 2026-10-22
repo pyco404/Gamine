@@ -8,7 +8,7 @@ export function isStaleBuild(error: unknown): boolean {
   return !!e && (e.name === "ChunkLoadError" || /Loading chunk|Failed to load chunk|Importing a module script failed|error loading dynamically imported module|Failed to fetch dynamically imported module/i.test(e.message ?? ""));
 }
 
-const KEY = "agenticpad:stale-build-reload";
+const KEY = "gamine:stale-build-reload";
 
 /** Reloads into the new build, at most once a minute, so a real failure can never become a reload loop. */
 export function reloadOnce(): boolean {
