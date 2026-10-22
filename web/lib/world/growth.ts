@@ -22,25 +22,25 @@ import { GARDEN_PONDS } from "./landmarks";
 /** Every picture a plot can be built from, with where it comes from and how it stands. */
 export const PIECE_ART = {
   // The pack's own (public/fixtures).
-  House_Blue: { src: "/village/agenticpad/modern-villa-blue.png", width: 128, height: 192, foot: 172 / 192 },
-  House_Red: { src: "/village/agenticpad/modern-villa-red.png", width: 128, height: 192, foot: 172 / 192 },
-  House_Yellow: { src: "/village/agenticpad/modern-villa-yellow.png", width: 128, height: 192, foot: 172 / 192 },
-  House_Purple: { src: "/village/agenticpad/modern-villa-purple.png", width: 128, height: 192, foot: 172 / 192 },
+  House_Blue: { src: "/village/gamine/modern-villa-blue.png", width: 128, height: 192, foot: 172 / 192 },
+  House_Red: { src: "/village/gamine/modern-villa-red.png", width: 128, height: 192, foot: 172 / 192 },
+  House_Yellow: { src: "/village/gamine/modern-villa-yellow.png", width: 128, height: 192, foot: 172 / 192 },
+  House_Purple: { src: "/village/gamine/modern-villa-purple.png", width: 128, height: 192, foot: 172 / 192 },
   Plot: { src: "/fixtures/Plot.png", width: 90, height: 54, foot: 1 },
   Yard: { src: "/fixtures/Yard.png", width: 288, height: 107, foot: 1 },
   Pumpkin: { src: "/fixtures/Pumpkin.png", width: 64, height: 64, foot: 1 },
   Fence: { src: "/fixtures/Fence.png", width: 96, height: 30, foot: 1 },
   // A sheet of eight frames, 128 across.
   Sheep: { src: "/fixtures/Sheep.png", width: 128, height: 128, foot: 0.8, frames: 8 },
-  // New Town's, drawn for AgenticPad (scripts/village-art.ts): glass, flat roofs, screens, lamps.
-  office: { src: "/village/agenticpad/modern-office.png", width: 56, height: 74, foot: 1 },
-  "house-a": { src: "/village/agenticpad/modern-house-a.png", width: 54, height: 50, foot: 1 },
-  "house-b": { src: "/village/agenticpad/modern-house-b.png", width: 54, height: 50, foot: 1 },
-  shop: { src: "/village/agenticpad/modern-shop.png", width: 58, height: 54, foot: 1 },
-  apartments: { src: "/village/agenticpad/modern-apartments.png", width: 60, height: 86, foot: 1 },
-  kiosk: { src: "/village/agenticpad/modern-kiosk.png", width: 38, height: 42, foot: 1 },
-  lamp: { src: "/village/agenticpad/modern-lamp.png", width: 10, height: 38, foot: 1 },
-  planter: { src: "/village/agenticpad/modern-planter.png", width: 22, height: 14, foot: 1 },
+  // New Town's, drawn for Gamine (scripts/village-art.ts): glass, flat roofs, screens, lamps.
+  office: { src: "/village/gamine/modern-office.png", width: 56, height: 74, foot: 1 },
+  "house-a": { src: "/village/gamine/modern-house-a.png", width: 54, height: 50, foot: 1 },
+  "house-b": { src: "/village/gamine/modern-house-b.png", width: 54, height: 50, foot: 1 },
+  shop: { src: "/village/gamine/modern-shop.png", width: 58, height: 54, foot: 1 },
+  apartments: { src: "/village/gamine/modern-apartments.png", width: 60, height: 86, foot: 1 },
+  kiosk: { src: "/village/gamine/modern-kiosk.png", width: 38, height: 42, foot: 1 },
+  lamp: { src: "/village/gamine/modern-lamp.png", width: 10, height: 38, foot: 1 },
+  planter: { src: "/village/gamine/modern-planter.png", width: 22, height: 14, foot: 1 },
 } as const satisfies Record<string, { src: string; width: number; height: number; foot: number; frames?: number }>;
 
 export type PieceArt = keyof typeof PIECE_ART;
