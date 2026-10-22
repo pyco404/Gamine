@@ -64,7 +64,7 @@ export async function advancePayout(plan: PayoutPlan, run: PayoutExecution, adap
   if (run.status !== "running" || now < run.nextAt) return;
   const batch = run.batches[run.batch];
   if (!batch) throw new Error("Invalid payout batch.");
-  // A held-$AGP payout starts with its output known (startExecution), so it never swaps.
+  // A held-$GAMINE payout starts with its output known (startExecution), so it never swaps.
   if (batch.output === null && !batch.swap) {
     if (!allowPrepare) return;
     batch.swap = await adapter.prepareSwap(plan, plan.batchLamports[run.batch]!, plan.batchLamports.slice(run.batch).reduce((sum, n) => sum + BigInt(n), 0n).toString());
