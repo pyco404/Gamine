@@ -1,5 +1,5 @@
-/** $AGP, AgenticPad's own token, launched on pump.fun through AgenticPad on 2026-10-09. */
-export const AGP_MINT = process.env.NEXT_PUBLIC_AGP_MINT || "VTtPk5KG2FrHYXUwv7YvmRjxk66tuSutxvptFZAJAGP";
+/** $GAMINE, Gamine's own token, launched on pump.fun through Gamine on 2026-10-09. */
+export const AGP_MINT = process.env.NEXT_PUBLIC_AGP_MINT || "0000000000000000000000000000000000000000000";
 export const AGP_LINKS = {
   pump: `https://pump.fun/coin/${AGP_MINT}`,
   solscan: `https://solscan.io/token/${AGP_MINT}`,
