@@ -125,7 +125,7 @@
       "wall": "#c8371c"
     }
   },
-  "/village/agenticpad/bazaar.png": {
+  "/village/gamine/bazaar.png": {
     "name": "bazaar",
     "form": "body",
     "depth": 0.2887
@@ -141,54 +141,54 @@
       "wall": "#583920"
     }
   },
-  "/village/agenticpad/launch-pad.png": {
+  "/village/gamine/launch-pad.png": {
     "name": "launch-pad",
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/leaderboard.png": {
+  "/village/gamine/leaderboard.png": {
     "name": "leaderboard",
     "form": "board",
     "depth": 0.05,
     "thickness": 6
   },
-  "/village/agenticpad/scoreboard.png": {
+  "/village/gamine/scoreboard.png": {
     "name": "scoreboard",
     "form": "board",
     "depth": 0.0645,
     "thickness": 4
   },
-  "/village/agenticpad/hiring-board.png": {
+  "/village/gamine/hiring-board.png": {
     "name": "hiring-board",
     "form": "board",
     "depth": 0.0741,
     "thickness": 4
   },
-  "/village/agenticpad/strategy-board.png": {
+  "/village/gamine/strategy-board.png": {
     "name": "strategy-board",
     "form": "board",
     "depth": 0.0833,
     "thickness": 3
   },
-  "/village/agenticpad/banner.png": {
+  "/village/gamine/banner.png": {
     "name": "banner",
     "form": "board",
     "depth": 0.2,
     "thickness": 2
   },
-  "/village/agenticpad/banner-fame.png": {
+  "/village/gamine/banner-fame.png": {
     "name": "banner-fame",
     "form": "board",
     "depth": 0.2,
     "thickness": 2
   },
-  "/village/agenticpad/banner-gold.png": {
+  "/village/gamine/banner-gold.png": {
     "name": "banner-gold",
     "form": "board",
     "depth": 0.2,
     "thickness": 2
   },
-  "/village/agenticpad/flag.png": {
+  "/village/gamine/flag.png": {
     "name": "flag",
     "form": "board",
     "depth": 0.1538,
@@ -200,12 +200,12 @@
     "depth": 0.0625,
     "thickness": 4
   },
-  "/village/agenticpad/tent.png": {
+  "/village/gamine/tent.png": {
     "name": "tent",
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/chest.png": {
+  "/village/gamine/chest.png": {
     "name": "chest",
     "form": "body",
     "depth": 0.25,
@@ -216,7 +216,7 @@
       "wall": "#a17d52"
     }
   },
-  "/village/agenticpad/war-table.png": {
+  "/village/gamine/war-table.png": {
     "name": "war-table",
     "form": "body",
     "depth": 0.1739,
@@ -227,7 +227,7 @@
       "wall": "#787957"
     }
   },
-  "/village/agenticpad/bench.png": {
+  "/village/gamine/bench.png": {
     "name": "bench",
     "form": "body",
     "depth": 0.2,
@@ -238,17 +238,17 @@
       "wall": "#85634b"
     }
   },
-  "/village/agenticpad/dummy.png": {
+  "/village/gamine/dummy.png": {
     "name": "dummy",
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/statue.png": {
+  "/village/gamine/statue.png": {
     "name": "statue",
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/trophy.png": {
+  "/village/gamine/trophy.png": {
     "name": "trophy",
     "form": "cross",
     "depth": 1
@@ -268,12 +268,12 @@
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/coins.png": {
+  "/village/gamine/coins.png": {
     "name": "coins",
     "form": "cross",
     "depth": 1
   },
-  "/village/agenticpad/log.png": {
+  "/village/gamine/log.png": {
     "name": "log",
     "form": "body",
     "depth": 0.25
