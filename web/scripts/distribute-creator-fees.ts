@@ -9,7 +9,7 @@ import { distribute, feeWalletBalances, mainnet } from "./pump-distribute";
  * scripts/claim-all-fees.ts.
  */
 if (process.argv.includes("--help")) {
-  console.log("Usage: npm run pump:distribute -- [--mint <address>] [--keypair /path/to/wallet.json --send]\nDefaults to $AGP. Without --send, reports and simulates only. Requires PUMP_RPC_URL (mainnet).");
+  console.log("Usage: npm run pump:distribute -- [--mint <address>] [--keypair /path/to/wallet.json --send]\nDefaults to $GAMINE. Without --send, reports and simulates only. Requires PUMP_RPC_URL (mainnet).");
   process.exit(0);
 }
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i >= 0 ? process.argv[i + 1] : undefined; };
