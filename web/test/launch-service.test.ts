@@ -119,7 +119,7 @@ describe("Launch service (RPC and IPFS stubbed; no transactions sent)", () => {
     expect(status.failure?.message).toContain("expired");
     expect(Connection.prototype.sendRawTransaction).not.toHaveBeenCalled();
   });
-  describe("the $AGP mint", () => {
+  describe("the $GAMINE mint", () => {
     // Grinding a real AGP address takes seconds to minutes, so the configured
     // key is a random one, given a stand-in address that ends in AGP.
     const address = "1".repeat(30) + "AGP";
@@ -128,9 +128,9 @@ describe("Launch service (RPC and IPFS stubbed; no transactions sent)", () => {
       vi.spyOn(Keypair, "fromSecretKey").mockReturnValue({ publicKey: new PublicKey(address), secretKey: agp.secretKey } as Keypair);
       vi.stubEnv("AGP_MINT_SECRET", JSON.stringify(Array.from(agp.secretKey)));
       vi.stubEnv("AGP_MINT_LAUNCHER", user.publicKey.toBase58());
-      form = { ...form, ticker: "AGP" };
+      form = { ...form, ticker: "GAMINE" };
     });
-    it("uses the configured mint for the configured launcher's AGP launch, once while it may land", async () => {
+    it("uses the configured mint for the configured launcher's GAMINE launch, once while it may land", async () => {
       expect((await prepare()).mint).toBe(address);
       const first = id;
       id = crypto.randomUUID();
@@ -145,7 +145,7 @@ describe("Launch service (RPC and IPFS stubbed; no transactions sent)", () => {
       vi.mocked(connection.getAccountInfo).mockResolvedValue({ executable: false, lamports: 1, owner: PublicKey.default, data: Buffer.alloc(0), rentEpoch: 0 });
       await expect(prepare()).rejects.toThrow("may still land");
     });
-    it("gives anyone else's AGP launch, and the launcher's other tickers, a random mint", async () => {
+    it("gives anyone else's GAMINE launch, and the launcher's other tickers, a random mint", async () => {
       const other = Keypair.generate();
       const theirs = await prepareLaunch({ id, form: { ...form, creator: other.publicKey.toBase58() } }, other.publicKey.toBase58(), connection);
       expect(theirs.mint).not.toBe(address);
@@ -181,22 +181,22 @@ describe("Launch service (RPC and IPFS stubbed; no transactions sent)", () => {
   });
   it("verifies sign-in with the API rather than trusting the submitted wallet", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(Response.json({ ownerId: form.creator }));
-    expect(await ownerOf(new Request("https://agenticpad.example/api/launchpad/prepare", { headers: { authorization: "Bearer test-session" } }))).toBe(form.creator);
-    await expect(ownerOf(new Request("https://agenticpad.example/"))).rejects.toThrow("sign in");
+    expect(await ownerOf(new Request("https://gamine.example/api/launchpad/prepare", { headers: { authorization: "Bearer test-session" } }))).toBe(form.creator);
+    await expect(ownerOf(new Request("https://gamine.example/"))).rejects.toThrow("sign in");
   });
   it("accepts launch posts from this site behind a host's proxy, and refuses other sites", () => {
     // Railway hands the app its internal address; the public one arrives in forwarded headers.
     const at = (origin: string | null, headers: Record<string, string> = {}) =>
       fromThisSite(new Request("http://localhost:8080/api/launchpad/prepare", { method: "POST", headers: { ...(origin ? { origin } : {}), ...headers } }));
-    expect(at("https://agenticpad.site", { "x-forwarded-host": "agenticpad.site", "x-forwarded-proto": "https" })).toBe(true);
-    expect(at("https://agenticpad.site")).toBe(true);
+    expect(at("https://trygamine.xyz", { "x-forwarded-host": "trygamine.xyz", "x-forwarded-proto": "https" })).toBe(true);
+    expect(at("https://trygamine.xyz")).toBe(true);
     expect(at("http://localhost:8080")).toBe(true);
-    expect(at("https://evil.example", { "x-forwarded-host": "agenticpad.site", "x-forwarded-proto": "https" })).toBe(false);
+    expect(at("https://evil.example", { "x-forwarded-host": "trygamine.xyz", "x-forwarded-proto": "https" })).toBe(false);
     expect(at(null)).toBe(false);
   });
   it("bounds chunked JSON request bodies", async () => {
-    const request = new Request("https://agenticpad.example/", { method: "POST", body: "a".repeat(3_000_001) });
+    const request = new Request("https://gamine.example/", { method: "POST", body: "a".repeat(3_000_001) });
     await expect(readLaunchBody(request)).rejects.toThrow("too large");
-    await expect(readLaunchBody(new Request("https://agenticpad.example/", { method: "POST", body: "[]" }))).rejects.toThrow("Invalid");
+    await expect(readLaunchBody(new Request("https://gamine.example/", { method: "POST", body: "[]" }))).rejects.toThrow("Invalid");
   });
 });
