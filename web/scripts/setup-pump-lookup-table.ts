@@ -28,7 +28,7 @@ if (!process.argv.includes("--send")) {
 const keyIndex = process.argv.indexOf("--keypair");
 if (keyIndex < 0 || !process.argv[keyIndex + 1]) throw new Error("Provide the platform keypair file using --keypair.");
 const signer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(process.argv[keyIndex + 1]!, "utf8"))));
-if (!signer.publicKey.equals(payer)) throw new Error("The keypair must match AgenticPad's platform wallet.");
+if (!signer.publicKey.equals(payer)) throw new Error("The keypair must match Gamine's platform wallet.");
 const recentSlot = await connection.getSlot("finalized");
 const [create, table] = AddressLookupTableProgram.createLookupTable({ authority: payer, payer, recentSlot });
 await sendAndConfirmTransaction(connection, new Transaction().add(create), [signer]);
