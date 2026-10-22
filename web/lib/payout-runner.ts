@@ -14,7 +14,7 @@ export async function startExecution(id: string, owner: string, adapter: PayoutA
   const run: PayoutExecution = { planId: id, source: plan.source, mint: plan.agpMint, decimals,
     status: "running", startedBy: owner, startedAt: new Date().toISOString(), completedAt: null,
     error: null, nextAt: 0, batch: 0,
-    // $AGP already held needs no swap: its one batch is the allocation itself, split as approved.
+    // $GAMINE already held needs no swap: its one batch is the allocation itself, split as approved.
     batches: plan.funding === "held"
       ? [(() => { const payments = splitOutput(plan.allocatedLamports, plan.winners); return { swap: null, output: plan.allocatedLamports, payments, transfers: groupTransfers(payments), completedAt: null }; })()]
       : plan.batchLamports.map(() => ({ swap: null, output: null, payments: [], transfers: [], completedAt: null })) };
