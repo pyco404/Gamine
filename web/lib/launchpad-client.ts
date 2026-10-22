@@ -2,7 +2,7 @@ import { readStoredValue, removeStoredValue } from "./browser-storage";
 import type { LaunchForm, Launchpad, LaunchStatus } from "./launchpad";
 import { loadSession } from "./wallet";
 
-const PENDING_KEY = "agenticpad.pump.pending";
+const PENDING_KEY = "gamine.pump.pending";
 type Pending = { id: string; draft: LaunchForm; signed: string | null };
 
 export function pendingPumpLaunch(): Pending | null {
