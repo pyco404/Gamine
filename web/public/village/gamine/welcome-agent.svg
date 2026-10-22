@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" shape-rendering="crispEdges">
-<!-- AgenticPad's own visor/fern character: portrait v2, welcome-agent-195, Anchor. Bare head uses the same 40px palette snapping as world characters. Body uses the world's torso/limb style. -->
+<!-- Gamine's own visor/fern character: portrait v2, welcome-agent-195, Anchor. Bare head uses the same 40px palette snapping as world characters. Body uses the world's torso/limb style. -->
 <path d="M22 66h28v2H22zM26 64h20v6H26z" fill="#020906" opacity=".6"/>
 <path d="M27 52h8v15h-8zM37 52h8v15h-8z" fill="#3a3142"/>
 <path d="M26 64h10v4H26zM36 64h10v4H36z" fill="#1b1620"/>
