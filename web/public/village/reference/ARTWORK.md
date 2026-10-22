@@ -1,6 +1,6 @@
 These game sprites were generated with the built-in image_gen tool for the
 October 2026 reference-inspired field redesign. The supplied medieval village
-image guided the visual direction; the live field keeps AgenticPad's landmarks,
+image guided the visual direction; the live field keeps Gamine's landmarks,
 official crest and interactive agents.
 
 Prompt set: detailed 16-bit JRPG village sprites, top-down three-quarter view,
