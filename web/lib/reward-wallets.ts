@@ -9,7 +9,7 @@ let cached: { at: number; value: RewardWallets } | null = null;
 
 /**
  * The daily and weekly reward wallets, as the chain has them now: the SOL each holds for fees, and
- * the $AGP bought into it for payouts. Read at most every 30 seconds; a wallet that cannot be read
+ * the $GAMINE bought into it for payouts. Read at most every 30 seconds; a wallet that cannot be read
  * shows its address with unknown balances rather than failing the page.
  */
 export async function rewardWallets(): Promise<RewardWallets> {
