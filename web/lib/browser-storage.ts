@@ -1,11 +1,13 @@
 /** Move saved browser state to the new brand without losing an active launch. */
 const legacyKeys: Record<string, string[]> = {
-  "agenticpad.session": ["oxude.session"],
-  "agenticpad.agent": ["oxude.agent"],
-  "agenticpad.sound": ["agentclash.sound"],
-  "agenticpad.night": ["agentclash.night"],
-  "agenticpad.pump.pending": ["agentclash.pump.pending"],
-  "agenticpad.launchpad.mock": ["agentclash.launchpad.mock"],
+  "gamine.session": ["agenticpad.session", "oxude.session"],
+  "gamine.agent": ["agenticpad.agent", "oxude.agent"],
+  "gamine.sound": ["agenticpad.sound", "agentclash.sound"],
+  "gamine.night": ["agenticpad.night", "agentclash.night"],
+  "gamine.pump.pending": ["agenticpad.pump.pending", "agentclash.pump.pending"],
+  "gamine.launchpad.mock": ["agenticpad.launchpad.mock", "agentclash.launchpad.mock"],
+  "gamine.arena.v1": ["agenticpad.arena.v1"],
+  "gamine.cameraHelp": ["agenticpad.cameraHelp"],
 };
 
 export function readStoredValue(storage: Storage, key: string): string | null {
