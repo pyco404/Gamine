@@ -47,7 +47,7 @@ const wait = (ms = LATENCY_MS) => new Promise((r) => setTimeout(r, ms));
 
 type Launch = { id: string; form: LaunchForm; mint: string; createdAt: number; failAt: Stage | null };
 
-const KEY = "agenticpad.launchpad.mock";
+const KEY = "gamine.launchpad.mock";
 let launches: Launch[] | null = null;
 
 function store(): Launch[] {
@@ -160,7 +160,7 @@ const SEEDS: Seed[] = [
     volume24hUsd: 44_000,
     bondingProgress: 100,
     removedReason:
-      "Its fee split was found changed on pump.fun after launch: creator fees no longer go to the three AgenticPad wallets. Its agents left the village.",
+      "Its fee split was found changed on pump.fun after launch: creator fees no longer go to the three Gamine wallets. Its agents left the village.",
   },
   // More made-up tokens, so every ordering on the explore page has something to rank.
   ...(
