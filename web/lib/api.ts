@@ -50,7 +50,7 @@ export type Traits = {
 
 /**
  * How an agent is funded. "holder" is the model being built
- * (docs/holder-agents.md): the wallet holds $AGP above the minimum and that
+ * (docs/holder-agents.md): the wallet holds $GAMINE above the minimum and that
  * is the agent - nothing rented, deposited or withdrawn.
  */
 export type Funding = "seed" | "deposit" | "holder";
