@@ -53,6 +53,6 @@ export function verifyFeeSharing(config: SharingConfig & { status?: Record<strin
   if (config.version !== 2 || !status || !Object.hasOwn(status, "active")) throw new Error("The creator fee configuration is not active.");
   if (!config.mint.equals(mint) || !config.adminRevoked || config.shareholders.length !== feeWallets.length) throw new Error("The creator fee split is not locked as required.");
   for (const wallet of feeWallets) {
-    if (!config.shareholders.some((share) => share.address.toBase58() === wallet.address && share.shareBps === wallet.shareBps)) throw new Error("The creator fee recipients or percentages do not match AgenticPad.");
+    if (!config.shareholders.some((share) => share.address.toBase58() === wallet.address && share.shareBps === wallet.shareBps)) throw new Error("The creator fee recipients or percentages do not match Gamine.");
   }
 }
