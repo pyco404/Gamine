@@ -5,7 +5,7 @@ import { AGP_MINT } from "../lib/agp";
 import { distribute, feeWalletBalances, mainnet, type Distribution } from "./pump-distribute";
 
 /**
- * Pays out the creator fees of every token launched on AgenticPad except $AGP, each to its locked
+ * Pays out the creator fees of every token launched on Gamine except $GAMINE, each to its locked
  * split (15% daily, 50% weekly, 35% platform). The token list comes from the site's confirmed-launch
  * catalog and is kept in web/.data/launched-tokens.json: tokens are added as they launch and never
  * dropped, so an archived launch is still swept. Without --send it reports and simulates only; one
@@ -18,11 +18,11 @@ import { distribute, feeWalletBalances, mainnet, type Distribution } from "./pum
  * network fee is a real part of what would be swept.
  */
 if (process.argv.includes("--help")) {
-  console.log("Usage: npm run pump:claim-all -- [--keypair /path/to/wallet.json --send] [--min-sol 0.001] [--site https://agenticpad.site]\nEvery launched token except $AGP. Without --send, reports and simulates only. Requires PUMP_RPC_URL (mainnet).");
+  console.log("Usage: npm run pump:claim-all -- [--keypair /path/to/wallet.json --send] [--min-sol 0.001] [--site https://trygamine.xyz]\nEvery launched token except $GAMINE. Without --send, reports and simulates only. Requires PUMP_RPC_URL (mainnet).");
   process.exit(0);
 }
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i >= 0 ? process.argv[i + 1] : undefined; };
-const site = (arg("--site") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://agenticpad.site").replace(/\/$/, "");
+const site = (arg("--site") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://trygamine.xyz").replace(/\/$/, "");
 const file = resolve(import.meta.dirname, "../.data/launched-tokens.json");
 
 type Token = { mint: string; symbol: string; name: string; firstSeen: string };
@@ -74,7 +74,7 @@ if (send && !signer) throw new Error("--send needs --keypair /path/to/wallet.jso
 const skip = new Set([AGP_MINT, process.env.PAYOUT_AGP_MINT].filter(Boolean));
 const list = (await tokens()).filter((t) => !skip.has(t.mint));
 console.log(`Fee wallets before: ${JSON.stringify(await feeWalletBalances(connection))}`);
-console.log(`${list.length} tokens to check (every launch except $AGP)${send ? "" : "; simulating only, nothing will be sent"}.\n`);
+console.log(`${list.length} tokens to check (every launch except $GAMINE)${send ? "" : "; simulating only, nothing will be sent"}.\n`);
 
 const rows: { token: string; mint: string; result: Distribution | { status: "error"; why: string } }[] = [];
 for (const t of list) {
