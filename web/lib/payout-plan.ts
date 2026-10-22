@@ -4,7 +4,7 @@ export type PayoutInput = {
   kind: "daily" | "weekly"; period: string; budgetSol: string;
   rewardPercent: string; batchSol: string; delaySeconds: number; slippageBps: number;
 };
-/** $AGP the operator already bought into the reward wallet, paid out as it is: no swap. */
+/** $GAMINE the operator already bought into the reward wallet, paid out as it is: no swap. */
 export type HeldPayoutInput = { kind: "daily" | "weekly"; period: string; budgetAgp: string; rewardPercent: string };
 /** One agent: a wallet holding one token. A wallet with agents for several tokens is several winners. */
 export type PayoutWinner = { agentId: string; name: string; wallet: string; mint?: string; share: number };
@@ -19,9 +19,9 @@ export type PayoutPlan = {
   cancelledBy?: string; cancelledAt?: string;
   agpMint: string | null;
   /**
-   * "swap" (the default, and every older plan) spends SOL: amounts are lamports, swapped into $AGP
-   * batch by batch. "held" pays $AGP already in the reward wallet: every amount field - budget,
-   * allocation, carryover, batch, each winner's `lamports` - is in $AGP base units of `decimals`.
+   * "swap" (the default, and every older plan) spends SOL: amounts are lamports, swapped into $GAMINE
+   * batch by batch. "held" pays $GAMINE already in the reward wallet: every amount field - budget,
+   * allocation, carryover, batch, each winner's `lamports` - is in $GAMINE base units of `decimals`.
    */
   funding?: "swap" | "held";
   decimals?: number;
@@ -99,19 +99,19 @@ export function buildPayoutPlan(input: PayoutInput, winners: PayoutWinner[], sou
 /** A token amount ("1250000.5") in base units of `decimals`. */
 export function tokenUnits(value: string, decimals: number): bigint {
   const match = /^(\d{1,15})(?:\.(\d+))?$/.exec(value.trim().replaceAll(",", ""));
-  if (!match || (match[2]?.length ?? 0) > decimals) throw new Error(`Enter an $AGP amount with up to ${decimals} decimal places.`);
+  if (!match || (match[2]?.length ?? 0) > decimals) throw new Error(`Enter an $GAMINE amount with up to ${decimals} decimal places.`);
   return BigInt(match[1]!) * 10n ** BigInt(decimals) + BigInt((match[2] ?? "").padEnd(decimals, "0") || "0");
 }
 
 /**
- * Pays $AGP already bought into the reward wallet. No swap, so no batching against price impact:
+ * Pays $GAMINE already bought into the reward wallet. No swap, so no batching against price impact:
  * one batch of winner transfers, each still signed by the reward wallet. The shares come from the API
- * under the payout's cap; whatever is rounded or not allocated stays in the wallet as $AGP.
+ * under the payout's cap; whatever is rounded or not allocated stays in the wallet as $GAMINE.
  */
 export function buildHeldPayoutPlan(input: HeldPayoutInput, decimals: number, winners: PayoutWinner[], source: string, platform: string, owner: string, capBps = 1_000): PayoutPlan {
-  if (!Number.isInteger(decimals) || decimals < 0 || decimals > 9) throw new Error("Invalid $AGP decimals.");
+  if (!Number.isInteger(decimals) || decimals < 0 || decimals > 9) throw new Error("Invalid $GAMINE decimals.");
   const budget = tokenUnits(input.budgetAgp, decimals);
-  if (budget <= 0n) throw new Error("The $AGP amount must be greater than zero.");
+  if (budget <= 0n) throw new Error("The $GAMINE amount must be greater than zero.");
   const rewardBps = percentBps(input.rewardPercent);
   const { recipients, allocated } = allocate(budget * BigInt(rewardBps) / 10_000n, winners, capBps);
   return {
