@@ -98,7 +98,7 @@ export function LaunchFlow() {
             ? "All of the token's creator fees go to Gamine's wallets. The launcher keeps none."
             : `${100 - config.launcherShare}% of the token's creator fees go to Gamine's wallets; the launcher keeps ${config.launcherShare}%.`}
         </span>{" "}
-        {config.feeSplit.daily}% daily rewards, {config.feeSplit.weekly}% weekly rewards, {config.feeSplit.platform}% platform, locked at launch.
+        {config.feeSplit.agents}% agent rewards, {config.feeSplit.platform}% platform, locked at launch.
       </p>
       <Stepper current={step} />
       {step === "connect" ? <ConnectStep /> : null}
@@ -334,7 +334,7 @@ function ReviewStep({
   const [error, setError] = useState<string | null>(null);
   const { feeSplit: s, launcherShare } = config;
   const t = `$${draft.ticker}`;
-  const splitText = `${s.daily}/${s.weekly}/${s.platform}`;
+  const splitText = `${s.agents}/${s.platform}`;
 
   return (
     <div className="space-y-3">
@@ -360,8 +360,8 @@ function ReviewStep({
           <li>
             <span className="text-accent">What you give up.</span>{" "}
             {launcherShare === 0
-              ? `All of ${t}'s pump.fun creator fees. They go to Gamine's three wallets: ${s.daily}% to the daily reward wallet, ${s.weekly}% to the weekly reward wallet, ${s.platform}% to the platform. You keep none of them.`
-              : `${100 - launcherShare}% of ${t}'s pump.fun creator fees: ${s.daily}% to the daily reward wallet, ${s.weekly}% to the weekly reward wallet, ${s.platform}% to the platform. The launcher's share is ${launcherShare}%.`}
+              ? `All of ${t}'s pump.fun creator fees. They go to Gamine's two wallets: ${s.agents}% to the shared agent reward wallet, ${s.platform}% to the platform. You keep none of them.`
+              : `${100 - launcherShare}% of ${t}'s pump.fun creator fees: ${s.agents}% to the shared agent reward wallet, ${s.platform}% to the platform. The launcher's share is ${launcherShare}%.`}
           </li>
           <li>
             <span className="text-accent">{config.agentsEnabled ? "What holders get." : "Planned holder agents."}</span> {config.agentsEnabled ? "Every" : "Once holder-agent activation is available, every"} wallet holding at least ${config.minimumUsd} of {t} gets an agent in
