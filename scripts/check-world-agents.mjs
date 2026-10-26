@@ -19,7 +19,7 @@ const source = relative => JSON.stringify(fileURLToPath(new URL(relative, import
 await build({ stdin: { contents: [
   `export { worldPicker } from ${source('../web/app/village/game/projected-picking.ts')};`,
   `export { renderProjectedWorld } from ${source('../web/app/village/game/projected-art.ts')};`,
-  `export { project } from ${source('../web/lib/world/projection.ts')};`,
+  `export { project, MIN_TILT, MAX_TILT } from ${source('../web/lib/world/projection.ts')};`,
   `export { placeResidents } from ${source('../web/app/village/residents.ts')};`,
 ].join('\n'), resolveDir: fileURLToPath(new URL('..', import.meta.url)) }, bundle: true, platform: 'browser', format: 'iife', globalName: 'WorldTest', define: { 'process.env': '{}' }, outfile: helper });
 const browser = await chromium.launch({ executablePath: process.env.CHROME_BIN ?? '/usr/bin/google-chrome', args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
@@ -148,9 +148,11 @@ try {
       throw new Error('Camera did not reach the requested angle');
     }
     await page.waitForTimeout(1200);
+    // Stress the supported camera envelope; gesture tilt is intentionally clamped to 15–55°.
+    const limits = await page.evaluate(() => ({ min: WorldTest.MIN_TILT, max: WorldTest.MAX_TILT }));
     for (const [name, yaw, tilt] of [
-      ['top', 0, Math.PI / 2], ['front', 0, 28 * Math.PI / 180], ['isometric', Math.PI / 4, Math.asin(1 / Math.sqrt(3))],
-      ['low', Math.PI / 4, Math.PI / 12], ['high', Math.PI / 4, 1.4], ['back', Math.PI, 28 * Math.PI / 180],
+      ['top-limit', 0, limits.max], ['front', 0, 28 * Math.PI / 180], ['isometric', Math.PI / 4, Math.asin(1 / Math.sqrt(3))],
+      ['low', Math.PI / 4, limits.min], ['high', Math.PI / 4, limits.max], ['back', Math.PI, 28 * Math.PI / 180],
     ]) {
       await angle(yaw, tilt); await page.waitForTimeout(800);
       await page.screenshot({ path: `${out}/${count}-${name}.png` });
