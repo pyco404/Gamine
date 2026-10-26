@@ -1,7 +1,7 @@
 # Reward payout batches
 
-Decided 2026-10-05: accumulate creator fees as SOL in the daily and weekly
-reward wallets. At payout, swap SOL into $GAMINE and distribute $GAMINE to
+Decided 2026-10-05: accumulate creator fees as SOL in one shared agent
+reward wallet. At payout, swap SOL into $GAMINE and distribute $GAMINE to
 winners in small batches, instead of buying the whole pool at once.
 
 Decided 2026-10-12: the operator buys $GAMINE into the reward wallet by hand, and
@@ -11,7 +11,7 @@ Jupiter API key is needed. The SOL-swap mode below remains available, and needs
 
 ## Held $GAMINE (default)
 
-1. In the daily or weekly reward wallet itself (not another wallet), swap SOL for
+1. In the shared agent reward wallet itself, swap SOL for
    $GAMINE, in several small buys if that limits price impact. Keep the swap
    signatures: the dashboard does not record the purchase.
 2. In `/admin`, choose **$GAMINE already in the reward wallet**, the period, the $GAMINE
@@ -53,7 +53,7 @@ scores on the days in the run where it qualified, and the holding check, minimum
 score, shares and 10% cap apply to that total. A day is paid once: approval refuses
 any daily plan, single or catch-up, that overlaps one already approved. Used first
 for the days from $GAMINE's launch (2026-10-09) to the first regular payout; after
-that, one plan per frozen day, and weekly plans from the weekly wallet.
+that, one plan per frozen day, and weekly plans from the same shared agent reward wallet.
 
 **What the wallet may add.** Phantom adds its own instructions to a transaction before
 signing it (a priority fee, balance assertions). A signed winner transfer is accepted
@@ -101,7 +101,7 @@ future payouts. The platform takes no cut from reward wallets. The existing
 10% per-winner cap still applies, per wallet/token pair: a wallet with agents
 for several tokens is paid once for each, each capped on its own; capped or rounded allocations also stay in
 the reward wallet. Rent, transaction costs and swap fees must be accounted for
-separately. The Pump 15% daily / 50% weekly / 35% platform split is unchanged.
+separately. The pump.fun creator-fee split is 70% to the shared agent reward wallet and 30% to the platform.
 Older plans with a platform cut remain in history but cannot be approved;
 preview a new plan using these rules.
 
@@ -119,7 +119,8 @@ source reward wallet.
 Set these on Railway's **web** service, or `web/.env.local` locally:
 
 - `PUMP_RPC_URL`: verified Solana mainnet RPC.
-- `PUMP_DAILY_REWARDS_WALLET`, `PUMP_WEEKLY_REWARDS_WALLET`: actual signing-wallet addresses.
+- `PUMP_AGENT_REWARDS_WALLET`: the shared signing-wallet address for all agent payouts.
+- `PUMP_PLATFORM_WALLET`: the separate platform receiving address.
 - `PAYOUT_AGP_MINT`: real mainnet $GAMINE mint; preview again after changing it.
 - `JUPITER_API_KEY`: server-only key from Jupiter's developer portal. Needed only to swap SOL during a payout; held-$GAMINE payouts run without it.
 - `PUMP_LAUNCH_DB_PATH`: SQLite file on one persistent volume, retaining launches and payout journals.
