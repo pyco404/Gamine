@@ -17,7 +17,7 @@ make those systems legible and enrich their presentation.
 Preserve public API shapes, movement coordinates, road and collision geometry,
 server activity snapshots, deterministic generation, wallet authentication,
 private strategy ownership, match outcomes, scoring, holding thresholds,
-70/30 creator-fee destinations, the 0.1 SOL fee, and disabled financial features.
+70/30 creator-fee destinations, the 0.05 SOL fee, and disabled financial features.
 No schema, signing or production changes are part of this upgrade.
 
 Milestones:
