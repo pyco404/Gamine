@@ -187,7 +187,7 @@ export async function prepareLaunch(body: Record<string, unknown>, owner: string
   try { transaction = compileLaunch({ instructions, user: new PublicKey(owner), mint, blockhash: latest.blockhash, lookupTable: table.value }); }
   catch { throw new LaunchError("This launch does not fit the configured address lookup table. The platform needs to update launch setup. No SOL was charged.", 503); }
   const simulation = await connection.simulateTransaction(transaction, { sigVerify: false, commitment: "confirmed" });
-  if (simulation.value.err) throw new LaunchError("The launch simulation failed. Check your SOL balance for the 0.1 SOL platform fee, initial buy, account rent and network fees. No SOL was charged.");
+  if (simulation.value.err) throw new LaunchError("The launch simulation failed. Check your SOL balance for the 0.05 SOL platform fee, initial buy, account rent and network fees. No SOL was charged.");
   const serialized = Buffer.from(transaction.serialize()).toString("base64");
   launchStore().insert({
     id, owner, createdAt: Date.now(), form: { ...form, image: imageUrl }, mint: mint.publicKey.toBase58(), uri, imageUrl,
