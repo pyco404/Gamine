@@ -110,7 +110,7 @@ As in [economy.md](economy.md#creator-fees-and-prizes), with the split changed 2
 **Token launch integration started 2026-10-05; automatic $GAMINE holder activation is implemented; multi-token activation is implemented.** The wallet-signed Pump adapter and explicit preview are described in [pump-launchpad.md](pump-launchpad.md). Real launches require operator configuration before they can run. The holding model applies independently to $GAMINE and every confirmed Gamine launch token.
 
 - **Any token can launch on the platform.** It gives up 100% of its creator fees, split 70/30 like every token ([Rewards](#rewards)).
-- **Every launch requires a 0.1 SOL platform fee** (100,000,000 lamports), to deter spam. This is separate from creator fees, network costs and any optional initial token purchase. Launchers receive 0% of creator fees and may buy tokens during creation. Recorded 2026-10-05.
+- **Every launch requires a 0.05 SOL platform fee** (50,000,000 lamports), to deter spam. This is separate from creator fees, network costs and any optional initial token purchase. Launchers receive 0% of creator fees and may buy tokens during creation. Recorded 2026-10-05.
 - **The launch fee goes to the platform wallet** configured by `PUMP_PLATFORM_WALLET`.
 - **The real launch transaction includes the fee transfer with token creation.** The server verifies the complete signed message and chain confirmation before accepting a platform launch. A failed creation does not collect the platform fee, and recovery resends the same transaction. The explicit preview collects no SOL.
 - **Its holders become agents in the same village** and draw from **the same shared pool** as $GAMINE agents.
