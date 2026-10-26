@@ -20,6 +20,7 @@ import { canvasPainter } from "./game/projected-agents";
 import { agentBox, inside, worldPicker, type ScreenBox, type WorldTarget } from "./game/projected-picking";
 import type { WorldSnapshot } from "../../lib/world/model";
 import { agentInViewport, agentScale } from "../../lib/world/agent-render";
+import { drawAtmosphere, drawCloudShadows, drawWaterRipples } from "./game/atmosphere";
 import { COLOSSEUM } from "../../lib/world/arena-geometry";
 
 type Props = {
@@ -65,7 +66,13 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
     const upright = document.createElement("canvas"), uprightLayer = upright.getContext("2d")!;
     const water = waterCanvas.current ? createWater(waterCanvas.current) : null, waterOn = new URLSearchParams(window.location.search).get("water") !== "0";
     let snapshot: WorldSnapshot | null = null, camera: ProjectionCamera | null = null;
+    let labelWorld: WorldSnapshot["world"] | null = null, labelObjects: WorldSnapshot["world"]["objects"] = [];
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    let reduced = motion.matches;
+    const onMotion = () => { reduced = motion.matches; dirty = true; };
+    motion.addEventListener("change", onMotion);
     let angle = { ...HOME.angle }, target = { ...angle };
+    let visualFocus: { x: number; y: number } | null = null;
     let focus: { x: number; y: number } | null = null, scaleTarget: number | null = null, following: string | null = null;
     // Screen pixels the focus sits left/up of the canvas centre, so it stays in the part a page leaves
     // uncovered. Presentation only: focus, zoom and angle are the same camera on every route.
@@ -79,8 +86,9 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
     let solids = -1;
     let baked: ProjectionCamera | null = null, cells = new Map<number, number[]>(), always: number[] = [], boxes: ScreenBox[] = [];
     const CELL = 96, cellKey = (cx: number, cy: number) => cx * 65536 + cy;
-    const debug = new URLSearchParams(window.location.search).has("debugAgents");
-    worldPerformance.enabled = new URLSearchParams(window.location.search).has("debugWorldPerf");
+    const development = process.env.NODE_ENV !== "production";
+    const debug = development && new URLSearchParams(window.location.search).has("debugAgents");
+    worldPerformance.enabled = development && new URLSearchParams(window.location.search).has("debugWorldPerf");
     if (worldPerformance.enabled) Object.assign(window,{__worldRenderPerf:worldPerformance,
       __worldPerfCamera:(yaw:number,tilt=angle.tilt)=>{target={yaw,tilt:Math.max(MIN_TILT,Math.min(MAX_TILT,tilt))};dirty=true;},
       __worldPerfFocus:(x:number,y:number,scale?:number)=>{following=null;focus={x,y};if(scale)scaleTarget=scale;dirty=true;}});
@@ -97,7 +105,7 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
     const framedScale = (overview = false, at = angle) => frameProjection(at, snapshot!.world.bounds, width, height, snapshot!.world.slabDepth, overview ? "overview" : "immersive").scale;
     const resize = () => {
       const rect = el.getBoundingClientRect();
-      width = rect.width; height = rect.height; ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width; height = rect.height; ratio = Math.min(window.devicePixelRatio || 1, width < 768 ? 1.5 : 2);
       el.width = still.width = upright.width = labelsEl.width = Math.max(1, Math.round(width * ratio));
       el.height = still.height = upright.height = labelsEl.height = Math.max(1, Math.round(height * ratio)); dirty = true;
     };
@@ -214,9 +222,10 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
     el.addEventListener("lostpointercapture", cancel); window.addEventListener("blur", blur);
     el.addEventListener("wheel", wheel, { passive: false }); el.addEventListener("keydown", key);
     const frame = (now: number) => {
+      if (document.hidden) { lastFrame = now; raf = requestAnimationFrame(frame); return; }
       const seconds = Math.min(0.05, Math.max(0, (now - lastFrame) / 1000)); lastFrame = now;
       if (Math.abs(yawDelta(angle.yaw, target.yaw)) + Math.abs(angle.tilt - target.tilt) > 0.00001) {
-        angle = easeCamera(angle, target, seconds); dirty = true;
+        angle = reduced ? { ...target } : easeCamera(angle, target, seconds); dirty = true;
       }
       const readStarted = worldPerformance.start();
       const read = now - lastRead >= 100;
@@ -233,22 +242,27 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
         if (following) {
           const agent = snapshot.agents.find((a) => a.id === `agent:${following}`);
           if (agent) {
-            const amount = 1 - Math.exp(-seconds * 10);
+            const amount = reduced ? 1 : 1 - Math.exp(-seconds * 10);
             focus.x += (agent.x - focus.x) * amount; focus.y += (agent.y - focus.y) * amount;
             dirty = true;
           } else following = null;
         }
-        const centre = project(angle, focus);
+        visualFocus ??= { ...focus };
+        if (Math.hypot(visualFocus.x - focus.x, visualFocus.y - focus.y) > 0.15 && !reduced) {
+          const amount = 1 - Math.exp(-seconds * 12);
+          visualFocus.x += (focus.x - visualFocus.x) * amount; visualFocus.y += (focus.y - visualFocus.y) * amount; dirty = true;
+        } else if (visualFocus.x !== focus.x || visualFocus.y !== focus.y) { visualFocus = { ...focus }; dirty = true; }
+        const centre = project(angle, visualFocus);
         // Keep absolute zoom across route overlays, viewport changes and rotations.
         // Only the first framing and explicit Reset/Whole world choose a new one.
         scaleTarget ??= homeScale(width);
         const scale = Math.max(0.035, Math.min(3.5, scaleTarget));
-        const covered = options.current.inset, ease = 1 - Math.exp(-seconds * 10);
+        const covered = options.current.inset, ease = reduced ? 1 : 1 - Math.exp(-seconds * 10);
         const toward = { x: Math.min(covered.right, width * 0.6) / 2, y: Math.min(covered.bottom, height * 0.7) / 2 };
         if (Math.abs(toward.x - shift.x) + Math.abs(toward.y - shift.y) > 0.5) {
           shift.x += (toward.x - shift.x) * ease; shift.y += (toward.y - shift.y) * ease; dirty = true;
         } else if (shift.x !== toward.x || shift.y !== toward.y) { shift.x = toward.x; shift.y = toward.y; dirty = true; }
-        const zoomed = camera ? camera.scale + (scale - camera.scale) * (1 - Math.exp(-seconds * 14)) : scale;
+        const zoomed = camera && !reduced ? camera.scale + (scale - camera.scale) * (1 - Math.exp(-seconds * 14)) : scale;
         camera = { x: centre.x + shift.x / zoomed, y: centre.y + shift.y / zoomed, scale: zoomed };
         const view = angle;
         const drawScenery = (part: ProjectedLayer, at: ProjectionCamera = baked ?? camera!) => {
@@ -306,7 +320,7 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
         ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, el.width, el.height);
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
         // Water moves every frame, on its own canvas between the ground's and this one.
-        if (water) { if (waterOn && snapshot.ground && baked) water.draw(snapshot.ground, view, baked, width, height, ratio, now / 1000); else water.clear(); }
+        if (water) { if (waterOn && snapshot.ground && baked) water.draw(snapshot.ground, view, baked, width, height, ratio, reduced ? 0 : now / 1000); else water.clear(); }
         // Bluff & Fold out in the village: the scene draws its rings in full nearest where this camera looks.
         handle.setViewCentre(focus);
         const toScreen = (p: { x: number; y: number }, z = 0) => {
@@ -314,7 +328,9 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
           return { x: width / 2 + (q.x - camera!.x) * camera!.scale, y: height / 2 + (q.y - camera!.y) * camera!.scale };
         };
         // The lake's fish, turtles and rays swim on the water, under the scenery and the agents.
-        drawSeaLife(ctx, toScreen, waterOn ? now / 1000 : 0, width, height);
+        drawSeaLife(ctx, toScreen, waterOn && !reduced ? now / 1000 : 0, width, height);
+        if (!water && waterOn) drawWaterRipples(ctx, snapshot.world, toScreen, width, height, reduced ? 0 : now / 1000);
+        if (!snapshot.night) drawCloudShadows(ctx, toScreen, width, height, now / 1000, reduced);
         {
           // Each match's ring, flat on the ground under its players, as Top draws it.
           const o = toScreen({ x: 0, y: 0 }), ex = toScreen({ x: 1, y: 0 }), ey = toScreen({ x: 0, y: 1 });
@@ -399,6 +415,7 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
         worldPerformance.endStage("composite",compositeStarted);
         const labelStarted=worldPerformance.start();
         lctx.setTransform(1, 0, 0, 1, 0, 0); lctx.clearRect(0, 0, labelsEl.width, labelsEl.height); lctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        drawAtmosphere(lctx, snapshot.world, toScreen, width, height, camera.scale, now / 1000, reduced, snapshot.night);
         // Agents' names over their heads, as Top shows them: your own (gold) and players' always, house
         // agents while walking or hovered. Yours and the selected one first; none overlaps another.
         {
@@ -419,7 +436,11 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
           lctx.restore();
         }
         // Labels are bounded to landmarks and avoid DOM nodes for objects/agents.
-        const labels = snapshot.world.objects.filter((o) => o.id.startsWith("site:") || o.type === "mountain" || o.metadata?.landmark).sort((a, b) => Number(b.type === "arena") - Number(a.type === "arena"));
+        if (labelWorld !== snapshot.world) {
+          labelWorld = snapshot.world;
+          labelObjects = snapshot.world.objects.filter((o) => o.id.startsWith("site:") || o.type === "mountain" || o.metadata?.landmark).sort((a, b) => Number(b.type === "arena") - Number(a.type === "arena"));
+        }
+        const labels = labelObjects;
         lctx.font = "11px monospace"; lctx.textAlign = "center";
         const placed: { x: number; y: number; w: number }[] = [];
         labelHits = [];
@@ -463,9 +484,9 @@ export function WorldCamera({ village, observing, scrolls, inset, help, onHelp }
     };
     raf = requestAnimationFrame(frame);
     return () => {
-      cancelAnimationFrame(raf); observer.disconnect(); handle.setViewCentre(null); artwork?.dispose(); handle.setVisibleAgents(null); handle.setWorldCamera(null);
+      cancelAnimationFrame(raf); water?.dispose(); motion.removeEventListener("change", onMotion); observer.disconnect(); handle.setViewCentre(null); artwork?.dispose(); handle.setVisibleAgents(null); handle.setWorldCamera(null);
       if (debug) Reflect.deleteProperty(window, "__agentRenderDebug");
-      if(worldPerformance.enabled){worldPerformance.enabled=false;Reflect.deleteProperty(window,"__worldRenderPerf");Reflect.deleteProperty(window,"__worldPerfCamera");}
+      if(worldPerformance.enabled){worldPerformance.enabled=false;Reflect.deleteProperty(window,"__worldRenderPerf");Reflect.deleteProperty(window,"__worldPerfCamera");Reflect.deleteProperty(window,"__worldPerfFocus");}
       blur();
       el.removeEventListener("pointerdown", down);
       window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", cancel);
