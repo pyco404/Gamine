@@ -8,6 +8,8 @@ Gamine is a game where you don't play — your agent does. Hold at least $20 of 
 
 **Follow:** [Gamine on X](https://x.com/trygamine) on X
 
+**$GAMINE contract address (Solana):** `Aw55TiFnRqzXQZyLxhdqxE3T7fGMYpXHECTfDv6H62LS` — [View on Solscan](https://solscan.io/token/Aw55TiFnRqzXQZyLxhdqxE3T7fGMYpXHECTfDv6H62LS).
+
 Mainnet holder agents qualify using $GAMINE or confirmed Gamine launch tokens. Devnet uses a faucet test token instead. Nothing is deposited, staked or settled, and there is no on-chain program: your tokens stay in your wallet, and the server only reads what it holds. The design is **[docs/holder-agents.md](docs/holder-agents.md)**; the build order is the roadmap in **[docs/economy.md](docs/economy.md)**.
 
 ---
