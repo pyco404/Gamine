@@ -2,6 +2,7 @@ import { MarketStore } from "./token-market";
 import { Connection, Keypair, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
 import { pump } from "./pump-sdk";
+import { feeWalletsReady } from "./launchpad-fees";
 import { feeWallets, launchConfig } from "./launchpad-config";
 import { compileLaunch, launchInstructions } from "./pump-transaction";
 import { launchStore, type StoredLaunch } from "./launchpad-store";
@@ -20,10 +21,7 @@ export function pumpConfig() {
   const missing = ["PUMP_RPC_URL", "PINATA_JWT", "PUMP_LOOKUP_TABLE"].filter((name) => !process.env[name]);
   if (process.env.NODE_ENV === "production" && !process.env.PUMP_LAUNCH_DB_PATH) missing.push("PUMP_LAUNCH_DB_PATH");
   if (process.env.PUMP_LAUNCH_ENABLED !== "true") missing.push("PUMP_LAUNCH_ENABLED=true");
-  try {
-    const wallets = feeWallets.map(({ address }) => new PublicKey(address).toBase58());
-    if (new Set(wallets).size !== wallets.length) missing.push("distinct fee wallets");
-  } catch { missing.push("valid fee wallets"); }
+  if (!feeWalletsReady()) missing.push("valid, distinct platform and agent reward wallets");
   return { ...launchConfig, ready: missing.length === 0, unavailableReason: missing.length ? "Token launches are not available yet. The platform is completing launch setup." : null };
 }
 
@@ -130,30 +128,30 @@ async function uploadMetadata(form: LaunchForm) {
   return { uri, imageUrl };
 }
 
-/**
- * $GAMINE's mint is ground in advance to end in "AGP" and set as AGP_MINT_SECRET,
- * for the wallet in AGP_MINT_LAUNCHER only. Every other launch, including
- * anyone else's "GAMINE" ticker, gets a fresh random mint.
- */
-async function mintFor(form: LaunchForm, connection: Connection): Promise<Keypair> {
-  const secret = process.env.AGP_MINT_SECRET;
-  if (form.ticker !== "GAMINE" || !secret) return Keypair.generate();
-  let launcher: string, mint: Keypair;
+
+/** An optional pre-generated random mint for the official wallet; no vanity suffix. */
+async function mintForLaunch(form: LaunchForm, connection: Connection): Promise<Keypair> {
+  const launcher = process.env.GAMINE_LAUNCHER_WALLET?.trim();
+  if (form.ticker !== "GAMINE" || !launcher || form.creator !== launcher) return Keypair.generate();
+  const secret = process.env.GAMINE_LAUNCH_MINT_SECRET;
+  if (!secret) throw new LaunchError("The reserved Gamine mint is not configured correctly.", 503);
+  let mint: Keypair;
   try {
-    launcher = new PublicKey(process.env.AGP_MINT_LAUNCHER ?? "").toBase58();
-    mint = Keypair.fromSecretKey(secret.trim().startsWith("[") ? Uint8Array.from(JSON.parse(secret) as number[]) : bs58.decode(secret.trim()));
-  } catch { throw new LaunchError("The $GAMINE mint is not configured correctly.", 503); }
-  if (form.creator !== launcher) return Keypair.generate();
-  if (!mint.publicKey.toBase58().endsWith("AGP")) throw new LaunchError("The configured $GAMINE mint does not end in AGP.", 503);
-  // A mint is used once. An earlier attempt that expired without creating the token (its approval
-  // window has finally passed and the mint account does not exist) can never land, so it releases
-  // the mint; anything else still holds it, and is resumed rather than prepared again.
-  const earlier = launchStore().getMint(mint.publicKey.toBase58());
-  if (earlier) {
-    const lapsed = !earlier.confirmed && await connection.getBlockHeight("finalized") > earlier.lastValidBlockHeight
-      && !await connection.getAccountInfo(mint.publicKey, "finalized");
-    if (!lapsed) throw new LaunchError("The configured $GAMINE mint is in a launch that may still land. Check its status or resume it.", 409);
-    launchStore().release(earlier.id);
+    new PublicKey(launcher);
+    mint = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(secret)));
+  } catch { throw new LaunchError("The reserved Gamine mint is not configured correctly.", 503); }
+  const address = mint.publicKey;
+  // Never reuse a live mint or replace a transaction that may still land.
+  const existing = launchStore().getMint(address.toBase58());
+  if (existing) {
+    const expired = !existing.confirmed
+      && await connection.getBlockHeight("finalized") > existing.lastValidBlockHeight;
+    if (!expired || await connection.getAccountInfo(address, "finalized")) {
+      throw new LaunchError("This Gamine mint already has a launch. Resume or check that launch.", 409);
+    }
+    launchStore().release(existing.id);
+  } else if (await connection.getAccountInfo(address, "finalized")) {
+    throw new LaunchError("This Gamine mint already exists on chain.", 409);
   }
   return mint;
 }
@@ -178,7 +176,7 @@ export async function prepareLaunch(body: Record<string, unknown>, owner: string
   await mainnet(connection);
   const table = await connection.getAddressLookupTable(new PublicKey(process.env.PUMP_LOOKUP_TABLE!));
   if (!table.value?.isActive()) throw new LaunchError("The launch address lookup table has not been set up.", 503);
-  const mint = await mintFor(form, connection);
+  const mint = await mintForLaunch(form, connection);
   launchStore().reserve(id, owner);
   const { uri, imageUrl } = await uploadMetadata(form);
   const online = new pump.OnlinePumpSdk(connection);
@@ -196,7 +194,7 @@ export async function prepareLaunch(body: Record<string, unknown>, owner: string
     transaction: serialized, lastValidBlockHeight: latest.lastValidBlockHeight,
     signature: null, signed: null, confirmed: false, failure: null,
   });
-  // Discard the mint keypair (the $GAMINE one lives on in its env until removed). The wallet receives only a partially signed transaction.
+  // The wallet receives only a partially signed transaction, never the mint secret.
   return { id, mint: mint.publicKey.toBase58(), transaction: serialized };
 }
 
