@@ -11,6 +11,8 @@ import { MOUNTAIN_BOXES } from "../web/app/village/game/landscape.js";
 import { SITES, RESERVED } from "../web/app/village/game/town.js";
 import type { Point } from "../web/app/village/game/roads.js";
 
+import { canSpar, lookOf } from "../web/lib/world/character.js";
+
 const farm: ActivityDestination = { id: "farm", name: "Farm", x: 100, y: 200, capabilities: ["farm"], capacity: 2000 };
 const source: ActivityDestination = { id: "market", name: "Bazaar", x: 50, y: 100, capabilities: ["delivery-source"], capacity: 2000 };
 const target: ActivityDestination = { id: "treasury", name: "Treasury", x: 500, y: 100, capabilities: ["delivery-target"], capacity: 2000 };
@@ -52,6 +54,27 @@ describe("autonomous activities", () => {
     // An invalid source must not be selected just because another source is valid.
     const validSource = { ...source, id: "other-source" };
     for (let i = 0; i < 40; i++) expect(chooseActivity(String(i), 0, same, [same, validSource])?.source?.id).toBe("other-source");
+  });
+
+  it("only sends armed characters to practice and keeps other town activities available", () => {
+    const green: ActivityDestination = { id: "green", name: "Green", x: 0, y: 0, capabilities: ["spar"], capacity: 24 };
+    let armed = 0, workers = 0, practice = 0;
+    for (let i = 0; i < 300; i++) {
+      const id = `resident-${i}`;
+      expect(canSpar(id)).toBe(lookOf(id).unit !== "pawn");
+      if (canSpar(id)) {
+        armed++;
+        expect(chooseActivity(id, 1, green, [green])?.activity).toBe("sparring");
+        if (chooseActivity(id, 1, green, [green, farm])?.activity === "sparring") practice++;
+      } else {
+        workers++;
+        expect(chooseActivity(id, 1, green, [green])).toBeNull();
+        expect(chooseActivity(id, 1, green, [green, farm])?.activity).toBe("farming");
+      }
+    }
+    expect(armed).toBeGreaterThan(0); expect(workers).toBeGreaterThan(0);
+    expect(practice).toBeGreaterThan(armed * .6);
+    expect(practice).toBeLessThan(armed);
   });
 
   it("travels, performs timed work, completes once, returns and rests before choosing again", () => {
