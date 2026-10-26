@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
 /** Mandatory per-token anti-spam fee, separate from buys and network fees. */
-export const LAUNCH_FEE_LAMPORTS = 100_000_000;
+export const LAUNCH_FEE_LAMPORTS = 50_000_000;
 
 /** Receiving addresses must be supplied explicitly; no fallback wallets. */
 export const LAUNCH_FEE_RECIPIENT = process.env.PUMP_PLATFORM_WALLET?.trim() ?? "";
