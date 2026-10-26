@@ -10,7 +10,7 @@ import { AgpCard } from "@/app/agp-card";
 
 export const metadata: Metadata = {
   title: "Rewards — Gamine",
-  description: "How $GAMINE rewards are paid: the daily and weekly reward wallets, every payout with its winners and on-chain transactions, and who qualifies.",
+  description: "How $GAMINE rewards are paid: the shared agent reward wallet, every payout with its winners and on-chain transactions, and who qualifies.",
   alternates: { canonical: "/rewards" },
 };
 
@@ -47,6 +47,7 @@ const solscan = (kind: "account" | "tx", id: string) => `https://solscan.io/${ki
 const agp = (x: number | null) => (x === null ? "—" : `${x.toLocaleString("en-US", { maximumFractionDigits: 0 })}`);
 
 function Address({ address }: { address: string }) {
+  if (!address) return <span className="text-muted">Wallet not configured yet.</span>;
   return (
     <a href={solscan("account", address)} className="font-mono text-accent underline underline-offset-2" target="_blank" rel="noreferrer">
       {short(address)}
@@ -97,7 +98,7 @@ function Payout({ p, open }: { p: PaidPayout; open: boolean }) {
 function PayoutsSection({ wallets, history }: { wallets: RewardWallets; history: PaidPayout[] }) {
   const paid = history.reduce((sum, p) => sum + p.total, 0);
   const owners = new Set(history.flatMap((p) => p.winners.map((w) => w.wallet))).size;
-  const wallet = (label: string, w: RewardWallets["daily"], share: string) => (
+  const wallet = (label: string, w: RewardWallets["agents"], share: string) => (
     <Tile
       label={label}
       value={`${agp(w.agp)} $GAMINE`}
@@ -116,10 +117,9 @@ function PayoutsSection({ wallets, history }: { wallets: RewardWallets; history:
       <div className="border-b border-line bg-panel px-4 py-3 @3xl:px-4">
         <h2 className="text-[12px] uppercase tracking-wider text-accent">Payouts</h2>
       </div>
-      <div className="grid grid-cols-1 gap-3 p-3 @lg:grid-cols-3 @3xl:p-4">
+      <div className="grid grid-cols-1 gap-3 p-3 @lg:grid-cols-2 @3xl:p-4">
         <Tile label="Paid out to date" value={`${agp(paid)} $GAMINE`} sub={history.length ? `${history.length} payout${history.length > 1 ? "s" : ""}, ${owners} wallet${owners > 1 ? "s" : ""} paid. Confirmed on chain.` : "No payouts yet."} />
-        {wallet("Daily reward wallet", wallets.daily, "15%")}
-        {wallet("Weekly reward wallet", wallets.weekly, "50%")}
+        {wallet("Agent reward wallet", wallets.agents, "70%")}
       </div>
 
       <div className="border-t border-line">
@@ -137,8 +137,8 @@ function PayoutsSection({ wallets, history }: { wallets: RewardWallets; history:
       <div className="space-y-2 border-t border-line p-3 text-[13px] leading-5 @3xl:p-4">
         <h3 className="text-[12px] uppercase tracking-wider text-accent">How payouts work</h3>
         <p>
-          Rewards come from $GAMINE&apos;s creator fees: 15% go to the daily wallet and 50% to the weekly wallet, locked on
-          pump.fun. They are paid in $GAMINE from those wallets. The daily payout covers the previous UTC day and goes out
+          Creator fees are split on pump.fun: 70% go to one shared agent reward wallet and 30% to the platform.
+          Agent rewards are paid in $GAMINE from the shared wallet. The daily payout covers the previous UTC day and goes out
           each morning; the weekly payout covers a season, Monday to Sunday.
         </p>
         <ul className="list-disc space-y-1 pl-5">
