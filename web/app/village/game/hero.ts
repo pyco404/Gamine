@@ -291,6 +291,7 @@ export class Hero {
 
   setActivityPose(state: ActivityState | null): void {
     this.activity = state;
+    this.sparringPose(state, this.scene.time.now);
     if (!state) {
       this.activityProp?.clear(); this.observingWorld = false;
       if (this.sparringBeat) { this.sparringBeat = null; this.stopLunge(); }
@@ -316,7 +317,17 @@ export class Hero {
     if (moving) this.turn(Math.abs(dy) > Math.abs(dx) * 1.2 ? (dy < 0 ? "back" : "front") : dx < 0 ? "left" : "right");
     this.x = point.x; this.y = point.y;
     this.activity = snapshot.state; this.resting = snapshot.state.phase === "resting";
-    const bout = snapshot.state.sparring;
+    this.sparringPose(snapshot.state, now);
+    // Offscreen positions still advance, while visible poses refresh at a bounded rate.
+    if (this.rendered && (this.opts.still || this.scene.time.now - this.poseAt >= (moving ? 50 : 120))) {
+      this.poseAt = this.scene.time.now; this.place();
+    }
+    if (this.opts.still) this.sprite.anims.pause();
+  }
+
+  /** Both the authoritative feed and local preview use the same alternating practice strikes. */
+  private sparringPose(state: ActivityState | null, now: number): void {
+    const bout = state?.sparring;
     if (bout && this.rendered && !this.opts.still && now < bout.endsAt) {
       const beat = Math.floor(Math.max(0, now - bout.startedAt) / 900);
       const key = `${bout.id}:${beat}`;
@@ -328,11 +339,6 @@ export class Hero {
         else this.recoil(-toward * 4);
       }
     } else if (this.sparringBeat) { this.sparringBeat = null; this.stopLunge(); }
-    // Offscreen positions still advance, while visible poses refresh at a bounded rate.
-    if (this.rendered && (this.opts.still || this.scene.time.now - this.poseAt >= (moving ? 50 : 120))) {
-      this.poseAt = this.scene.time.now; this.place();
-    }
-    if (this.opts.still) this.sprite.anims.pause();
   }
 
   highlight(): void {
