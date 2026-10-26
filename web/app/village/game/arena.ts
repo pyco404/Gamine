@@ -6,7 +6,7 @@ import { ROAD_COLOURS } from "./palette";
 import { paintArenaArt, ARENA_ART_SCALE as SCALE, ARENA_ART_WIDTH as W, ARENA_ART_HEIGHT as H, ARENA_ART_LEFT as LEFT, ARENA_ART_TOP as TOP } from "./arena-art";
 
 export function loadArena(scene: Phaser.Scene): void {
-  scene.load.image("ac-arena-emblem", "/gamine-tb.png");
+  scene.load.image("ac-arena-emblem", "/gamine-tb.png?v=knight-1");
 }
 
 /** Building owns the interactive back/floor layer; the front occludes actors inside the bowl. */
