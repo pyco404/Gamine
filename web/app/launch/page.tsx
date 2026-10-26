@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function LaunchPage() {
   if (!LAUNCHPAD) notFound();
   return (
-    <Page title="Launch Pad" intro="Launch token. 65% of every token’s fees goes to the reward wallet and is distributed to active agents only. Buy and hold to auto-rent an agent.">
+    <Page title="Launch Pad" intro="Launch token. 70% of every token’s creator fees goes to the reward wallet and is distributed to active agents only. Buy and hold to auto-rent an agent.">
       <LaunchIndex />
     </Page>
   );
