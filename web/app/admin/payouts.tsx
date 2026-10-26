@@ -10,7 +10,7 @@ import { CopyButton } from "@/app/copy-button";
 type Balance = { sol: number; agp: number | null } | null;
 type Overview = {
   plans: PayoutPlan[]; agpMint: string | null; executionConnected: boolean; swapsConnected: boolean; executionMissing: string[];
-  executions: PayoutExecutionView[]; balances?: { daily: Balance; weekly: Balance }; nextDaily?: string | null;
+  executions: PayoutExecutionView[]; balances?: { agents: Balance }; nextDaily?: string | null;
 };
 const units = (value: string, decimals: number) => {
   const n = BigInt(value), scale = 10n ** BigInt(decimals);
@@ -121,7 +121,7 @@ export function PayoutPanel({ token }: { token: string }) {
     finally { setBusy(false); }
   }
 
-  const kindBalance = overview?.balances?.[input.kind] ?? null;
+  const kindBalance = overview?.balances?.agents ?? null;
   const backwards = input.kind === "daily" && !!periodEnd && periodEnd < input.period;
   const notOver = input.kind === "daily" && (input.period >= today() || (!!periodEnd && periodEnd >= today()));
   const wanted = Number(budgetAgp.replaceAll(",", ""));
@@ -170,7 +170,7 @@ export function PayoutPanel({ token }: { token: string }) {
         <option value="held">$GAMINE already in the reward wallet</option>
         <option value="swap" disabled={!overview?.swapsConnected}>Swap SOL into $GAMINE during the payout{overview?.swapsConnected ? "" : " (needs JUPITER_API_KEY)"}</option>
       </select></label>
-      <label>Reward wallet<select className={control} value={input.kind} onChange={(e) => change("kind", e.target.value as PayoutInput["kind"])}><option value="daily">Daily</option><option value="weekly">Weekly</option></select>
+      <label>Payout period<select className={control} value={input.kind} onChange={(e) => change("kind", e.target.value as PayoutInput["kind"])}><option value="daily">Daily</option><option value="weekly">Weekly</option></select>
         <span className={kindBalance && kindBalance.sol < LOW_SOL ? "text-loss" : "text-muted"}>{kindBalance ? `Holds ${kindBalance.agp?.toLocaleString("en-US", { maximumFractionDigits: 0 }) ?? "?"} $GAMINE · ${kindBalance.sol.toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL${kindBalance.sol < LOW_SOL ? ` — add SOL: payouts keep ${LOW_SOL} for fees` : ""}` : "Balance loading…"}</span></label>
       <label>{input.kind === "daily" ? "First day (UTC)" : "Week starting (Monday, UTC)"}<input type="date" className={control} value={input.period} onChange={(e) => change("period", e.target.value)} />
         <span className="text-muted">{input.kind === "daily" ? (overview?.nextDaily ? `Next unpaid day: ${overview.nextDaily}.` : "A day can be paid once it is over in UTC.") : "The Monday that started the completed week."}</span></label>
@@ -193,7 +193,7 @@ export function PayoutPanel({ token }: { token: string }) {
     </div>
     {backwards ? <p className="mt-3 text-loss">The last day is before the first day. <button type="button" className={link} onClick={() => { edited(); const first = input.period; setInput((old) => ({ ...old, period: periodEnd })); setPeriodEnd(first); }}>Swap them</button></p> : null}
     {notOver && !backwards ? <p className="mt-3 text-gold">That day is not over yet in UTC, so its scores are not frozen: preview will refuse it.</p> : null}
-    {overBalance ? <p className="mt-3 text-gold">That is more $GAMINE than the {input.kind} wallet holds.</p> : null}
+    {overBalance ? <p className="mt-3 text-gold">That is more $GAMINE than the shared agent reward wallet holds.</p> : null}
     <button disabled={busy || backwards} onClick={() => void preview()} className={`mt-4 ${primary}`}>{busy && !plan ? "Reading every winner's wallet… (up to a minute)" : "Preview payout plan"}</button>
     {formError ? <p className="mt-3 rounded border border-loss/60 px-3 py-2 text-loss" role="alert">{formError}</p> : null}
 
@@ -255,7 +255,7 @@ function PayoutProgress({ plan, execution, signer, setSigner, busy, act }: {
   const winners = batch.payments.length;
   return <div className="mt-4 border-t border-line pt-3">
     {execution.status !== "completed" ? <ol className="space-y-1">
-      <li><span className="mr-2 font-mono text-accent">a</span>In {signer}, select the {plan.kind} reward wallet <span className="font-mono">{short(plan.source)}</span> <CopyButton value={plan.source} label="Copy address" />. Your admin sign-in stays as it is.</li>
+      <li><span className="mr-2 font-mono text-accent">a</span>In {signer}, select the shared agent reward wallet <span className="font-mono">{short(plan.source)}</span> <CopyButton value={plan.source} label="Copy address" />. Your admin sign-in stays as it is.</li>
       <li><span className="mr-2 font-mono text-accent">b</span>Press the button below and approve in {signer}. If {signer} asks to connect {short(plan.source)}, approve that too.</li>
     </ol> : null}
     {execution.status !== "completed" ? <label className="mt-2 block max-w-xs">Signing wallet extension<select className={control} value={signer} onChange={(e) => setSigner(e.target.value as WalletName)}><option>Phantom</option><option>Solflare</option></select></label> : null}
