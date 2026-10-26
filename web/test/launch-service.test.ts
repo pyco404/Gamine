@@ -119,43 +119,58 @@ describe("Launch service (RPC and IPFS stubbed; no transactions sent)", () => {
     expect(status.failure?.message).toContain("expired");
     expect(Connection.prototype.sendRawTransaction).not.toHaveBeenCalled();
   });
-  describe("the $GAMINE mint", () => {
-    // Grinding a real AGP address takes seconds to minutes, so the configured
-    // key is a random one, given a stand-in address that ends in AGP.
-    const address = "1".repeat(30) + "AGP";
+  it("uses a fresh mint for GAMINE even when obsolete reserved-mint settings remain", async () => {
+    vi.stubEnv("AGP_MINT_SECRET", "obsolete-invalid-secret");
+    vi.stubEnv("AGP_MINT_LAUNCHER", "obsolete-invalid-wallet");
+    form = { ...form, name: "Gamine", ticker: "GAMINE" };
+    const first = await prepare();
+    expect(new PublicKey(first.mint).toBase58()).toBe(first.mint);
+    expect(await prepare()).toEqual(first);
+    id = crypto.randomUUID();
+    const second = await prepare();
+    expect(second.mint).not.toBe(first.mint);
+    expect(Connection.prototype.sendRawTransaction).not.toHaveBeenCalled();
+  });
+  describe("an optional pre-generated Gamine mint", () => {
+    let reserved: Keypair;
     beforeEach(() => {
-      const agp = Keypair.generate();
-      vi.spyOn(Keypair, "fromSecretKey").mockReturnValue({ publicKey: new PublicKey(address), secretKey: agp.secretKey } as Keypair);
-      vi.stubEnv("AGP_MINT_SECRET", JSON.stringify(Array.from(agp.secretKey)));
-      vi.stubEnv("AGP_MINT_LAUNCHER", user.publicKey.toBase58());
-      form = { ...form, ticker: "GAMINE" };
-    });
-    it("uses the configured mint for the configured launcher's GAMINE launch, once while it may land", async () => {
-      expect((await prepare()).mint).toBe(address);
-      const first = id;
-      id = crypto.randomUUID();
-      await expect(prepare()).rejects.toThrow("may still land");
-      // Its approval window has passed (finalized height 101 > 100) and no token was created: the mint is free again.
-      vi.mocked(connection.getBlockHeight).mockResolvedValue(101);
+      reserved = Keypair.generate();
+      vi.stubEnv("GAMINE_LAUNCHER_WALLET", user.publicKey.toBase58());
+      vi.stubEnv("GAMINE_LAUNCH_MINT_SECRET", JSON.stringify(Array.from(reserved.secretKey)));
+      form = { ...form, name: "Gamine", ticker: "GAMINE" };
       vi.spyOn(connection, "getAccountInfo").mockResolvedValue(null);
-      expect((await prepare()).mint).toBe(address);
-      expect(launchStore().get(first)).toBeNull();
-      // A token that does exist keeps it held.
+    });
+    it("uses the reserved mint only for the configured wallet and GAMINE ticker", async () => {
+      const other = Keypair.generate().publicKey.toBase58();
+      const theirs = await prepareLaunch({ id, form: { ...form, creator: other } }, other, connection);
+      expect(theirs.mint).not.toBe(reserved.publicKey.toBase58());
       id = crypto.randomUUID();
+      expect((await prepare()).mint).toBe(reserved.publicKey.toBase58());
+      expect(Connection.prototype.sendRawTransaction).not.toHaveBeenCalled();
+    });
+    it("resumes the same request and prevents a second pending launch", async () => {
+      const first = await prepare();
+      expect(await prepare()).toEqual(first);
+      id = crypto.randomUUID();
+      await expect(prepare()).rejects.toThrow("Resume or check");
+    });
+    it("allows a retry only after finalized expiry and absence of the mint account", async () => {
+      const first = id;
+      await prepare();
+      id = crypto.randomUUID();
+      vi.mocked(connection.getBlockHeight).mockResolvedValue(101);
+      expect((await prepare()).mint).toBe(reserved.publicKey.toBase58());
+      expect(launchStore().get(first)).toBeNull();
+    });
+    it("refuses an existing on-chain mint before uploading", async () => {
       vi.mocked(connection.getAccountInfo).mockResolvedValue({ executable: false, lamports: 1, owner: PublicKey.default, data: Buffer.alloc(0), rentEpoch: 0 });
-      await expect(prepare()).rejects.toThrow("may still land");
+      await expect(prepare()).rejects.toThrow("already exists on chain");
+      expect(fetch).not.toHaveBeenCalled();
     });
-    it("gives anyone else's GAMINE launch, and the launcher's other tickers, a random mint", async () => {
-      const other = Keypair.generate();
-      const theirs = await prepareLaunch({ id, form: { ...form, creator: other.publicKey.toBase58() } }, other.publicKey.toBase58(), connection);
-      expect(theirs.mint).not.toBe(address);
-      id = crypto.randomUUID(); form = { ...form, ticker: "TEST" };
-      expect((await prepare()).mint).not.toBe(address);
-    });
-    it("refuses a misconfigured key before uploading anything", async () => {
-      vi.mocked(Keypair.fromSecretKey).mockRestore();
-      await expect(prepare()).rejects.toThrow("does not end in AGP");
-      vi.stubEnv("AGP_MINT_LAUNCHER", "not-a-wallet");
+    it("refuses a missing or invalid secret before uploading", async () => {
+      vi.stubEnv("GAMINE_LAUNCH_MINT_SECRET", "invalid");
+      await expect(prepare()).rejects.toThrow("not configured correctly");
+      vi.stubEnv("GAMINE_LAUNCH_MINT_SECRET", "");
       await expect(prepare()).rejects.toThrow("not configured correctly");
       expect(fetch).not.toHaveBeenCalled();
     });
