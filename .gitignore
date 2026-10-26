@@ -37,3 +37,6 @@ web/.data/
 
 
 note.txt
+
+# Keep promotional video sources and exports local.
+videos/
