@@ -2,7 +2,7 @@
  * The launchpad: a frontend over pump.fun's launch flow (docs/holder-agents.md,
  * Launchpad). A token launched here lives on pump.fun like any other; what
  * Gamine adds is agents for its holders, in the shared village, and its
- * creator fees sent to the three Gamine wallets.
+ * creator fees sent to the two Gamine wallets.
  *
  * Everything the pages need goes through the Launchpad interface below.
  * NEXT_PUBLIC_LAUNCHPAD_MODE=pump selects the wallet-signed mainnet adapter;
@@ -22,7 +22,7 @@ export { FAILURE, STAGES, type Stage, type StageState } from "./launchpad-stages
 import type { Stage, StageState } from "./launchpad-stages";
 
 /** Shares of a token's creator fees, in percent. */
-export type FeeSplit = { daily: number; weekly: number; platform: number };
+export type FeeSplit = { agents: number; platform: number };
 
 /**
  * The settings the pages read and never hard-code: none of them is decided
@@ -170,7 +170,7 @@ export function stageLabel(stage: Stage, split: FeeSplit): string {
     case "created":
       return "Token created on pump.fun";
     case "feeSplit":
-      return `Fee split set (${split.daily}/${split.weekly}/${split.platform})`;
+      return `Fee split set (${split.agents}/${split.platform})`;
     case "authorityLocked":
       return "Creator fee split locked";
     case "verified":
