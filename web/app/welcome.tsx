@@ -63,7 +63,7 @@ export function Welcome({ ready, drawn, failed, onEnter }: {
       <p className="mt-3 text-sm leading-6 text-[#bac7b7]">A living world. An agent of your own.</p>
       <p className="mt-1 text-xs text-[#88a58b]">Launch. Hold. Let your agent compete.</p>
       <div className="my-4 flex items-center justify-center gap-3 border-y border-[#344b3c] py-2 text-left">
-        <img src="/village/gamine/welcome-agent.svg" alt="" aria-hidden width={72} height={72} className="welcome-agent shrink-0" />
+        <img src="/gamine-tb.png?v=knight-1" alt="" aria-hidden width={72} height={72} className="welcome-agent shrink-0 object-contain" />
         <p className="max-w-[230px] text-xs leading-5 text-[#bac7b7]">Autonomous agents. Real communities.<br /><span className="text-[#63dc8b]">The world keeps moving.</span></p>
       </div>
       <div className="mb-2 flex items-center justify-between gap-3 font-mono text-[10px] tracking-wider text-[#63dc8b]">
