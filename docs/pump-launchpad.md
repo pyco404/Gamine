@@ -9,13 +9,12 @@ The launch transaction, constructed with `@pump-fun/pump-sdk` 2.0.0, contains:
 1. Pump `create_v2` for a SOL-paired Token-2022 token. Mayhem, cashback and
    Pump's separate holder-reward mode are off.
 2. A Pump fee-sharing configuration and its final, locked recipients:
-   daily wallet **15%**, weekly wallet **50%**, platform wallet **35%**.
+   shared agent reward wallet **70%**, platform wallet **30%**.
    The launcher receives **0%** of creator fees.
 3. An optional token purchase into the launching wallet. Its SOL amount is a
    strict spend cap, including trading fees, and it executes after fee locking.
 4. A mandatory **0.1 SOL** transfer to the platform wallet
-   configured by `PUMP_PLATFORM_WALLET` (default
-   `8d2HSFZJiAg9UP8r5k4giGTrdsBxMkzjM6g2imcWwjGf`).
+   configured by `PUMP_PLATFORM_WALLET` (no default address).
 
 All these instructions share one transaction. A failed transaction does not
 collect the platform fee or perform the buy; network fees may still apply.
@@ -43,12 +42,15 @@ to `web/.env.local`. `PUMP_RPC_URL` and `PINATA_JWT` are server secrets; they
 must not have a `NEXT_PUBLIC_` prefix. The RPC's genesis hash is checked against
 mainnet before any launch preparation or submission. There is no devnet fallback.
 
-Set the three receiving public addresses with `PUMP_PLATFORM_WALLET`,
-`PUMP_DAILY_REWARDS_WALLET` and `PUMP_WEEKLY_REWARDS_WALLET`. The example
-contains the current Gamine wallets. The platform address receives both
-the 0.1 SOL launch fee and its 35% creator-fee share. All three addresses must
-be valid and distinct. Restart the app after changing them and generate a
-new lookup table containing the updated wallets before enabling new launches.
+Set the two receiving public addresses with `PUMP_PLATFORM_WALLET` and
+`PUMP_AGENT_REWARDS_WALLET`. The example
+contains the configured public receiving addresses. The platform address receives both
+the 0.1 SOL launch fee and its 30% creator-fee share. Both addresses must
+be valid and distinct. Restart the app after changing them and verify that
+launch transactions still fit the configured shared lookup table. A table does
+not need every recipient in it: omitted recipients can remain in the transaction
+message if the serialized packet stays within 1,232 bytes. Replace the table
+only if the packet no longer fits or the table is inactive.
 Existing on-chain fee splits are locked and cannot be changed by editing env.
 
 Create a shared mainnet address lookup table once. From `web/`, first inspect
@@ -98,29 +100,29 @@ Expiry is reported only after finalized block-height expiry and a finalized
 check that the mint does not exist. An unavailable RPC leaves a launch pending.
 
 A launch is listed only after confirmed execution and verification that the
-Pump-owned curve points to the matching Pump Fees configuration, with the three
+Pump-owned curve points to the matching Pump Fees configuration, with the two
 expected recipients and admin updates revoked. Token pages recheck the sharing
 configuration. The platform fee is verified through the immutable prepared
 message and confirmed signature, rather than a client payment assertion.
 
-## The $GAMINE mint
+## The $GAMINE launch
 
-Every launch gets a random mint address, except $GAMINE, whose address ends in
-`AGP`. Its key is ground on the operator's machine and used once:
+The official launching wallet is `Gh8BDiUhocbkrwaFv755y75dbH7QgzmaVJdF1SqYRi9H`.
+Connect and sign in with this wallet for the official launch; its private key stays
+in the wallet. Enter name `Gamine` and ticker `GAMINE` on the website.
 
-```bash
-solana-keygen grind --ends-with AGP:1   # writes <address>.json
-```
+Every ordinary launch receives a fresh random mint. The official launch can
+optionally use a pre-generated random mint; no vanity suffix is required.
 
-On the web service, set `AGP_MINT_SECRET` to that file's contents (the JSON
-byte array; a base58 secret also works) and `AGP_MINT_LAUNCHER` to the wallet
-that will launch $GAMINE. Only that wallet, launching the ticker `GAMINE`, gets this
-mint; anyone else's `GAMINE` ticker gets a random one. A key that does not end in
-`AGP` is refused before anything is uploaded or charged.
-
-The mint is used once. If that launch expires, it cannot be prepared again:
-resume it, or grind a new key. After $GAMINE is live, remove both variables and
-set `PAYOUT_AGP_MINT` to the new mint.
+The reserved official mint is `Aw55TiFnRqzXQZyLxhdqxE3T7fGMYpXHECTfDv6H62LS`.
+Set server-only `GAMINE_LAUNCHER_WALLET` to the official wallet and
+`GAMINE_LAUNCH_MINT_SECRET` to the privately stored keypair JSON. Only that
+wallet launching ticker `GAMINE` uses this mint. Other launches are unchanged.
+Never publish the keypair or put it in a public environment variable. Remove the
+reservation variables after the launch confirms.
+Resuming an existing launch keeps its original mint and transaction.
+After the confirmed launch, set the public token and holder/reward configuration
+to the actual mint address.
 
 ## Current limits
 
@@ -149,7 +151,7 @@ configuration; it has not been performed by this implementation.
 
 pump.fun does not send creator fees to a token's split on its own: they accumulate
 in its creator vault until a distribute transaction pays them to the locked
-shareholders (15% daily, 50% weekly, 35% platform). Anyone may send it; the signer
+shareholders (70% shared agent rewards, 30% platform). Anyone may send it; the signer
 pays only the network fee. pump.fun's program now sweeps the curve's creator bucket
 first, which only `@pump-fun/pump-sdk` 4 builds, so the script uses it under the
 alias `pump-sdk-v4` while launches stay on the SDK they were tested with. From `web/`:
