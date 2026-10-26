@@ -29,6 +29,7 @@ export type VillageHandle = {
   /** Live Bluff & Fold matches, for the world camera to draw: rings on the ground, tables and scores. */
   matchRings: () => ReturnType<VillageScene["matchRings"]>;
   matchTables: () => ReturnType<VillageScene["matchTables"]>;
+  playback: (id: string) => ReturnType<VillageScene["playback"]>;
   /** Where the world camera is looking, so the nearest matches are drawn in full. */
   setViewCentre: (p: Point | null) => void;
   inspectAgent: (id: string) => ReturnType<VillageScene["inspectAgent"]>;
@@ -57,7 +58,7 @@ export type VillageHandle = {
 };
 
 /** The canvas's backing store, as a multiple of its CSS size: physical pixels, capped to keep memory bounded. */
-const pixelRatio = () => Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
+const pixelRatio = () => Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
 
 /**
  * Starts the village in `container`. The only way in for the rest of the app:
@@ -133,6 +134,7 @@ export async function startVillage(
     nameTag: (id) => scene.nameTag(id),
     matchRings: () => scene.matchRings(),
     matchTables: () => scene.matchTables(),
+    playback: (id) => scene.playback(id),
     setViewCentre: (p) => scene.setViewCentre(p),
     inspectAgent: (id) => scene.inspectAgent(id),
     paintAgent: (id, ctx, x, y, k, paint, yaw) => scene.paintAgent(id, ctx, x, y, k, paint, yaw),
