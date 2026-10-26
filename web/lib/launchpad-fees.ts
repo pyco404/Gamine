@@ -1,7 +1,17 @@
+import { PublicKey } from "@solana/web3.js";
+
 /** Mandatory per-token anti-spam fee, separate from buys and network fees. */
 export const LAUNCH_FEE_LAMPORTS = 100_000_000;
 
-/** Server env overrides; the preview keeps the documented default wallets. */
-export const LAUNCH_FEE_RECIPIENT = process.env.PUMP_PLATFORM_WALLET ?? "8d2HSFZJiAg9UP8r5k4giGTrdsBxMkzjM6g2imcWwjGf";
-export const DAILY_REWARDS_WALLET = process.env.PUMP_DAILY_REWARDS_WALLET ?? "2THUfu66VhCcfZsexroAzujCxGspoYUo2DZDwWQd87T5";
-export const WEEKLY_REWARDS_WALLET = process.env.PUMP_WEEKLY_REWARDS_WALLET ?? "6uLTDFMvoehtXg6PuwR1o1J4yYNYhMjpGrsDPZ3fWTQn";
+/** Receiving addresses must be supplied explicitly; no fallback wallets. */
+export const LAUNCH_FEE_RECIPIENT = process.env.PUMP_PLATFORM_WALLET?.trim() ?? "";
+export const AGENT_REWARDS_WALLET = process.env.PUMP_AGENT_REWARDS_WALLET?.trim() ?? "";
+
+export function feeWalletsReady(): boolean {
+  try {
+    if (!LAUNCH_FEE_RECIPIENT || !AGENT_REWARDS_WALLET) return false;
+    const platform = new PublicKey(LAUNCH_FEE_RECIPIENT);
+    const agents = new PublicKey(AGENT_REWARDS_WALLET);
+    return PublicKey.isOnCurve(platform.toBytes()) && PublicKey.isOnCurve(agents.toBytes()) && !platform.equals(agents);
+  } catch { return false; }
+}
