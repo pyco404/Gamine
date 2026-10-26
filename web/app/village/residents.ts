@@ -75,9 +75,8 @@ export { HALLS, hallOf } from "../../lib/world/identity";
 import { hallOf, type Hall } from "../../lib/world/identity";
 export type { Hall } from "../../lib/world/identity";
 
-export const HERO_UNITS = ["warrior", "archer", "pawn"] as const;
-export const HERO_COLOURS = ["blue", "yellow", "red", "purple"] as const;
-export type Look = { unit: (typeof HERO_UNITS)[number]; colour: (typeof HERO_COLOURS)[number] };
+import { lookOf, type Look } from "../../lib/world/character";
+export { HERO_UNITS, HERO_COLOURS, lookOf, type Look } from "../../lib/world/character";
 
 export type Resident = {
   id: string;
@@ -106,30 +105,6 @@ export type Resident = {
   /** A replay's stand-in: the agent it stands in for, whose face it wears and whose page it opens. */
   standIn?: string;
 };
-
-/** FNV-1a: the same id always hashes the same, in every browser. */
-function hash(s: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h >>> 0;
-}
-
-/**
- * The knight an agent is drawn as when it has no portrait, fixed by its id so
- * it looks the same on every visit. An agent with one walks the village as its
- * own character (the scene draws it). Players' agents' names always show;
- * house agents show theirs on hover.
- */
-export function lookOf(id: string): Look {
-  const h = hash(id);
-  return {
-    unit: HERO_UNITS[h % HERO_UNITS.length] ?? "pawn",
-    colour: HERO_COLOURS[Math.floor(h / HERO_UNITS.length) % HERO_COLOURS.length] ?? "blue",
-  };
-}
 
 /** A replay's stand-in's id: never an agent's, so the real one carries on elsewhere. */
 export const standInId = (matchId: string, seat: "A" | "B") => `stand-in:${matchId}:${seat}`;
