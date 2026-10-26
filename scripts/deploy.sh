@@ -22,7 +22,7 @@ case "$SERVICE" in
   *) echo "usage: scripts/deploy.sh api|web [environment]"; exit 1 ;;
 esac
 
-PROJECT=af965879-57de-4ff2-89a0-efc0c9863fcd
+PROJECT=261f704c-bcc2-4c12-a01b-5a075a08c085
 ENVIRONMENT="${2:-production}"
 # Production's services are api and web. Another environment has services of
 # its own, named for it (rehearsal-api, rehearsal-web): Railway gives an
