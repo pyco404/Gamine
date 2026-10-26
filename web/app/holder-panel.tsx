@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { eligibilityPresentation } from "@/lib/eligibility-presentation";
 import type { HolderView, HoldingView } from "@/lib/api";
 import { localMoment } from "@/lib/time";
 
@@ -23,11 +25,15 @@ export function HoldingCheck({
   refreshing: boolean;
 }) {
   const read = holding?.readAt ?? null;
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => { const tick = () => setNow(Date.now()); tick(); const timer = setInterval(tick, 15_000); return () => clearInterval(timer); }, []);
+  const status = eligibilityPresentation(holding, refreshing || now === null, now ?? 0);
   return (
     <div className="rounded-panel border border-line bg-panel-2 px-3 py-3">
       <p className="text-[12px] uppercase tracking-wider text-muted">Your wallet</p>
-      {holding?.priceReady === false ? (
-        <p className="mt-2 text-[13px] text-muted">Waiting for a verified token price. Your agent needs at least $20 of holdings.</p>
+      <p role="status" className={`mt-2 text-sm font-medium ${status.tone}`}>{status.label}</p>
+      {status.state === "unavailable" ? (
+        <p className="mt-2 text-[13px] text-muted">Your holdings or token price need a fresh verified reading. This does not mean your tokens were sold. Your agent needs at least $20 of holdings.</p>
       ) : holding === null || read === null ? (
         <p className="mt-2 text-[13px] leading-5 text-muted">Your wallet is checked automatically. You can also check it now after a purchase.</p>
       ) : (
