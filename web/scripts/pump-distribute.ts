@@ -4,14 +4,15 @@ import { Connection, Keypair, PublicKey, TransactionMessage, VersionedTransactio
 import { createRequire } from "node:module";
 // Loaded as CommonJS: its ESM build's anchor import does not resolve under this project's loader.
 const pump4 = createRequire(import.meta.url)("pump-sdk-v4") as typeof import("pump-sdk-v4");
-import { DAILY_REWARDS_WALLET, WEEKLY_REWARDS_WALLET, LAUNCH_FEE_RECIPIENT } from "../lib/launchpad-fees";
+import { AGENT_REWARDS_WALLET, feeWalletsReady, LAUNCH_FEE_RECIPIENT } from "../lib/launchpad-fees";
 
 const MAINNET = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
 export const sol = (lamports: number | bigint) => (Number(lamports) / 1e9).toFixed(6);
-export const FEE_WALLETS = { daily: DAILY_REWARDS_WALLET, weekly: WEEKLY_REWARDS_WALLET, platform: LAUNCH_FEE_RECIPIENT };
+export const FEE_WALLETS = { agents: AGENT_REWARDS_WALLET, platform: LAUNCH_FEE_RECIPIENT };
 
 /** A mainnet connection from PUMP_RPC_URL; distribution is refused anywhere else. */
 export async function mainnet(): Promise<Connection> {
+  if (!feeWalletsReady()) throw new Error("Configure distinct PUMP_PLATFORM_WALLET and PUMP_AGENT_REWARDS_WALLET addresses first.");
   const rpc = process.env.PUMP_RPC_URL;
   if (!rpc) throw new Error("Set PUMP_RPC_URL in web/.env.local.");
   const connection = new Connection(rpc, "confirmed");
@@ -29,8 +30,8 @@ export type Distribution =
   | { status: "sent"; waitingSol: string; signature: string };
 
 /**
- * Pays one token's accumulated pump.fun creator fees out to its locked fee split (15% daily, 50%
- * weekly, 35% platform for Gamine launches). Anyone may send it; the signer pays only the network
+ * Pays one token's accumulated pump.fun creator fees out to its locked fee split (70% shared agent rewards,
+ * 30% platform for Gamine launches). Anyone may send it; the signer pays only the network
  * fee. It always simulates first, and sends only with `send` and a signer: a failing simulation
  * throws and nothing is sent.
  */
