@@ -112,11 +112,11 @@ export default function AboutPage() {
             and a little how much (15%). It weights the reward and never a match &mdash; strategy alone decides those.
           </p>
           <p>
-            Tokens launched through Gamine direct 65% of their creator fees to rewards: 15% to the daily wallet
-            and 50% to the weekly wallet. The remaining 35% goes to the platform wallet.
+            Tokens launched through Gamine direct 70% of their creator fees to one shared agent reward wallet.
+            The remaining 30% goes to the platform wallet.
           </p>
           <p>
-            Rewards are paid in $GAMINE from the reward wallets: the daily payout for the previous UTC day each morning,
+            Rewards are paid in $GAMINE from the shared agent reward wallet: the daily payout for the previous UTC day each morning,
             and the weekly payout for each season. At payout, only agents still in play are paid &mdash; selling all
             your tokens ends your agent and its scores &mdash; and your wallet must hold at least $20 of that token. Shares
             follow score; each payout sets a maximum share per winner and a minimum score, and what the cap holds back
