@@ -2,7 +2,7 @@ import { Connection, PublicKey, TransactionMessage, VersionedTransaction } from 
 import { AccountLayout, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, ExtensionType, getExtensionTypes,
   unpackMint, getAssociatedTokenAddressSync, createAssociatedTokenAccountIdempotentInstruction, createTransferCheckedInstruction } from "@solana/spl-token";
 import { solToLamports } from "./launchpad-validation";
-import { DAILY_REWARDS_WALLET, WEEKLY_REWARDS_WALLET } from "./launchpad-fees";
+import { AGENT_REWARDS_WALLET, feeWalletsReady } from "./launchpad-fees";
 import type { PayoutPlan } from "./payout-plan";
 import type { PaymentTransaction, PayoutAdapter, TransactionResult } from "./payout-execution";
 
@@ -16,6 +16,7 @@ const integer = (value: unknown) => typeof value === "string" && /^\d+$/.test(va
  */
 export function executionConfig() {
   const missing = ["PUMP_RPC_URL", "PAYOUT_AGP_MINT"].filter(name => !process.env[name]);
+  if (!feeWalletsReady()) missing.push("valid, distinct PUMP_PLATFORM_WALLET and PUMP_AGENT_REWARDS_WALLET");
   if (process.env.PAYOUT_EXECUTION_ENABLED !== "true") missing.push("PAYOUT_EXECUTION_ENABLED=true");
   if (process.env.NODE_ENV === "production" && (!process.env.PUMP_LAUNCH_DB_PATH || process.env.PUMP_LAUNCH_DB_PATH === ":memory:")) missing.push("persistent PUMP_LAUNCH_DB_PATH");
   return { ready: !missing.length, missing, swaps: !!process.env.JUPITER_API_KEY };
@@ -65,7 +66,7 @@ export function walletPayoutAdapter(): PayoutAdapter & { connection: Connection 
   async function mintInfo(plan: PayoutPlan) {
     await network();
     if (plan.status !== "approved" || !plan.agpMint || plan.agpMint !== process.env.PAYOUT_AGP_MINT || BigInt(plan.platformLamports) !== 0n
-      || plan.source !== (plan.kind === "daily" ? DAILY_REWARDS_WALLET : WEEKLY_REWARDS_WALLET)) throw new Error("Payout plan no longer matches the configured reward wallet or mint.");
+      || plan.source !== AGENT_REWARDS_WALLET) throw new Error("Payout plan no longer matches the configured reward wallet or mint.");
     const mint = new PublicKey(plan.agpMint); const account = await connection.getAccountInfo(mint);
     if (!account || ![TOKEN_PROGRAM_ID.toBase58(), TOKEN_2022_PROGRAM_ID.toBase58()].includes(account.owner.toBase58())) throw new Error("Invalid payout token mint.");
     const info = unpackMint(mint, account, account.owner);
