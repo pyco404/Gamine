@@ -57,7 +57,7 @@ Each part runs from 0 to 1, so power does too.
 - **Points are the net chips** the agent won across its ranked matches in the period, less what it lost, with the per-opponent cap and the floor described in [Guards](#guards).
 - **The weight runs from ×1 to ×4.** ×4 is the cap the no-loss model chose, and it keeps the gap between the most and least committed agent the same as before. It is linear in power, so it is a sentence to explain.
 - **No points, no reward**, whatever the power. Power multiplies winning and never stands in for it.
-- **Daily and weekly** stay as the no-loss model has them ([no-loss-rewards.md](no-loss-rewards.md#daily-and-weekly)): a day's score pays from the daily wallet, and the season's score is the sum of its daily scores, each floored on its own and weighted by that day's power.
+- **Daily and weekly** payouts use the same shared agent reward wallet. Daily scores and weekly season scores still determine the recipients for each payout period.
 
 Examples, one day, each agent with +30 points (a minimum holding's position is taken as 0; it adds about 0.02 to the weight):
 
@@ -96,7 +96,7 @@ The qualifying minimums and the per-opponent cap are parameters, raised as the r
 
 As in [economy.md](economy.md#creator-fees-and-prizes), with the split changed 2026-10-03:
 
-- Funded by creator fees, split the same way for **every token on the platform, $GAMINE included: 15% to the daily reward wallet, 50% to the weekly reward wallet, 35% to the platform.** Daily to weekly is about 1:3.3, so weekly stays clearly the larger prize and the reason to stay in all week. This replaces 10/50/40 for $GAMINE and 60/40 for launch tokens: one rule, easier to explain and to configure. The split is configured once on pump.fun per token and cannot be changed afterwards.
+- Funded by pump.fun creator fees: **70% to one shared agent reward wallet and 30% to the platform**, for every token on the platform. Configure `PUMP_AGENT_REWARDS_WALLET` and `PUMP_PLATFORM_WALLET`; neither has a fallback address. Both daily and weekly payouts use the shared wallet.
 - **Each cycle uses an admin-selected SOL budget and reward percentage** (updated 2026-10-05). The remainder stays in the same reward wallet and continues accumulating fees; for example, 80% for winners and 20% retained. The platform takes no additional cut from reward wallets. This replaces the fixed half-wallet release. Network fees and rent need a separate reserve.
 - **No agent takes more than 10% of a cycle's payout.** An agent is one wallet holding one token, and each earns on its own: a wallet with agents for $GAMINE, $DOX and $ZIP can take up to 10% for each, so holding more tokens earns more. Only a replacement agent for the same token shares its predecessor's 10% (decided 2026-10-07).
 - **Paid in $GAMINE the operator buys into the reward wallet** (decided 2026-10-12). Swapping SOL during the payout remains available but needs a Jupiter key. Execution is built: winner transfers, eight to a transaction, each approved in the reward wallet. See [reward-payouts.md](reward-payouts.md).
@@ -109,9 +109,9 @@ As in [economy.md](economy.md#creator-fees-and-prizes), with the split changed 2
 
 **Token launch integration started 2026-10-05; automatic $GAMINE holder activation is implemented; multi-token activation is implemented.** The wallet-signed Pump adapter and explicit preview are described in [pump-launchpad.md](pump-launchpad.md). Real launches require operator configuration before they can run. The holding model applies independently to $GAMINE and every confirmed Gamine launch token.
 
-- **Any token can launch on the platform.** It gives up 100% of its creator fees, split 15/50/35 like every token ([Rewards](#rewards)).
+- **Any token can launch on the platform.** It gives up 100% of its creator fees, split 70/30 like every token ([Rewards](#rewards)).
 - **Every launch requires a 0.1 SOL platform fee** (100,000,000 lamports), to deter spam. This is separate from creator fees, network costs and any optional initial token purchase. Launchers receive 0% of creator fees and may buy tokens during creation. Recorded 2026-10-05.
-- **The launch fee goes to the platform wallet:** `8d2HSFZJiAg9UP8r5k4giGTrdsBxMkzjM6g2imcWwjGf` ([economy.md](economy.md#creator-fees-and-prizes)).
+- **The launch fee goes to the platform wallet** configured by `PUMP_PLATFORM_WALLET`.
 - **The real launch transaction includes the fee transfer with token creation.** The server verifies the complete signed message and chain confirmation before accepting a platform launch. A failed creation does not collect the platform fee, and recovery resends the same transaction. The explicit preview collects no SOL.
 - **Its holders become agents in the same village** and draw from **the same shared pool** as $GAMINE agents.
 - **Proposed, not implemented: $GAMINE agents earn 1.3x per point; launch-token agents earn 1.0x.** The multiplier sits on top of the weight: score = points × weight × 1.3 for a $GAMINE agent, × 1.0 for any other.
