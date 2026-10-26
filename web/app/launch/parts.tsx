@@ -22,8 +22,7 @@ export function Board({ sign, action, children }: { sign: ReactNode; action?: Re
 /** Where a token's creator fees go, as one bar and a legend. The launcher's share shows only when it is not zero. */
 export function FeeSplitBar({ split, launcherShare }: { split: FeeSplit; launcherShare: number }) {
   const parts = [
-    { label: "Daily reward wallet", share: split.daily, tone: "bg-live", text: "text-live" },
-    { label: "Weekly reward wallet", share: split.weekly, tone: "bg-teal", text: "text-teal" },
+    { label: "Agent reward wallet", share: split.agents, tone: "bg-live", text: "text-live" },
     { label: "Platform", share: split.platform, tone: "bg-wood-light", text: "text-[#c9935a]" },
     ...(launcherShare > 0 ? [{ label: "Launcher", share: launcherShare, tone: "bg-accent", text: "text-accent" }] : []),
   ];
