@@ -30,7 +30,7 @@ const CONFIG: LaunchpadConfig = {
   launchFeeLamports: LAUNCH_FEE_LAMPORTS,
   launchFeeRecipient: LAUNCH_FEE_RECIPIENT,
   minimumUsd: 20,
-  feeSplit: { daily: 15, weekly: 50, platform: 35 },
+  feeSplit: { agents: 70, platform: 30 },
   launcherShare: 0,
   perTokenCap: null,
   agpMultiplier: 1.3,
@@ -160,7 +160,7 @@ const SEEDS: Seed[] = [
     volume24hUsd: 44_000,
     bondingProgress: 100,
     removedReason:
-      "Its fee split was found changed on pump.fun after launch: creator fees no longer go to the three Gamine wallets. Its agents left the village.",
+      "Its fee split was found changed on pump.fun after launch: creator fees no longer go to the two Gamine wallets. Its agents left the village.",
   },
   // More made-up tokens, so every ordering on the explore page has something to rank.
   ...(
