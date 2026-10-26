@@ -16,11 +16,9 @@ describe("Configured launch receiving wallets", () => {
 
   it("uses env wallets for both the platform payment and the fee-sharing instruction", async () => {
     const platform = Keypair.generate().publicKey.toBase58();
-    const daily = Keypair.generate().publicKey.toBase58();
-    const weekly = Keypair.generate().publicKey.toBase58();
+    const agents = Keypair.generate().publicKey.toBase58();
     vi.stubEnv("PUMP_PLATFORM_WALLET", platform);
-    vi.stubEnv("PUMP_DAILY_REWARDS_WALLET", daily);
-    vi.stubEnv("PUMP_WEEKLY_REWARDS_WALLET", weekly);
+    vi.stubEnv("PUMP_AGENT_REWARDS_WALLET", agents);
     const { launchInstructions } = await import("../lib/pump-transaction");
     const { pumpConfig } = await import("../lib/launchpad-server");
     const { feeWallets } = await import("../lib/launchpad-config");
@@ -31,20 +29,35 @@ describe("Configured launch receiving wallets", () => {
     });
     expect(SystemInstruction.decodeTransfer(instructions.at(-1)!).toPubkey.toBase58()).toBe(platform);
     expect(feeWallets).toEqual([
-      { address: daily, shareBps: 1500 }, { address: weekly, shareBps: 5000 }, { address: platform, shareBps: 3500 },
+      { address: agents, shareBps: 7000 }, { address: platform, shareBps: 3000 },
     ]);
     const coder = pump.getPumpFeeProgram(new Connection("https://rpc.example.invalid")).coder.instruction as BorshInstructionCoder;
     const decoded = coder.decode(instructions[3]!.data)!;
     const data = decoded.data as { shareholders: { address: PublicKey; shareBps: number }[] };
     expect(data.shareholders.map(({ address, shareBps }) => ({ address: address.toBase58(), shareBps }))).toEqual(feeWallets);
-    expect(pumpConfig()).toMatchObject({ ready: true, launchFeeRecipient: platform });
+    expect(pumpConfig()).toMatchObject({ ready: true, launchFeeRecipient: platform, feeSplit: { agents: 70, platform: 30 } });
   });
 
-  it.each(["invalid", "duplicate"])("disables launching for %s receiving wallets", async (kind) => {
+  it("has no fallback addresses and refuses to build launch transactions until both are supplied", async () => {
+    vi.stubEnv("PUMP_PLATFORM_WALLET", "");
+    vi.stubEnv("PUMP_AGENT_REWARDS_WALLET", "");
+    const { LAUNCH_FEE_RECIPIENT, AGENT_REWARDS_WALLET } = await import("../lib/launchpad-fees");
+    expect(LAUNCH_FEE_RECIPIENT).toBe("");
+    expect(AGENT_REWARDS_WALLET).toBe("");
+    const { launchInstructions } = await import("../lib/pump-transaction");
+    await expect(launchInstructions({
+      form: { name: "Test", ticker: "TEST", description: "", image: "", links: {}, initialBuySol: "0", creator: Keypair.generate().publicKey.toBase58() },
+      mint: Keypair.generate().publicKey, uri: "https://ipfs.io/ipfs/setup", global: globalFixture(), feeConfig: null,
+    })).rejects.toThrow("Configure distinct");
+  });
+
+  it.each(["invalid", "duplicate", "missing"])("disables launching for %s receiving wallets", async (kind) => {
     const platform = Keypair.generate().publicKey.toBase58();
     vi.stubEnv("PUMP_PLATFORM_WALLET", platform);
-    vi.stubEnv("PUMP_DAILY_REWARDS_WALLET", kind === "invalid" ? "not-a-wallet" : platform);
+    vi.stubEnv("PUMP_AGENT_REWARDS_WALLET", kind === "invalid" ? "not-a-wallet" : kind === "missing" ? "" : platform);
     const { pumpConfig } = await import("../lib/launchpad-server");
     expect(pumpConfig().ready).toBe(false);
+    const { executionConfig } = await import("../lib/payout-adapter");
+    expect(executionConfig().ready).toBe(false);
   });
 });
