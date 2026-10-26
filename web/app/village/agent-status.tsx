@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { eligibilityPresentation } from "@/lib/eligibility-presentation";
 import { useWallet } from "@/app/wallet-context";
 import type { WorldView } from "./game/presentation";
 import type { VillageHandle } from "./game";
@@ -44,19 +45,22 @@ export function AgentStatus({ account, accountError, view, village }: {
   const mint = detail?.agent.qualifyingTokenMint ?? agent?.qualifyingTokenMint ?? agent?.holderMint ?? holder?.holding.mint;
   const community = account?.tokenHoldings?.find((t) => t.mint === mint);
   const symbol = community?.symbol ?? (agent?.holderMint ? `${agent.holderMint.slice(0, 4)}…${agent.holderMint.slice(-4)}` : "$GAMINE");
-  const waiting = !session ? "Sign in with your wallet to locate your agent." : accountError ? "Could not read your agents. Retrying…" : !account ? "Locating your agents…" : !owned.length ? "No agent yet. Buy and hold at least $20 of a qualifying token to activate one." : !agent ? "Waiting for your agent to appear in the field…" : null;
+  const qualifies = [account?.holding, ...(account?.tokenHoldings?.map((t) => t.holding) ?? [])].some((h) => h && eligibilityPresentation(h, false, Date.now()).state === "eligible");
+  const waiting = !session ? "Sign in with your wallet to locate your agent." : accountError ? "Could not read your agents. Retrying…" : !account ? "Locating your agents…" : !owned.length ? qualifies ? "Your holdings qualify. Open Manage agents to create or activate your agent." : "No agent yet. Hold at least $20 of a qualifying token to activate one." : !agent ? "Waiting for your agent to appear in the field…" : null;
   const missing = current?.failed ? "Unavailable" : !current ? "Loading…" : "Unavailable";
-  return <aside aria-label="Your agent status" className="pointer-events-auto absolute left-3 top-16 z-10 w-[240px] max-w-[calc(100vw-1.5rem)] rounded-panel border border-hud-line bg-hud p-3 text-xs text-text shadow-[0_4px_16px_rgb(0_0_0/0.35)] md:left-4 md:top-[4.5rem]">
-    <p className="text-[10px] uppercase tracking-widest text-muted">Your agent · autonomous</p>
-    {waiting ? <p role="status" className="mt-2 leading-5">{waiting}</p> : <>
+  return <aside aria-label="Your agent status" className="owner-agent-panel game-panel pointer-events-auto absolute left-3 top-16 z-10 w-[240px] max-w-[calc(100vw-1.5rem)] rounded-panel border border-hud-line bg-hud p-3 text-xs text-text shadow-[0_4px_16px_rgb(0_0_0/0.35)] md:left-4 md:top-[4.5rem]">
+    <p className="hud-eyebrow">Your agent · autonomous</p>
+    {waiting ? <><p role="status" className="mt-2 leading-5">{waiting}</p><p className="mt-2 text-[11px] leading-5 text-muted">Hold at least $20 of a qualifying token in your wallet. Verification never requires a token transfer.</p></> : <>
       <Link href={`/a/${id}`} className="mt-1 block truncate text-sm text-accent" title={agent!.name}>{agent!.name}</Link>
       {owned.length > 1 ? <label className="mt-2 block text-muted">Observe
         <select aria-label="Choose your agent" value={id ?? ""} onChange={(e) => village.current?.select(e.target.value, true)} className="mt-1 w-full rounded border border-hud-line bg-ink px-1 py-1 text-text">
           {owned.map((a) => <option key={a.id ?? a.agentId} value={a.id ?? a.agentId}>{a.name}</option>)}
         </select>
       </label> : null}
+      <p className="mt-2 text-xs text-live" role="status">{current?.failed ? "Verification unavailable · retrying" : detail?.autoplay?.enabled === false ? "Autoplay paused" : detail?.agent.canPlay === false ? "Temporarily ineligible" : detail ? "Agent active" : "Verifying agent status…"}</p>
       <dl className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1.5">
         <dt className="text-muted">Token</dt><dd className="truncate" title={community?.name ?? mint}>{mint ? <a className="text-accent" href={`https://solscan.io/token/${encodeURIComponent(mint)}${detail?.agent.solanaCluster === "devnet" ? "?cluster=devnet" : ""}`} target="_blank" rel="noreferrer">{symbol}</a> : symbol}</dd>
+        <dt className="text-muted">Strategy</dt><dd>{detail?.agent.presetName ?? agent?.presetName ?? "Custom strategy"}</dd>
         <dt className="text-muted">Power</dt><dd title="Reward score multiplier; does not affect match outcomes">{holder ? `×${holder.power.weight.toFixed(2)}` : missing}</dd>
         <dt className="text-muted">Conviction</dt><dd>{holder ? `${holder.power.convictionDays} / ${holder.power.convictionCapDays} days` : missing}</dd>
         <dt className="text-muted">Activity</dt><dd>{view?.selected?.activity ?? "Locating…"}</dd>
