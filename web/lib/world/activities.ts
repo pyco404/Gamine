@@ -1,3 +1,5 @@
+import { canSpar } from "./character";
+
 export type Point = { x: number; y: number };
 
 /** Cosmetic world behavior only. Bluff & Fold alone earns rewards; these completions never affect scoring or payouts. */
@@ -62,12 +64,15 @@ function pick<T>(items: readonly T[], weight: (item: T) => number, rand: () => n
 /** Stable preferences, independent of rendering, network updates and iteration order. */
 export function activityPreferences(id: string): Record<Activity, number> {
   const rand = random(`preference:${id}`), favorite = Math.floor(rand() * ACTIVITY_TYPES.length);
-  return Object.fromEntries(ACTIVITY_TYPES.map((type, i) => [type, i === favorite ? 45 : 10 + Math.floor(rand() * 16)])) as Record<Activity, number>;
+  const weights = Object.fromEntries(ACTIVITY_TYPES.map((type, i) => [type, i === favorite ? 45 : 10 + Math.floor(rand() * 16)])) as Record<Activity, number>;
+  // Armed residents spend more of their free time practicing together.
+  weights.sparring = canSpar(id) ? 120 : 0;
+  return weights;
 }
 export function chooseActivity(id: string, cycle: number, from: Point, destinations: readonly ActivityDestination[]): ActivityPlan | null {
   const rand = random(`activity:${id}:${cycle}`), weights = activityPreferences(id);
   const capability: Record<Activity, Capability> = { farming: "farm", gathering: "gather", delivery: "delivery-source", exploration: "explore", sparring: "spar" };
-  const available = ACTIVITY_TYPES.filter((type) => destinations.some((d) => d.capabilities.includes(capability[type]) &&
+  const available = ACTIVITY_TYPES.filter((type) => weights[type] > 0 && destinations.some((d) => d.capabilities.includes(capability[type]) &&
     (type !== "delivery" || destinations.some((target) => target.id !== d.id && target.capabilities.includes("delivery-target")))));
   const activity = pick(available, (type) => weights[type], rand);
   if (!activity) return null;
@@ -196,9 +201,9 @@ export class ActivitySimulation {
   private pairSparring(entries: Entry[], now: number): void {
     for (const e of entries) if (e.sparring) {
       const other = this.entries.get(e.sparring.partnerId);
-      if (other?.sparring?.id !== e.sparring.id || other.plan?.activity !== "sparring" || other.phase !== "working") this.rest(e, now);
+      if (!canSpar(e.id) || !canSpar(other?.id ?? "") || other?.sparring?.id !== e.sparring.id || other.plan?.activity !== "sparring" || other.phase !== "working") this.rest(e, now);
     }
-    const waiting = entries.filter((e) => e.plan?.activity === "sparring" && e.phase === "working" && !e.moving && !e.sparring && now < e.until)
+    const waiting = entries.filter((e) => canSpar(e.id) && e.plan?.activity === "sparring" && e.phase === "working" && !e.moving && !e.sparring && now < e.until)
       .sort((a, b) => hash(`${a.id}:${a.cycle}`) - hash(`${b.id}:${b.cycle}`));
     for (const a of waiting) {
       if (a.sparring) continue;
