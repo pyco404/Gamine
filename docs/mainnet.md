@@ -33,7 +33,7 @@ Every mainnet key is freshly generated. None of the devnet keys are reused: the 
 
 No treasury key: with decision 5, mainnet has nothing for one to fund, and there is no faucet on mainnet.
 
-The daily and weekly reward wallets and the platform wallet ([economy.md](economy.md#creator-fees-and-prizes)) are pump.fun fee destinations, not program keys.
+The shared agent reward wallet and the platform wallet ([economy.md](economy.md#creator-fees-and-prizes)) are pump.fun fee destinations, not program keys.
 
 ## Steps, in order
 
