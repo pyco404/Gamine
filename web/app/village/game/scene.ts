@@ -13,6 +13,7 @@ import { drawScenery } from "./scenery";
 import { ActivitySimulation, ACTIVITY_CONFIG, describeActivity } from "./activities";
 import type { ActivityState } from "./activities";
 import { ACTIVITY_DESTINATIONS } from "./activity-destinations";
+import { drawGroundDetail } from "./ground-detail";
 import { drawDistrictProps, drawDistrictTerrain } from "./district-scenery";
 import { Hero, type Painter } from "./hero";
 import { CardTable } from "./table";
@@ -263,6 +264,7 @@ export class VillageScene extends Phaser.Scene {
     const taken = this.sharedWorld.lots;
     this.trees = drawMap(this, this.sharedWorld.map);
     drawDistrictTerrain(this);
+    drawGroundDetail(this, this.sharedWorld);
     drawGardens(this, taken);
     drawScenery(this, this.opts.still);
     drawRiver(this, this.opts.still);
@@ -1380,6 +1382,21 @@ export class VillageScene extends Phaser.Scene {
    * they stand, moving when a round's outcome shows on the live feed and not
    * before - the same clock (lib/playhead) - and the winner's side lit at the end.
    */
+  /** Read-only presentation clock: the same arrival and reveal timing as keepScore. */
+  playback(id: string): { elapsed: number | null; playMs: number } | null {
+    // Renderer keys include the showing/replay identity; API match IDs do not.
+    const entry = [...this.brawls].find(([, b]) => this.residents.get(b.a)?.match?.id === id);
+    if (!entry) return null;
+    const [key, brawl] = entry;
+    const ha = this.heroes.get(brawl.a), hb = this.heroes.get(brawl.b);
+    const clock = this.residents.get(brawl.a)?.match?.clock;
+    if (!clock) return null;
+    const together = ha?.idle && hb?.idle && Math.abs(ha.y - hb.y) < 10;
+    const duel = this.duels.get(key);
+    const start = duel ? duel.metAt : clock.startedAt;
+    return { elapsed: together && start !== null && (!duel || duel.full) ? Math.max(0, Date.now() - start) : null, playMs: clock.playMs };
+  }
+
   private keepScore(id: string): void {
     const brawl = this.brawls.get(id);
     const ha = brawl && this.heroes.get(brawl.a);
