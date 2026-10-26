@@ -6,7 +6,7 @@ import {
 import { createAssociatedTokenAccountIdempotentInstruction, getAssociatedTokenAddressSync, NATIVE_MINT, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { pump } from "./pump-sdk";
 import { feeWallets } from "./launchpad-config";
-import { LAUNCH_FEE_LAMPORTS, LAUNCH_FEE_RECIPIENT } from "./launchpad-fees";
+import { LAUNCH_FEE_LAMPORTS, LAUNCH_FEE_RECIPIENT, feeWalletsReady } from "./launchpad-fees";
 import type { LaunchForm } from "./launchpad";
 import { solToLamports } from "./launchpad-validation";
 
@@ -16,6 +16,7 @@ type FeeConfig = import("@pump-fun/pump-sdk").FeeConfig;
 export async function launchInstructions({
   form, mint, uri, global, feeConfig,
 }: { form: LaunchForm; mint: PublicKey; uri: string; global: Global; feeConfig: FeeConfig | null }): Promise<TransactionInstruction[]> {
+  if (!feeWalletsReady()) throw new Error("Configure distinct PUMP_PLATFORM_WALLET and PUMP_AGENT_REWARDS_WALLET addresses first.");
   const user = new PublicKey(form.creator);
   const instructions = [
     ComputeBudgetProgram.setComputeUnitLimit({ units: 600_000 }),
