@@ -77,7 +77,8 @@ async function identity(page) {
 async function nav(page, path) {
   const link = path === '/' ? page.getByRole('link', { name: 'Gamine home' }) : page.locator(`nav[aria-label="Sections"] a[href="${path}"]`);
   await link.click();
-  await page.waitForURL((url) => url.pathname === path);
+  // The SSE connection remains open; route commit and world identity are the assertions.
+  await page.waitForURL((url) => url.pathname === path, { waitUntil: "commit", timeout: 60000 });
   await page.waitForTimeout(400);
   await identity(page);
 }
@@ -120,8 +121,8 @@ try {
   for (const path of ['/live', '/ladder', '/rewards', '/about', '/', '/launch', '/games']) {
     await nav(page, path); closeEnough(afterAgent, await state(canvas));
   }
-  await page.goBack(); await page.waitForURL('**/launch'); await identity(page); closeEnough(afterAgent, await state(canvas));
-  await page.goForward(); await page.waitForURL('**/games'); await identity(page); closeEnough(afterAgent, await state(canvas));
+  await page.goBack({ waitUntil: 'commit' }); await page.waitForURL('**/launch', { waitUntil: 'commit' }); await identity(page); closeEnough(afterAgent, await state(canvas));
+  await page.goForward({ waitUntil: 'commit' }); await page.waitForURL('**/games', { waitUntil: 'commit' }); await identity(page); closeEnough(afterAgent, await state(canvas));
   await page.getByRole('button', { name: 'Close the page and see the village' }).click();
   await page.getByRole('button', { name: 'Show the page', exact: true }).click();
   closeEnough(afterAgent, await state(canvas));
@@ -136,7 +137,7 @@ try {
   await page.keyboard.press('Escape');
   await nav(page, '/');
   await page.getByRole('link', { name: 'Find my agent', exact: true }).filter({ visible: true }).click();
-  await page.waitForURL('**/agent'); await identity(page);
+  await page.waitForURL('**/agent', { waitUntil: 'commit' }); await identity(page);
   await page.waitForFunction((s) => document.querySelector(s)?.dataset.following === 'world-shell-agent', selector);
   await page.waitForTimeout(1500);
   const drawn = await page.evaluate(() => window.__worldTest.drawn.get('agent:world-shell-agent'));
@@ -176,7 +177,7 @@ try {
   assert.ok((await state(mobile.canvas)).zoom > beforePinch.zoom, 'Touch pinch failed');
   await mobile.page.getByRole('button', { name: 'Open menu', exact: true }).click();
   await mobile.page.getByRole('navigation', { name: 'Pages', exact: true }).getByRole('link', { name: 'Games', exact: true }).click();
-  await mobile.page.waitForURL('**/games'); await identity(mobile.page);
+  await mobile.page.waitForURL('**/games', { waitUntil: 'commit' }); await identity(mobile.page);
   assert.equal(mobile.maps(), 1);
   await mobile.page.screenshot({ path: '/tmp/gamine-global-world-mobile.png' });
   assert.deepEqual(errors, []);
