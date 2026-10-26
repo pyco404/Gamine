@@ -94,7 +94,7 @@ export const PLACES: PlaceInfo[] = [
         id: "chapel",
         label: "Treasury",
         note: "rewards",
-        about: "Where prize money comes from and where it goes, read from chain: $GAMINE's creator fees, and the daily and weekly payouts.",
+        about: "Where prize money comes from and where it goes, read from chain: $GAMINE's creator fees, and agent payouts.",
         holds: null,
         href: "/rewards",
         image: "/village/buildings/Chapel.png",
