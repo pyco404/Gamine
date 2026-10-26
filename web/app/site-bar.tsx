@@ -61,8 +61,9 @@ const LOGO_CLASS = "h-6 w-6 rounded-sm bg-[#0c1018] object-contain [image-render
 function Mark() {
   return (
     // The logo opens the village itself, with no page over it.
-    <Link href="/" aria-label="Gamine home" className="flex shrink-0 items-center gap-2">
+    <Link href="/" aria-label="Gamine home" className="game-wordmark flex shrink-0 items-center gap-2">
       <img src="/gamine-tb.png" alt="" width={372} height={370} className={LOGO_CLASS} />
+      <span className="hidden font-pixel text-[20px] font-bold tracking-wider text-text sm:block">GAMINE</span>
     </Link>
   );
 }
@@ -293,7 +294,7 @@ export function SiteBar({
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center gap-2 border-b border-hud-line bg-hud px-3 shadow-[0_2px_10px_rgb(0_0_0/0.4)] md:px-4 xl:gap-6">
+      <header className="game-topbar fixed inset-x-0 top-0 z-30 flex h-14 items-center gap-2 border-b border-hud-line bg-hud px-3 shadow-[0_2px_10px_rgb(0_0_0/0.4)] md:px-4 xl:gap-6">
         <Mark />
         <nav className="hidden h-full min-w-0 items-stretch lg:flex" aria-label="Sections">
           {NAV.map((item) => {
@@ -303,7 +304,7 @@ export function SiteBar({
                 key={item.href}
                 href={item.href}
                 aria-current={current ? "page" : undefined}
-                className={`pixel-outline relative flex items-center px-2 font-pixel text-[17px] font-bold xl:px-3.5 ${
+                className={`game-nav-item relative flex items-center px-2 text-[13px] font-semibold xl:px-3 ${
                   current ? "text-accent" : "text-[#f5ecd8] hover:text-accent"
                 }`}
               >
@@ -396,6 +397,7 @@ function MenuPanel({ active, onClose }: { active: string | null; onClose: () => 
     >
       <div className="flex items-center justify-between pb-2">
         <img src="/gamine-tb.png" alt="Gamine" width={372} height={370} className={LOGO_CLASS} />
+      <span className="hidden font-pixel text-[20px] font-bold tracking-wider text-text sm:block">GAMINE</span>
         <div className="flex items-center gap-3">
           <span
             aria-hidden
