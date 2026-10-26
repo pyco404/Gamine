@@ -6,7 +6,7 @@ import { distribute, feeWalletBalances, mainnet, type Distribution } from "./pum
 
 /**
  * Pays out the creator fees of every token launched on Gamine except $GAMINE, each to its locked
- * split (15% daily, 50% weekly, 35% platform). The token list comes from the site's confirmed-launch
+ * split (70% shared agent rewards, 30% platform). The token list comes from the site's confirmed-launch
  * catalog and is kept in web/.data/launched-tokens.json: tokens are added as they launch and never
  * dropped, so an archived launch is still swept. Without --send it reports and simulates only; one
  * token failing never stops the rest. The signer pays only network fees.
