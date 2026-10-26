@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { rewardWallets, type RewardWallet } from "@/lib/reward-wallets";
-import { LAUNCH_FEE_RECIPIENT, DAILY_REWARDS_WALLET, WEEKLY_REWARDS_WALLET } from "@/lib/launchpad-fees";
+import { LAUNCH_FEE_RECIPIENT, AGENT_REWARDS_WALLET, feeWalletsReady } from "@/lib/launchpad-fees";
 import { fromThisSite, LaunchError, ownerOf, readLaunchBody } from "@/lib/launchpad-server";
 import { buildHeldPayoutPlan, buildPayoutPlan, planDays, type HeldPayoutInput, type PayoutDropped, type PayoutInput, type PayoutPlan, type PayoutWinner } from "@/lib/payout-plan";
 import { PayoutStore } from "@/lib/payout-store";
@@ -31,11 +31,11 @@ function agpMint() {
   try { return new PublicKey(process.env.PAYOUT_AGP_MINT).toBase58(); }
   catch { throw new LaunchError("The payout mint is not configured correctly.", 503); }
 }
-/** Each reward wallet's SOL and $GAMINE, for choosing an amount (reward-wallets.ts reads them at most every 30 seconds). */
+/** The shared agent reward wallet's SOL and $GAMINE, for choosing an amount (reward-wallets.ts reads them at most every 30 seconds). */
 async function rewardBalances() {
   const wallets = await rewardWallets();
   const one = (w: RewardWallet) => w.sol === null ? null : { sol: w.sol, agp: w.agp };
-  return { daily: one(wallets.daily), weekly: one(wallets.weekly) };
+  return { agents: one(wallets.agents) };
 }
 /** The day after the last day an approved daily plan pays: the next one to pay. */
 function nextDaily(plans: PayoutPlan[]): string | null {
@@ -55,9 +55,10 @@ async function handle(request: Request, context: { params: Promise<{ path: strin
     if (request.method === "GET" && path.join("/") === "plans") result = {
       plans: store.list(), agpMint: agpMint(), balances: await rewardBalances(), nextDaily: nextDaily(store.list()), executionConnected: executionConfig().ready, swapsConnected: executionConfig().swaps,
       executionMissing: executionConfig().missing, executions: executions.views(),
-      sourceWallets: { daily: DAILY_REWARDS_WALLET, weekly: WEEKLY_REWARDS_WALLET }, platform: LAUNCH_FEE_RECIPIENT,
+      sourceWallets: { agents: AGENT_REWARDS_WALLET }, platform: LAUNCH_FEE_RECIPIENT,
     };
     else if (request.method === "POST" && path.join("/") === "preview") {
+      if (!feeWalletsReady()) throw new LaunchError("Configure the platform and shared agent reward wallets before planning payouts.", 503);
       const body = await readLaunchBody(request);
       // "held" pays $GAMINE the operator already bought into the reward wallet; otherwise SOL is swapped.
       const held = body.funding === "held";
@@ -86,16 +87,16 @@ async function handle(request: Request, context: { params: Promise<{ path: strin
       }
       // The API checks every winner's holding now ($20 at payout) and re-shares among those left.
       const range = periodEnd ? `from=${input.period}&to=${periodEnd}` : `${input.kind === "daily" ? "day" : "season"}=${encodeURIComponent(input.period)}`;
-      // The reward wallets hold $GAMINE, so they have agents; they never pay themselves.
+      // Fee wallets must never be payout recipients.
       // Every winner's wallet is read on chain: allow a minute rather than the usual ten seconds.
-      const frozen = await adminRead(request, `/admin/payout-recipients?${range}&minScore=${minScore}&cap=${capBps / 10_000}&exclude=${DAILY_REWARDS_WALLET},${WEEKLY_REWARDS_WALLET}`, 60_000) as { frozen: boolean; winners: PayoutWinner[]; dropped?: PayoutDropped[] };
+      const frozen = await adminRead(request, `/admin/payout-recipients?${range}&minScore=${minScore}&cap=${capBps / 10_000}&exclude=${AGENT_REWARDS_WALLET},${LAUNCH_FEE_RECIPIENT}`, 60_000) as { frozen: boolean; winners: PayoutWinner[]; dropped?: PayoutDropped[] };
       if (!frozen.frozen) throw new LaunchError("Only frozen scores can be paid.", 409);
       // An API from before the payout-time holding check returns no `dropped`: it would pay wallets that sold.
       if (!Array.isArray(frozen.dropped)) throw new LaunchError("The payout API does not check holdings at payout yet. Deploy the api, then preview again.", 503);
       for (const winner of frozen.winners) {
         if (new PublicKey(winner.wallet).toBase58() === LAUNCH_FEE_RECIPIENT) throw new LaunchError("The platform wallet cannot be a reward winner.");
       }
-      const source = input.kind === "daily" ? DAILY_REWARDS_WALLET : WEEKLY_REWARDS_WALLET;
+      const source = AGENT_REWARDS_WALLET;
       let decimals = 0;
       if (held) {
         try { decimals = await agpDecimals(); }
