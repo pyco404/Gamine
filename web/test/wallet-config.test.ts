@@ -35,7 +35,7 @@ describe("Configured launch receiving wallets", () => {
     const decoded = coder.decode(instructions[3]!.data)!;
     const data = decoded.data as { shareholders: { address: PublicKey; shareBps: number }[] };
     expect(data.shareholders.map(({ address, shareBps }) => ({ address: address.toBase58(), shareBps }))).toEqual(feeWallets);
-    expect(pumpConfig()).toMatchObject({ ready: true, launchFeeRecipient: platform, feeSplit: { agents: 70, platform: 30 } });
+    expect(pumpConfig()).toMatchObject({ ready: true, launchFeeLamports: 50_000_000, launchFeeRecipient: platform, feeSplit: { agents: 70, platform: 30 } });
   });
 
   it("has no fallback addresses and refuses to build launch transactions until both are supplied", async () => {
