@@ -365,3 +365,83 @@ body::before {
     animation: none;
   }
 }
+
+/* World experience: compact game controls, crisp art, readable information. */
+.game-panel {
+  color: #eee9da;
+  background: rgb(11 23 21 / .95);
+  border: 1px solid #536047;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgb(0 0 0 / .24), inset 0 1px 0 rgb(223 210 156 / .08);
+}
+.game-topbar { background: #0c1817; border-color: #394e3c; gap: 22px; }
+.game-wordmark img { width: 30px; height: 30px; background: transparent; }
+.game-nav-item { letter-spacing: .025em; transition: color 120ms, background 120ms; }
+.game-nav-item[aria-current="page"] { background: rgb(101 159 102 / .1); }
+.game-nav-item:hover { background: rgb(101 159 102 / .07); }
+.game-panel button:focus-visible, .game-panel a:focus-visible, .game-panel select:focus-visible { outline: 2px solid #e8c56c; outline-offset: 3px; }
+.hud-eyebrow { display: block; color: #a2b69c; font-size: 10px; text-transform: uppercase; letter-spacing: .15em; line-height: 1.5; }
+.hud-badge { display: inline-flex; padding: 3px 7px; border: 1px solid #40543d; border-radius: 4px; color: #c0d1b6; font-size: 10px; }
+.hud-link { color: #e8c56c; font-size: 12px; }
+.hud-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.status-light { display: inline-block; flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: #a09267; }
+.status-light.is-online { background: #91c78e; box-shadow: 0 0 0 3px rgb(145 199 142 / .1); }
+.arena-hud-position { position: absolute; left: 0; top: 56px; pointer-events: none; z-index: 11; display: flex; align-items: flex-end; justify-content: center; padding: 0 16px 82px; }
+.arena-hud { width: 390px; max-width: 100%; pointer-events: auto; overflow: hidden; }
+.arena-hud-toggle { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; font-size: 13px; min-height: 60px; }
+.arena-hud-toggle .hud-eyebrow { font-size: 9px; margin-bottom: 3px; }
+.arena-mini-score { font-family: var(--font-mono); font-size: 19px; color: #e8c56c; }
+.arena-hud-body { padding: 0 16px 16px; border-top: 1px solid #304336; padding-top: 14px; }
+.arena-scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin: 18px 0; text-align: center; }
+.arena-scoreboard a { overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+.arena-scoreboard strong { font-size: 30px; font-family: var(--font-mono); color: #e8c56c; }
+.arena-scoreboard strong span { color: #65715a; font-size: 20px; }
+.arena-progress { height: 3px; background: #293d2b; overflow: hidden; border-radius: 2px; }
+.arena-progress > span { display: block; height: 100%; background: #94b987; }
+.match-action { border-radius: 4px; border: 1px solid #40543d; padding: 4px 7px; text-transform: capitalize; font-size: 11px; color: #d8ddc7; }
+.match-action > span { color: #a2b69c; margin-right: 5px; }
+.match-action.action-raise { border-color: #8b7948; color: #e8c56c; }
+.match-action.action-fold { border-color: #795744; color: #e0a58a; }
+.selected-agent-activity { padding: 16px; border-bottom: 1px solid #3c4f3b; background: rgb(44 67 43 / .2); }
+.game-page { border-color: #536047; background: rgb(11 23 21 / .97); }
+.game-page .hud-sheet-body { scrollbar-width: thin; scrollbar-color: #50644a #101d19; }
+.game-page h1 { letter-spacing: -.02em; }
+.game-page :is(input, select, textarea) { min-height: 40px; }
+@media (min-width: 768px) {
+  .game-page { max-width: min(610px, 46vw); border-radius: 12px; }
+  .game-page:has([aria-label="Selected agent activity"]) { width: min(460px, 40vw); }
+  .game-page:has([aria-label="Selected agent activity"]) .hud-sheet-body { padding: 0 4px; }
+  .arena-hud-position.has-page { padding-bottom: 36px; }
+}
+@media (max-width: 767px) {
+  .game-topbar { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .game-wordmark img { width: 26px; height: 26px; }
+  .arena-hud-position { padding: 0 60px 58px 10px; }
+  .arena-hud { width: 100%; border-radius: 8px; }
+  .arena-hud-toggle { min-height: 54px; gap: 8px; padding: 10px; font-size: 11px; }
+  .arena-hud-toggle .hud-eyebrow { letter-spacing: .07em; font-size: 8px; }
+  .arena-mini-score { font-size: 16px; }
+  .arena-hud-position.has-page { display: none; }
+  .arena-hud.is-expanded { max-height: min(48dvh, 360px); overflow-y: auto; }
+  .arena-hud-body { padding: 12px; }
+  .arena-scoreboard { margin: 12px 0; gap: 7px; }
+  .arena-scoreboard strong { font-size: 24px; }
+  .game-page { border-radius: 16px 16px 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-panel *, .game-topbar *, .game-page * { scroll-behavior: auto !important; transition: none !important; }
+}
+.owner-agent-panel { width: 270px; padding: 16px; }
+.owner-agent-panel > a:last-child { display: block; padding-top: 12px; margin-top: 12px; min-height: 36px; }
+@media (max-width: 767px) {
+  .owner-agent-panel { top: auto; bottom: 54px; left: 10px; right: 10px; width: auto; max-width: none; max-height: 40dvh; overflow-y: auto; }
+  .owner-agent-panel dl { grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr); font-size: 11px; }
+}
+@media (max-width: 767px) {
+  .game-topbar button { min-height: 40px; }
+  .game-page button[aria-label="Close the page and see the village"] { min-height: 40px; min-width: 40px; }
+}
+
+@media (max-width: 767px) {
+  .arena-hud-position.has-page-toggle { padding-bottom: 104px; }
+}
