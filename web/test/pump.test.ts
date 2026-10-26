@@ -30,6 +30,7 @@ describe("Pump launch transaction", () => {
     const transfer = SystemInstruction.decodeTransfer(instructions.at(-1)!);
     expect(transfer.fromPubkey.equals(user.publicKey)).toBe(true);
     expect(transfer.toPubkey.toBase58()).toBe(LAUNCH_FEE_RECIPIENT);
+    expect(transfer.lamports).toBe(50_000_000n);
     expect(transfer.lamports).toBe(BigInt(LAUNCH_FEE_LAMPORTS));
     expect(instructions[3]!.programId.equals(pump.PUMP_FEE_PROGRAM_ID)).toBe(true);
     if (amount !== "0") {
