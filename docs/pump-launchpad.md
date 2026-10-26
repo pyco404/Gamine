@@ -13,7 +13,7 @@ The launch transaction, constructed with `@pump-fun/pump-sdk` 2.0.0, contains:
    The launcher receives **0%** of creator fees.
 3. An optional token purchase into the launching wallet. Its SOL amount is a
    strict spend cap, including trading fees, and it executes after fee locking.
-4. A mandatory **0.1 SOL** transfer to the platform wallet
+4. A mandatory **0.05 SOL** transfer to the platform wallet
    configured by `PUMP_PLATFORM_WALLET` (no default address).
 
 All these instructions share one transaction. A failed transaction does not
@@ -45,7 +45,7 @@ mainnet before any launch preparation or submission. There is no devnet fallback
 Set the two receiving public addresses with `PUMP_PLATFORM_WALLET` and
 `PUMP_AGENT_REWARDS_WALLET`. The example
 contains the configured public receiving addresses. The platform address receives both
-the 0.1 SOL launch fee and its 30% creator-fee share. Both addresses must
+the 0.05 SOL launch fee and its 30% creator-fee share. Both addresses must
 be valid and distinct. Restart the app after changing them and verify that
 launch transactions still fit the configured shared lookup table. A table does
 not need every recipient in it: omitted recipients can remain in the transaction
