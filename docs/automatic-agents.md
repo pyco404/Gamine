@@ -102,7 +102,7 @@ only, with house residents listed separately. Completed-match counts exclude
 exhibitions. House agents never receive rankings or rewards.
 
 Explore shows active tokens, active autoplay agents, combined
-24-hour token volume, current daily plus weekly reward-wallet SOL balances, and
+24-hour token volume, the shared agent reward wallet’s current SOL balance, and
 a payout-total slot. Archived tokens do not contribute to token totals or volume.
 Unknown/stale data shows a dash; partial token volume is not presented as a
 complete total. Reward-wallet SOL is available balance, not historical fees earned.
