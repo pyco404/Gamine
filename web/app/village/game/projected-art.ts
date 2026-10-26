@@ -137,39 +137,19 @@ function cottage(b: Brush, view: Projection, o: WorldObject, material = building
   }
 }
 
-/** Gamine's official logo (gamine-tb.png, unaltered) in the middle of the sand, inside a ring. */
-/**
- * Gamine's logo as a faded floor marking: its brackets a soft green, its square a muted
- * olive-brown, its eyes a brighter green. Recoloured once per loaded image.
- */
-const markings = new WeakMap<object, HTMLCanvasElement>();
+/** Bake the softened floor mark once; retain the original logo colours. */
+const floorMarks = new WeakMap<object, HTMLCanvasElement>();
 function floorMarking(f: ArtFrame): HTMLCanvasElement {
   const key = f.image as object;
-  let c = markings.get(key);
-  if (c) return c;
-  c = document.createElement("canvas"); c.width = f.width; c.height = f.height;
-  const g = c.getContext("2d")!;
-  g.drawImage(f.image as CanvasImageSource, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
-  const d = g.getImageData(0, 0, f.width, f.height), px = d.data;
-  const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)) as [number, number, number];
-  // At 45% on the arena sand: soft green brackets, an olive-brown square, brighter green eyes.
-  const outer = rgb("#6e8e52"), centre = rgb("#5f5c3e"), eyes = rgb("#78a44d");
-  // The dark square spans the middle two-thirds; green inside it is the eyes, outside it the brackets.
-  const lo = 0.17, hi = 0.83;
-  for (let i = 0; i < px.length; i += 4) {
-    if (px[i + 3]! < 20) continue;
-    const u = (i / 4 % f.width) / f.width, v = Math.floor(i / 4 / f.width) / f.height;
-    const green = px[i + 1]! > 90;
-    const [r, gg, b] = !green ? centre : u > lo && u < hi && v > lo && v < hi ? eyes : outer;
-    px[i] = r; px[i + 1] = gg; px[i + 2] = b;
-  }
-  g.putImageData(d, 0, 0);
-  // Softened, as paint worn into sand: blurred in the image's own pixels, so equally at every zoom.
-  const soft = document.createElement("canvas"); soft.width = f.width; soft.height = f.height;
-  const sg = soft.getContext("2d")!;
-  sg.filter = `blur(${Math.round(f.width / 60)}px)`; sg.drawImage(c, 0, 0);
-  markings.set(key, soft);
-  return soft;
+  let mark = floorMarks.get(key);
+  if (mark) return mark;
+  mark = document.createElement("canvas");
+  mark.width = f.width; mark.height = f.height;
+  const context = mark.getContext("2d")!;
+  context.filter = `blur(${Math.max(1, Math.round(f.width / 60))}px)`;
+  context.drawImage(f.image as CanvasImageSource, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
+  floorMarks.set(key, mark);
+  return mark;
 }
 
 /** Sand grain across the floor, seeded, so the floor and the marking on it read as one worn surface. */
@@ -191,9 +171,13 @@ function arenaFloor(ctx: CanvasRenderingContext2D, view: Projection, top?: TopAr
     ctx.beginPath(); ctx.ellipse(x, y, rx - 8, ry - 8, 0, 0, Math.PI * 2); ctx.stroke();
     ctx.globalAlpha = 0.18; ctx.lineWidth = 2;
     for (const k of [0.78, 0.6]) { ctx.beginPath(); ctx.ellipse(x, y, rx * k, ry * k, 0, 0, Math.PI * 2); ctx.stroke(); }
-    // The marking, faded into the sand, at the arena emblem's own 144 by 100.
+    // A smaller, softened knight mark reads as faded paint in the sand.
     const f = top?.art?.({ key: "ac-arena-emblem", frame: "__BASE" });
-    if (f) { ctx.globalAlpha = 0.55; ctx.imageSmoothingEnabled = true; ctx.drawImage(floorMarking(f), x - 72, y - 50, 144, 100); }
+    if (f) {
+      const width = 112, height = width * f.height / f.width;
+      ctx.globalAlpha = 0.55; ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(floorMarking(f), x - width / 2, y - height / 2, width, height);
+    }
     // Grain over everything on the floor, the marking included: worn in, not laid on top.
     for (const g of GRAIN.slice(0,320)) {
       ctx.globalAlpha = 0.18; ctx.fillStyle = g.light ? A.sandLight : A.sandShade;
@@ -366,6 +350,11 @@ function arena(b: Brush, view: Projection, o: WorldObject, floor?: () => void, c
           const left={x:qa.x+(qc.x-qa.x)*.16,y:qa.y+(qc.y-qa.y)*.16},right={x:qa.x+(qc.x-qa.x)*.84,y:qa.y+(qc.y-qa.y)*.84};
           b.line([{...left,z:z+1},{...right,z:z+1}],A.woodDark,3);
           b.line([{...left,z:z+3},{...right,z:z+3}],row===5?A.emerald:A.wood[2],3);
+          if (row === 5 && section % 3 === 0) {
+            const at = { x: (left.x + right.x) / 2, y: (left.y + right.y) / 2 };
+            b.line([{ ...at, z: z + 5 }, { ...at, z: z + 14 }], section % 2 ? A.emerald : A.goldLight, 4);
+            b.line([{ ...at, z: z + 15 }, { ...at, z: z + 19 }], "#cda477", 4);
+          }
         }
       }
       // Trim: a green band under a thin brass rail.
