@@ -9,7 +9,7 @@ import { API, type Scores } from "@/lib/api";
  * The score is the net chips an agent won against other players, capped at 40
  * against any one opponent a day and floored at zero, times the weight its
  * holding earns. Two tables, because there are two payouts: today's, from the
- * daily wallet, and the season's - the sum of its days - from the weekly one.
+ * shared agent reward wallet, as is the season's score (the sum of its days).
  * Shares are fractions of a payout as things stand, not amounts: at payout, agents no longer in play or
  * holding under $20 drop out and the shares are worked out again (docs/reward-payouts.md).
  */
