@@ -9,6 +9,8 @@ import { createAgent, field } from "../src/db/runner.js";
 import { worldNavigation } from "../src/world/navigation.js";
 import { ACTIVITY_DESTINATIONS } from "../web/app/village/game/activity-destinations.js";
 
+import { canSpar } from "../web/lib/world/character.js";
+
 const farm: ActivityDestination = { id: "farm", name: "Farm", x: 160, y: 0, capabilities: ["farm"], capacity: 2000 };
 const route = (from: Point, to: Point) => [from, to];
 const resident = (id = "a") => ({ id, home: { x: 0, y: 0 } });
@@ -40,6 +42,30 @@ describe("persisted cosmetic activities", () => {
     expect(world.simulation.has(a.id)).toBe(false);
     expect(world.simulation.state(b.id, at)?.sparring).toBeUndefined();
     expect(world.simulation.recent(b.id)).toHaveLength(0);
+  });
+
+  it("pairs only armed idle residents and resumes their town routines after an interrupted game", () => {
+    const green: ActivityDestination = { id: "green", name: "Practice green", x: 100, y: 100, capabilities: ["spar"], capacity: 24 };
+    const people = Array.from({ length: 36 }, (_, i) => resident(`resident-${i}`));
+    const world = new WorldSimulation([green], route);
+    world.sync(people, 0);
+    let at = 0;
+    while (at < 60_000 && !world.save().entries.some((e) => e.sparring)) { at += 1000; world.tick(at); }
+    const saved = world.save(), fighter = saved.entries.find((e) => e.sparring)!;
+    expect(fighter).toBeDefined();
+    for (const e of saved.entries) {
+      if (e.sparring) { expect(canSpar(e.id)).toBe(true); expect(canSpar(e.sparring.partnerId)).toBe(true); }
+      if (!canSpar(e.id)) expect(e.plan?.activity).not.toBe("sparring");
+    }
+    const partner = fighter.sparring!.partnerId;
+    world.sync(people.map((r) => ({ ...r, interrupted: r.id === fighter.id })), at);
+    expect(world.simulation.has(fighter.id)).toBe(false);
+    expect(world.simulation.state(partner, at)?.sparring).toBeUndefined();
+    for (let next = at + 1000; next <= at + 30_000; next += 1000) world.tick(next);
+    expect(world.save().entries.some((e) => e.sparring?.partnerId === fighter.id)).toBe(false);
+    world.sync(people, at + 31_000);
+    expect(world.simulation.has(fighter.id)).toBe(true);
+    expect(world.simulation.state(fighter.id, at + 31_000)?.phase).toBe("resting");
   });
 
   it("does not fabricate a fight when a lone agent cannot find a partner", () => {
