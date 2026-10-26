@@ -92,6 +92,13 @@ void main() {
 export function createWater(canvas: HTMLCanvasElement): WaterPass | null {
   try {
     const gl = canvas.getContext("webgl2", { antialias: false, premultipliedAlpha: true, alpha: true });
+    // A full-screen water shader is expensive on a CPU-backed WebGL context.
+    // WorldCamera supplies small pixel ripples instead; native GPUs keep this pass.
+    if (gl) {
+      const info = gl.getExtension("WEBGL_debug_renderer_info");
+      const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+      if (/swiftshader|llvmpipe|softpipe|software|microsoft basic/i.test(renderer)) return null;
+    }
     return gl ? new WaterPass(gl, canvas) : null;
   } catch { return null; }
 }
@@ -102,6 +109,9 @@ export class WaterPass {
   private u: Record<string, WebGLUniformLocation | null> = {};
   private mask: WebGLTexture | null = null;
   private maskOf: unknown = null;
+  private buffer: WebGLBuffer | null = null;
+  private readonly bridges = RIVER_BRIDGES.slice(0, 48);
+  private readonly bridgeData = new Float32Array(this.bridges.flatMap((p) => [p.x, p.y]).concat(new Array((48 - this.bridges.length) * 2).fill(-1e6)));
   private frame = { x0: 0, y0: 0, units: MASK_UNITS };
 
   constructor(private gl: WebGL2RenderingContext, private canvas: HTMLCanvasElement) {
@@ -117,7 +127,7 @@ export class WaterPass {
     for (const n of ["u_mask", "u_cam", "u_screen", "u_frame", "u_sea", "u_bridges", "u_bridgeCount", "u_size"]) this.u[n] = gl.getUniformLocation(this.program, n);
     this.quad = gl.createVertexArray()!;
     gl.bindVertexArray(this.quad);
-    const buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    this.buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.bindVertexArray(null);
@@ -148,6 +158,14 @@ export class WaterPass {
     worldPerformance.endStage("waterMask", started);
   }
 
+  /** Release GPU resources without losing a context reused by React's development remount. */
+  dispose(): void {
+    const gl = this.gl;
+    for (const shader of gl.getAttachedShaders(this.program) ?? []) gl.deleteShader(shader);
+    gl.deleteTexture(this.mask); gl.deleteBuffer(this.buffer); gl.deleteVertexArray(this.quad); gl.deleteProgram(this.program);
+    this.mask = null; this.maskOf = null; this.buffer = null;
+  }
+
   /** Paints this frame's water on its own canvas; with no ground yet, clears it. */
   clear(): void { const gl = this.gl; gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
   draw(ground: TopGround, view: Projection, camera: ProjectionCamera, width: number, height: number, ratio: number, seconds: number): void {
@@ -163,9 +181,8 @@ export class WaterPass {
     gl.uniform4f(this.u.u_screen!, camera.scale, width, height, seconds);
     gl.uniform4f(this.u.u_frame!, this.frame.x0, this.frame.y0, this.frame.units, 0);
     gl.uniform4f(this.u.u_sea!, ROUGH_SEA.x, ROUGH_SEA.y, ROUGH_SEA.rx, ROUGH_SEA.ry);
-    const bridges = RIVER_BRIDGES.slice(0, 48);
-    gl.uniform2fv(this.u.u_bridges!, new Float32Array(bridges.flatMap((p) => [p.x, p.y]).concat(new Array((48 - bridges.length) * 2).fill(-1e6))));
-    gl.uniform1i(this.u.u_bridgeCount!, bridges.length);
+    gl.uniform2fv(this.u.u_bridges!, this.bridgeData);
+    gl.uniform1i(this.u.u_bridgeCount!, this.bridges.length);
     gl.uniform2f(this.u.u_size!, width, height);
     gl.bindVertexArray(this.quad); gl.drawArrays(gl.TRIANGLES, 0, 6); gl.bindVertexArray(null);
     worldPerformance.endStage("water", started);
