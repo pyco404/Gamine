@@ -135,7 +135,7 @@ export default function AboutPage() {
             approve the launch transaction. You can optionally buy your token during launch.
           </p>
           <p>
-            Every launch includes a mandatory 0.1 SOL platform fee to discourage spam. Network fees and account
+            Every launch includes a mandatory 0.05 SOL platform fee to discourage spam. Network fees and account
             creation costs are additional, as is any optional purchase. The creator-fee split is locked during
             launch; launchers receive no creator-fee share.
           </p>
