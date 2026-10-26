@@ -1,7 +1,7 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { launchStore } from "@/lib/launchpad-store";
 import { MarketStore } from "@/lib/token-market";
-import { DAILY_REWARDS_WALLET, WEEKLY_REWARDS_WALLET } from "@/lib/launchpad-fees";
+import { AGENT_REWARDS_WALLET } from "@/lib/launchpad-fees";
 import type { PlatformTotals } from "@/lib/platform-stats";
 import { ExecutionStore } from "@/lib/payout-execution-store";
 import { AGP_MINT } from "@/lib/agp";
@@ -19,10 +19,10 @@ async function totals(): Promise<PlatformTotals> {
   await Promise.allSettled([
     (async () => { const res = await fetch(`${backend}/stats`, { cache: "no-store", signal: AbortSignal.timeout(10_000) }); if (res.ok) { const body = await res.json(); if (Number.isSafeInteger(body.activeAgents) && body.activeAgents >= 0) activeAgents = body.activeAgents; } })(),
     (async () => {
-      if (!process.env.PUMP_RPC_URL) return;
+      if (!AGENT_REWARDS_WALLET || !process.env.PUMP_RPC_URL) return;
       const rpc = new Connection(process.env.PUMP_RPC_URL, { commitment: "confirmed", disableRetryOnRateLimit: true });
       if (await rpc.getGenesisHash() !== "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d") return;
-      const wallets = [new PublicKey(DAILY_REWARDS_WALLET), new PublicKey(WEEKLY_REWARDS_WALLET)];
+      const wallets = [new PublicKey(AGENT_REWARDS_WALLET)];
       const accounts = await rpc.getMultipleAccountsInfo(wallets);
       rewardPoolSol = accounts.reduce((sum, a) => sum + (a?.lamports ?? 0), 0) / 1e9;
       // The $GAMINE bought into the reward wallets for payouts, across every account each holds for the mint.
